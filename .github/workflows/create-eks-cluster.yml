@@ -50,7 +50,9 @@ jobs:
       run: |
         cd aws_cdk
         cdk bootstrap aws://${{ secrets.AWS_ACCOUNT_ID }}/${{ secrets.AWS_REGION }}  # CDK 부트스트랩 실행
-        cdk deploy --app "python3 app.py" --require-approval never --context github_actions_user_arn=${{ secrets.AWS_USER_ARN }}
+        AWS_USER_ARN=${{ secrets.AWS_USER_ARN }}
+        echo "AWS_USER_ARN=$AWS_USER_ARN" >> $GITHUB_ENV
+        cdk deploy --app "python3 app.py" --require-approval never --context github_actions_user_arn=${{ env.AWS_USER_ARN }}
 
     - name: Get EKS cluster name
       id: get-cluster-name
