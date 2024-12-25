@@ -49,6 +49,11 @@ jobs:
       run: |
         aws eks update-kubeconfig --name ${{ env.CLUSTER_NAME }} --region ${{ secrets.AWS_REGION }}
 
+    - name: Edit aws-auth ConfigMap to add IAM role
+      run: |
+        kubectl apply -f ./eks/aws-auth-configmap.yaml  # 준비한 YAML 파일을 적용
+        kubectl describe configmap aws-auth -n kube-system
+
     - name: Install Helm
       run: |
         curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
