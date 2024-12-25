@@ -45,12 +45,6 @@ jobs:
         CLUSTER_NAME=$(aws eks list-clusters --query "clusters[0]" --output text)
         echo "CLUSTER_NAME=$CLUSTER_NAME" >> $GITHUB_ENV
 
-    - name: Edit aws-auth ConfigMap to add IAM role
-      run: |
-        envsubst < ./eks/aws-auth-template.yaml > ./eks/aws-auth-configmap.yaml
-        kubectl apply -f ./eks/aws-auth-configmap.yaml
-        kubectl describe configmap aws-auth -n kube-system
-
     - name: Set up kubeconfig
       run: |
         aws eks update-kubeconfig --name ${{ env.CLUSTER_NAME }} --region ${{ secrets.AWS_REGION }} --kubeconfig ~/.kube/config
@@ -61,6 +55,12 @@ jobs:
         aws eks list-clusters --profile dev
         echo aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
         kubectl --kubeconfig=/home/runner/.kube/config get pods
+
+    - name: Edit aws-auth ConfigMap to add IAM role
+      run: |
+        envsubst < ./eks/aws-auth-template.yaml > ./eks/aws-auth-configmap.yaml
+        kubectl apply -f ./eks/aws-auth-configmap.yaml
+        kubectl describe configmap aws-auth -n kube-system
 
     - name: Install Helm
       run: |
