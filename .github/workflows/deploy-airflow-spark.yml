@@ -49,11 +49,6 @@ jobs:
       run: |
         aws eks update-kubeconfig --name ${{ env.CLUSTER_NAME }} --region ${{ secrets.AWS_REGION }} --kubeconfig ~/.kube/config
         kubectl config view
-        sudo cat ~/.kube/config
-        echo aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-        aws sts get-caller-identity
-        aws eks list-clusters --profile dev
-        echo aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
         kubectl --kubeconfig=/home/runner/.kube/config get pods
 
     - name: Edit aws-auth ConfigMap to add IAM role
