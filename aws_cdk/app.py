@@ -5,6 +5,7 @@ from aws_cdk import (
     core
 )
 
+
 class EKSClusterStack(core.Stack):
     def __init__(self, scope: core.Construct, id: str, **kwargs) -> None:
         super().__init__(scope, id, **kwargs)
@@ -12,42 +13,40 @@ class EKSClusterStack(core.Stack):
         # VPC 생성 (2개 AZ)
         vpc = ec2.Vpc(self, "MyVPC", max_azs=2)
 
-        # IAM Role for EKS Nodes
-        node_role = iam.Role(self, "NodeRole",
-                             assumed_by=iam.ServicePrincipal("ec2.amazonaws.com"),
-                             managed_policies=[
-                                 iam.ManagedPolicy.from_aws_managed_policy_name(
-                                     "AmazonEKSWorkerNodePolicy"
-                                 ),
-                                 iam.ManagedPolicy.from_aws_managed_policy_name(
-                                     "AmazonEC2ContainerRegistryReadOnly"
-                                 ),
-                                 iam.ManagedPolicy.from_aws_managed_policy_name(
-                                     "AmazonEKS_CNI_Policy"
-                                 ),
-                             ])
-
-        # S3 Full Access role        
-        s3_access_role = iam.Role(self, "S3AccessRole",
-                           assumed_by=iam.ServicePrincipal("eks.amazonaws.com"),
-                           managed_policies=[
-                               iam.ManagedPolicy.from_aws_managed_policy_name("AmazonS3FullAccess")
-                           ])
-
-        # IRSA 인증 추가
-        eks_service_account = eks.ServiceAccount(self, "MyEksServiceAccount",
-                                         cluster=cluster,
-                                         name="my-eks-service-account",
-                                         role=s3_access_role)
-
-
-
         # EKS 클러스터 생성
         cluster = eks.Cluster(
             self,
             "MyEKSCluster",
             vpc=vpc,
             default_capacity=0,  # 관리형 노드 그룹 사용
+        )
+
+        # IAM Role for EKS Nodes
+        node_role = iam.Role(self, "NodeRole",
+                             assumed_by=iam.ServicePrincipal(
+                                 "ec2.amazonaws.com"),
+                             managed_policies=[
+                                 iam.ManagedPolicy.
+                                 from_aws_managed_policy_name(
+                                     "AmazonEKSWorkerNodePolicy"
+                                 ),
+                                 iam.ManagedPolicy.
+                                 from_aws_managed_policy_name(
+                                     "AmazonEC2ContainerRegistryReadOnly"
+                                 ),
+                                 iam.ManagedPolicy.
+                                 from_aws_managed_policy_name(
+                                     "AmazonEKS_CNI_Policy"
+                                 ),
+                             ])
+
+        # IRSA 인증 추가
+        eks_service_account = eks.ServiceAccount(self, "MyEksServiceAccount",
+                                                 cluster=cluster,
+                                                 name="my-eks-service-account")
+        eks_service_account.role.add_managed_policy(
+            iam.ManagedPolicy.from_aws_managed_policy_name(
+                "AmazonS3FullAccess")
         )
 
         # 관리형 노드 그룹 추가
@@ -63,6 +62,7 @@ class EKSClusterStack(core.Stack):
         # 클러스터 정보 출력
         core.CfnOutput(self, "ClusterName", value=cluster.cluster_name)
         core.CfnOutput(self, "ClusterEndpoint", value=cluster.cluster_endpoint)
+
 
 app = core.App()
 EKSClusterStack(app, "EKSClusterStack")
