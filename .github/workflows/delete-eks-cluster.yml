@@ -1,10 +1,10 @@
-name: Delete EKS Cluster
+name: Destroy AWS Resources (EKS Cluster, VPC, EC2, Lambda, ENI, etc.)
 
 on:
-  workflow_dispatch:
+  workflow_dispatch:  # 수동으로 트리거되는 워크플로우
 
 jobs:
-  delete-cluster:
+  destroy-aws-resources:
     runs-on: ubuntu-latest
 
     steps:
@@ -18,10 +18,82 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: ${{ secrets.AWS_REGION }}
 
-    - name: Delete EKS Cluster
+    - name: Set up AWS CLI
       run: |
-        aws eks delete-cluster --name ${{ secrets.CLUSTER_NAME }} --region ${{ secrets.AWS_REGION }}
-        while aws eks describe-cluster --name ${{ secrets.CLUSTER_NAME }} --region ${{ secrets.AWS_REGION }}; do
-          echo "Waiting for cluster deletion..."
-          sleep 30
+        curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+        unzip awscliv2.zip
+        sudo ./aws/install
+
+    - name: Destroy EKS Cluster Stack (CDK)
+      run: |
+        cd aws_cdk
+        cdk destroy --force  # CDK로 EKS 클러스터와 관련 리소스 삭제
+
+    - name: Delete Remaining NAT Gateways and VPCs
+      run: |
+        aws ec2 describe-vpcs --query 'Vpcs[*].VpcId' --output text | while read vpc; do
+          echo "Deleting VPC: $vpc"
+          aws ec2 delete-vpc --vpc-id $vpc || true
         done
+        echo "All VPCs and NAT Gateways deleted."
+
+    - name: Delete Remaining Lambda Functions
+      run: |
+        aws lambda list-functions --query 'Functions[*].FunctionName' --output text | while read func; do
+          echo "Deleting Lambda Function: $func"
+          aws lambda delete-function --function-name $func
+        done
+        echo "All Lambda Functions deleted."
+
+    - name: Delete Remaining EC2 Instances
+      run: |
+        aws ec2 describe-instances --query 'Reservations[*].Instances[*].InstanceId' --output text | while read instance; do
+          echo "Terminating EC2 Instance: $instance"
+          aws ec2 terminate-instances --instance-ids $instance
+        done
+        echo "All EC2 Instances terminated."
+
+    - name: Release Elastic IPs
+      run: |
+        aws ec2 describe-addresses --query 'Addresses[*].AllocationId' --output text | while read eip; do
+          echo "Releasing Elastic IP: $eip"
+          aws ec2 release-address --allocation-id $eip
+        done
+        echo "All Elastic IPs released."
+
+    - name: Delete ENIs (Elastic Network Interfaces)
+      run: |
+        aws ec2 describe-network-interfaces --query 'NetworkInterfaces[*].NetworkInterfaceId' --output text | while read eni; do
+          echo "Deleting ENI: $eni"
+          aws ec2 delete-network-interface --network-interface-id $eni
+        done
+        echo "All ENIs deleted."
+
+    - name: Delete S3 Buckets
+      run: |
+        aws s3api list-buckets --query 'Buckets[*].Name' --output text | while read bucket; do
+          echo "Deleting all objects in bucket: $bucket"
+          aws s3 rm s3://$bucket --recursive
+          echo "Deleting bucket: $bucket"
+          aws s3api delete-bucket --bucket $bucket
+        done
+        echo "All S3 Buckets deleted."
+
+    - name: Delete IAM Roles
+      run: |
+        aws iam list-roles --query 'Roles[*].RoleName' --output text | while read role; do
+          echo "Deleting IAM Role: $role"
+          aws iam delete-role --role-name $role || true
+        done
+        echo "All IAM Roles deleted."
+
+    - name: Verify Deletion of Resources
+      run: |
+        echo "Verifying deletion of resources..."
+        aws ec2 describe-vpcs --query 'Vpcs[*].VpcId'
+        aws ec2 describe-instances --query 'Reservations[*].Instances[*].InstanceId'
+        aws lambda list-functions --query 'Functions[*].FunctionName'
+        aws ec2 describe-network-interfaces --query 'NetworkInterfaces[*].NetworkInterfaceId'
+        aws s3api list-buckets --query 'Buckets[*].Name'
+        aws iam list-roles --query 'Roles[*].RoleName'
+        echo "Resource deletion verification complete!"
