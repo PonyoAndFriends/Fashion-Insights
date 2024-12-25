@@ -29,6 +29,8 @@ jobs:
       with:
         node-version: '20'  # 필요한 Node.js 버전
     - run: |
+        cd aws_cdk  # CDK 코드가 위치한 디렉토리로 이동
+        python3 -m pip install -r requirements.txt  # CDK 의존성 설치
         npm install -g aws-cdk  # AWS CDK CLI 설치
 
     - name: Destroy EKS Cluster Stack (CDK)
