@@ -63,7 +63,7 @@ jobs:
 
     - name: Install Helm
       run: |
-        curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3.sh | bash
+        curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
     
     - name: Create Spark Service Account and RBAC
       run: |
