@@ -48,6 +48,7 @@ jobs:
     - name: Deploy EKS Cluster with CDK
       run: |
         cd aws_cdk
+        cdk bootstrap  # CDK 부트스트랩 실행
         cdk deploy --app "python3 app.py" --require-approval never  # CDK로 클러스터 배포
 
     - name: Set up kubeconfig
