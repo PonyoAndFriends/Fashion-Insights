@@ -22,7 +22,7 @@ class EKSClusterStack(Stack):
             "MyEKSCluster",
             vpc=vpc,
             default_capacity=0,  # 관리형 노드 그룹 사용
-            version=eks.KubernetesVersion.LATEST,  # 적당히 우선 진행
+            version=eks.KubernetesVersion.V1_29,  # 적당히 우선 진행
         )
 
         # IAM Role for EKS Nodes
