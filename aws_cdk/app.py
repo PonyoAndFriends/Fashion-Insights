@@ -7,6 +7,7 @@ from aws_cdk import (
     CfnOutput
 )
 from constructs import Construct
+import os
 
 
 class EKSClusterStack(Stack):
@@ -25,10 +26,12 @@ class EKSClusterStack(Stack):
             version=eks.KubernetesVersion.V1_30,  # 적당히 우선 진행
         )
 
-        github_actions_user_arn = self.node.try_get_context("github_actions_user_arn")
-
+        github_actions_user_arn = os.environ.get('AWS_USER_ARN')
+        
         if not github_actions_user_arn:
             raise ValueError("GitHub Actions IAM User ARN is required!")
+
+        print(f"GitHub Actions User ARN: {github_actions_user_arn}")
 
         # `aws-auth` ConfigMap에 GitHub Actions IAM 유저 추가
         github_actions_user = iam.User.from_user_arn(
