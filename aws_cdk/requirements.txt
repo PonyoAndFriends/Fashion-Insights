@@ -1,5 +1,0 @@
-# cdk 이용을 위한 파이썬 라이브러리
-aws-cdk-lib
-
-# constructs 라이브러리
-constructs
