@@ -55,8 +55,8 @@ jobs:
     
     - name: Create Spark Service Account and RBAC
       run: |
-        kubectl apply -f ./spark/kubernetes/spark-service-account.yaml
-        kubectl apply -f ./spark/kubernetes/spark-role.yaml
+        kubectl apply -f ./spark/kubernetes/spark-service-account.yml
+        kubectl apply -f ./spark/kubernetes/spark-role.yml
 
     - name: Install Airflow via Helm
       run: |
