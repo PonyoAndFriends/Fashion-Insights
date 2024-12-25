@@ -46,10 +46,16 @@ jobs:
         python3 -m pip install -r requirements.txt  # CDK 의존성 설치
 
     - name: Deploy EKS Cluster with CDK
-      run: |
+    - run: |
         cd aws_cdk
         cdk bootstrap aws://${{ secrets.AWS_ACCOUNT_ID }}/${{ secrets.AWS_REGION }}  # CDK 부트스트랩 실행
         cdk deploy --app "python3 app.py" --require-approval never -c github_actions_user_arn=${{ secrets.AWS_USER_ARN }}
+      env:
+        AWS_USER_ARN: ${{ secrets.AWS_USER_ARN }}
+        AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
+        AWS_REGION: ${{ secrets.AWS_REGION }}
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
     - name: Get EKS cluster name
       id: get-cluster-name
