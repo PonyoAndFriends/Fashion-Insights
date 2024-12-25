@@ -24,10 +24,7 @@ class EKSClusterStack(Stack):
             "MyEKSCluster",
             vpc=vpc,
             default_capacity=0,  # 관리형 노드 그룹 사용
-            version=eks.KubernetesVersion.V1_22  # 예시로 Kubernetes 1.21 버전 사용
-            kubectl_layer=lambda_layer_version.LayerVersion(
-                self, "KubectlLayer", code=_lambda.Code.from_asset("path/to/layer")
-        )
+            version=eks.KubernetesVersion.LATEST,  # 적당히 우선 진행
         )
 
         # IAM Role for EKS Nodes
