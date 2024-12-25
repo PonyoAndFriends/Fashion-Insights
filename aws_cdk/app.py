@@ -7,8 +7,6 @@ from aws_cdk import (
     CfnOutput
 )
 from constructs import Construct
-from aws_cdk import aws_lambda as _lambda
-from aws_cdk import aws_lambda_layer_version as lambda_layer_version
 
 
 class EKSClusterStack(Stack):
