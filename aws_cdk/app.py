@@ -7,6 +7,7 @@ from aws_cdk import (
     CfnOutput
 )
 from constructs import Construct
+from aws_cdk.aws_lambda_layer_kubectl import LayerVersion
 
 
 class EKSClusterStack(Stack):
@@ -22,7 +23,7 @@ class EKSClusterStack(Stack):
             "MyEKSCluster",
             vpc=vpc,
             default_capacity=0,  # 관리형 노드 그룹 사용
-            version=eks.KubernetesVersion.V1_21,  # 적당히 우선 진행
+            version=eks.KubernetesVersion.V1_30,  # 적당히 우선 진행
         )
 
         # IAM Role for EKS Nodes
