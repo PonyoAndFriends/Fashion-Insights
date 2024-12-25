@@ -2,12 +2,15 @@ from aws_cdk import (
     aws_eks as eks,
     aws_ec2 as ec2,
     aws_iam as iam,
-    core
+    App,
+    Stack,
+    CfnOutput
 )
+from constructs import Construct
 
 
-class EKSClusterStack(core.Stack):
-    def __init__(self, scope: core.Construct, id: str, **kwargs) -> None:
+class EKSClusterStack(Stack):
+    def __init__(self, scope: Construct, id: str, **kwargs) -> None:
         super().__init__(scope, id, **kwargs)
 
         # VPC 생성 (2개 AZ)
@@ -60,10 +63,10 @@ class EKSClusterStack(core.Stack):
         )
 
         # 클러스터 정보 출력
-        core.CfnOutput(self, "ClusterName", value=cluster.cluster_name)
-        core.CfnOutput(self, "ClusterEndpoint", value=cluster.cluster_endpoint)
+        CfnOutput(self, "ClusterName", value=cluster.cluster_name)
+        CfnOutput(self, "ClusterEndpoint", value=cluster.cluster_endpoint)
 
 
-app = core.App()
+app = App()
 EKSClusterStack(app, "EKSClusterStack")
 app.synth()
