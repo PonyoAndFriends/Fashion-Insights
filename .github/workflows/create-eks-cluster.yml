@@ -23,6 +23,15 @@ jobs:
       with:
         python-version: '3.8'
 
+    - name: Install AWS CLI and kubectl
+      run: |
+        curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+        unzip awscliv2.zip
+        sudo ./aws/install
+        curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+        chmod +x kubectl
+        sudo mv kubectl /usr/local/bin/
+
     - name: Install AWS CDK
       run: |
         cd cdk  # CDK 코드가 위치한 디렉토리로 이동
@@ -40,6 +49,11 @@ jobs:
     - name: Install Helm
       run: |
         curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3.sh | bash
+    
+    - name: Create Spark Service Account and RBAC
+      run: |
+        kubectl apply -f ./spark/kubernetes/spark-service-account.yaml
+        kubectl apply -f ./spark/kubernetes/spark-role.yaml
 
     - name: Install Airflow via Helm
       run: |
@@ -49,9 +63,13 @@ jobs:
           --namespace airflow \
           --create-namespace \
           --set dags.persistence.enabled=true \
-          --set dags.persistence.existingClaim=${{ secrets.AIRFLOW_DAG_BUCKET }} \
           --set airflow.executor=CeleryExecutor \
           --set airflow.image.repository=apache/airflow
+          --set airflow.image.tag=2.9.1 \
+          --set airflow.image.pullPolicy=IfNotPresent \
+          --set workers.replicas=2
+          --set serviceAccount.name=my-eks-service-account
+          --set airflow.config.AIRFLOW__CORE__LOAD_EXAMPLES=false
 
     - name: Install Spark via Helm
       run: |
@@ -60,13 +78,28 @@ jobs:
         helm install spark bitnami/spark \
           --namespace spark \
           --create-namespace \
+          --set serviceAccount.name=my-eks-service-account \
           --set spark.master=k8s://https://kubernetes.default.svc \
-          --set spark.worker.instances=2
+          --set spark.worker.instances=3
 
-    - name: Mount Airflow DAG and Spark Job Code
+    - name: Copy DAGs to Airflow
       run: |
-        kubectl apply -f ./airflow/dags/  # Airflow DAG 파일을 Kubernetes로 배포
-        kubectl apply -f ./spark/jobs/    # Spark Job 파일을 Kubernetes로 배포
+        kubectl create configmap airflow-dags --from-file=./airflow/airflow_dags -n airflow
+        kubectl patch deployment airflow-scheduler -n airflow \
+          --type='json' -p='[{"op": "add", "path": "/spec/template/spec/volumes/-", "value": {"name": "airflow-dags", "configMap": {"name": "airflow-dags"}}}, {"op": "add", "path": "/spec/template/spec/containers/0/volumeMounts/-", "value": {"name": "airflow-dags", "mountPath": "/opt/airflow/dags"}}]'
+
+    - name: Mount Spark Jobs
+      run: |
+        kubectl create configmap spark-jobs --from-file=./spark/spark_jobs -n spark
+        kubectl patch deployment spark-master -n spark \
+          --type='json' -p='[{"op": "add", "path": "/spec/template/spec/volumes/-", "value": {"name": "spark-jobs", "configMap": {"name": "spark-jobs"}}}, {"op": "add", "path": "/spec/template/spec/containers/0/volumeMounts/-", "value": {"name": "spark-jobs", "mountPath": "/mnt/jobs"}}]'
+
+    - name: Add Kubernetes connection to Airflow
+      run: |
+      airflow connections add 'kubernetes_default' \
+        --conn-type 'Kubernetes' \
+        --conn-host 'https://kubernetes.default.svc' \
+        --conn-extra '{"kube_config": "/root/.kube/config"}'
 
     - name: Verify Deployment
       run: |
