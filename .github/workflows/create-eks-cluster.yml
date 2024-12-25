@@ -32,6 +32,14 @@ jobs:
         chmod +x kubectl
         sudo mv kubectl /usr/local/bin/
 
+
+    - name: Set up Node.js and install AWS CDK
+      uses: actions/setup-node@v3
+      with:
+        node-version: '16'  # 필요한 Node.js 버전
+    - run: |
+        npm install -g aws-cdk  # AWS CDK CLI 설치
+
     - name: Install AWS CDK
       run: |
         cd aws_cdk  # CDK 코드가 위치한 디렉토리로 이동
