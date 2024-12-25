@@ -52,6 +52,7 @@ jobs:
         sudo cat ~/.kube/config
         echo aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
         aws sts get-caller-identity
+        aws eks list-clusters --profile dev
         echo aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
         kubectl --kubeconfig=/home/runner/.kube/config get pods
 
