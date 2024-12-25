@@ -53,7 +53,7 @@ jobs:
         AWS_USER_ARN=${{ secrets.AWS_USER_ARN }}  # 시크릿을 환경 변수로 설정
         echo "AWS_USER_ARN=$AWS_USER_ARN" >> $GITHUB_ENV  # GitHub Actions 환경 변수로 저장
         cdk bootstrap aws://${{ secrets.AWS_ACCOUNT_ID }}/${{ secrets.AWS_REGION }}
-        cdk deploy --app "python3 app.py" --require-approval never --context github_actions_user_arn=${{ env.AWS_USER_ARN }}
+        cdk deploy --app "python3 app.py" --require-approval never --context github_actions_user_arn="arn:aws:iam::654654602198:user/eks_cluster_user"
 
     - name: Get EKS cluster name
       id: get-cluster-name
