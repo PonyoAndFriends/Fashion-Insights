@@ -47,7 +47,7 @@ jobs:
 
     - name: Set up kubeconfig
       run: |
-        aws eks update-kubeconfig --name ${{ env.CLUSTER_NAME }} --region ${{ secrets.AWS_REGION }}
+        aws eks update-kubeconfig --name ${{ env.CLUSTER_NAME }} --region ${{ secrets.AWS_REGION }} --kubeconfig ~/.kube/config
         kubectl config view
         sudo cat ~/.kube/config
         kubectl get nodes  # 클러스터에 연결이 되는지 확인
