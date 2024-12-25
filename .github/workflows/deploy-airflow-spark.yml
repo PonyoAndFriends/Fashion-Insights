@@ -50,7 +50,7 @@ jobs:
         aws eks update-kubeconfig --name ${{ env.CLUSTER_NAME }} --region ${{ secrets.AWS_REGION }} --kubeconfig ~/.kube/config
         kubectl config view
         sudo cat ~/.kube/config
-        kubectl get nodes  # 클러스터에 연결이 되는지 확인
+        kubectl get nodes --v=8 # 클러스터에 연결이 되는지 확인
 
     - name: Edit aws-auth ConfigMap to add IAM role
       run: |
