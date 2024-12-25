@@ -96,10 +96,10 @@ jobs:
 
     - name: Add Kubernetes connection to Airflow
       run: |
-      airflow connections add 'kubernetes_default' \
-        --conn-type 'Kubernetes' \
-        --conn-host 'https://kubernetes.default.svc' \
-        --conn-extra '{"kube_config": "/root/.kube/config"}'
+        airflow connections add 'kubernetes_default' \
+          --conn-type 'Kubernetes' \
+          --conn-host 'https://kubernetes.default.svc' \
+          --conn-extra '{"kube_config": "/root/.kube/config"}'
 
     - name: Verify Deployment
       run: |
