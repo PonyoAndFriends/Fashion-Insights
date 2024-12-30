@@ -7,7 +7,7 @@ spec:
   type: Python
   mode: cluster
   image: gcr.io/spark-operator/spark-py:v3.1.1
-  mainApplicationFile: "local:///mnt/spark_job/spark_sleep.py"  # PVC에 저장된 PySpark 코드 경로
+  mainApplicationFile: "local:///opt/airflow/dags/repo/airflow/airflowdags/spark_job/spark_sleep.py"  # PVC에 저장된 PySpark 코드 경로
   sparkVersion: "3.1.1"
   restartPolicy:
     type: OnFailure
