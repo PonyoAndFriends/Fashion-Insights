@@ -15,7 +15,7 @@ with DAG(
 
     spark_job = KubernetesPodOperator(
         task_id="spark_cluster_mode_job",
-        namespace="default",  # 작업 실행할 네임스페이스
+        namespace="airflow",  # 작업 실행할 네임스페이스
         name="spark-cluster-job",
         image="bitnami/spark:3.5.4",  # Spark 3.5.4 이미지
         cmds=["/opt/spark/bin/spark-submit"],  # Spark-submit 명령어
