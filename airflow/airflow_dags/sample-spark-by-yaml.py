@@ -25,7 +25,7 @@ with DAG(
     submit_spark_job = SparkKubernetesOperator(
         task_id="submit_pyspark_job",
         namespace="spark",
-        application_file="/opt/airflow/dags/repo/airflow/airflow_dags/spark_application.yaml",  # Spark Application YAML 경로
+        application_file="./spark_application.yaml",  # Spark Application YAML 경로
         kubernetes_conn_id="kubernetes_default",
         do_xcom_push=True,
     )
