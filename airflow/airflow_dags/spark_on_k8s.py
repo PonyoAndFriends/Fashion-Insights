@@ -13,7 +13,7 @@ def spark_on_k8s():
     spark_task = SparkKubernetesOperator(
         task_id="submit_spark_pyspark_job",
         namespace="spark-operator",  # Spark Operator가 배포된 네임스페이스
-        application_file="/opt/airflow/dags/repo/airflow/airflow_dags/spark_jobs/spark-pyspark.yaml",  # SparkApplication YAML 파일 경로
+        application_file="/opt/airflow/dags/repo/airflow/airflow_dags/spark_job/spark-pyspark.yaml",  # SparkApplication YAML 파일 경로
         kubernetes_conn_id="kubernetes_default",  # Kubernetes Connection ID
     )
 
