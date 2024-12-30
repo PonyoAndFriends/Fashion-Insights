@@ -36,7 +36,7 @@ with DAG(
             "--conf", "spark.kubernetes.namespace=airflow",
             "--conf", "spark.executor.instances=1",
             "--conf", "spark.kubernetes.container.image=bitnami/spark:3.3.1",
-            "/opt/airflow/dags/spark_job/spark_sleep.py",
+            "/opt/airflow/dags/repo/airflow/airflow_dags/spark_job/spark_sleep.py",
         ],
         is_delete_operator_pod=True,  # 작업 완료 후 Pod 삭제
         get_logs=True,
