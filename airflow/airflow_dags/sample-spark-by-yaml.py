@@ -13,7 +13,7 @@ default_args = {
 }
 
 with DAG(
-    dag_id="submit_pyspark_job_to_operator",
+    dag_id="spark-k8s-operator-yaml",
     default_args=default_args,
     description="Submit PySpark job using Spark Operator",
     schedule_interval=None,
