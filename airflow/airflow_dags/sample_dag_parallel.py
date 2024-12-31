@@ -21,7 +21,7 @@ def sleep_task(task_number, **kwargs):
 
 # DAG 정의
 with DAG(
-    dag_id="parallel_sleep_tasks",
+    dag_id="parallel_sleep_pythonoperator_tasks",
     default_args=default_args,
     description="Run multiple tasks in parallel, each sleeping for 1 minute",
     schedule_interval=None,

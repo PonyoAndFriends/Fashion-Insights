@@ -7,7 +7,7 @@ PYSPARK_FILE = "/opt/airflow/dags/repo/airflow/airflow_dags/spark_job/example_jo
 
 # DAG 정의
 with DAG(
-    dag_id="pyspark_cluster_mode_dag",
+    dag_id="real_test_dag",
     schedule_interval=None,
     start_date=datetime(2024, 1, 1),
     catchup=False,
