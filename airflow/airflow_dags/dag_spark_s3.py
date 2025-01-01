@@ -1,11 +1,8 @@
 from airflow import DAG
 from airflow.providers.cncf.kubernetes.operators.kubernetes_pod import KubernetesPodOperator
 from datetime import datetime
-from airflow.models import Variable
 
-# 고유 ID 생성
 unique_id = "test-1"
-
 MASTER_SERVICE_NAME = f"spark-master"
 MASTER_DNS = f"{MASTER_SERVICE_NAME}.default.svc.cluster.local"
 
@@ -32,12 +29,14 @@ with DAG(
         image="coffeeisnan/spark-master:latest",
         cmds=["/bin/bash", "-c"],
         arguments=[
-            "/opt/bitnami/spark/bin/spark-class org.apache.spark.deploy.master.Master",
+            "/opt/bitnami/spark/bin/spark-class org.apache.spark.deploy.master.Master & sleep infinity"
         ],
         labels={"app": f"spark-{unique_id}", "role": "master"},
         name=f"spark-master-{unique_id}",
         is_delete_operator_pod=False,
         get_logs=True,
+        startup_timeout_seconds=300,
+        wait_for_completion=False,  # Ready 상태에서 완료로 간주
     )
 
     # Spark Worker Pod
@@ -47,7 +46,8 @@ with DAG(
         image="coffeeisnan/spark-worker:latest",
         cmds=["/bin/bash", "-c"],
         arguments=[
-            f"/opt/bitnami/spark/bin/spark-class org.apache.spark.deploy.worker.Worker spark://{MASTER_DNS}:7077"
+            "while ! nc -zv spark-master.default.svc.cluster.local 7077; do sleep 1; done; "
+            "/opt/bitnami/spark/bin/spark-class org.apache.spark.deploy.worker.Worker spark://spark-master.default.svc.cluster.local:7077"
         ],
         labels={"app": f"spark-{unique_id}", "role": "worker"},
         name=f"spark-worker-{unique_id}",
@@ -67,10 +67,6 @@ with DAG(
             "--deploy-mode cluster",
             "--executor-memory 2g",
             "--total-executor-cores 4",
-            "--conf spark.hadoop.fs.s3a.aws.credentials.provider=com.amazonaws.auth.DefaultAWSCredentialsProviderChain",
-            f"--conf spark.hadoop.fs.s3a.access.key={Variable.get('aws_access_key_id')}",
-            f"--conf spark.hadoop.fs.s3a.secret.key={Variable.get('aws_secret_access_key')}",
-            "--conf spark.hadoop.fs.s3a.endpoint=s3.amazonaws.com",
             "/opt/spark/jobs/spark_s3_job.py",
         ],
         labels={"app": f"spark-{unique_id}", "role": "submit"},
