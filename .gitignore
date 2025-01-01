@@ -188,7 +188,6 @@ airflow-*.pid
 dmypy.json
 
 # Needed for CI Dockerfile.ci build system
-*Dockerfile*
 airflow/airflow_dags/.aws/
 .build
 /tmp
