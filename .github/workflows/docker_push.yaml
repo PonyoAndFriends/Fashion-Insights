@@ -25,8 +25,9 @@ jobs:
 
       # Build the Docker image
       - name: Build Docker image
+        working-directory: spark
         run: |
-          docker build -f spark/Dockerfile.sparkoperator -t coffeeisnan/spark-job:latest .
+          docker build -f Dockerfile.sparkoperator -t coffeeisnan/spark-job:latest .
 
       # Push the Docker image to Docker Hub
       - name: Push Docker image
