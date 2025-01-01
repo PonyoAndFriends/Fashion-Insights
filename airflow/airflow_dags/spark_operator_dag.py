@@ -14,7 +14,7 @@ def submit_spark_application():
         "apiVersion": "sparkoperator.k8s.io/v1beta2",
         "kind": "SparkApplication",
         "metadata": {
-            "name": "s3-processing-job-1",
+            "name": "s3-processing-job-2",
             "namespace": "default",
         },
         "spec": {
@@ -40,8 +40,8 @@ def submit_spark_application():
             },
             "deps": {
                 "jars": [
-                    "local:///opt/spark/user-jars/hadoop-aws-3.3.1.jar",
-                    "local:///opt/spark/user-jars/aws-java-sdk-bundle-1.11.901.jar",
+                    "local:///tmp/hadoop-aws-3.3.1.jar",
+                    "local:///tmp/aws-java-sdk-bundle-1.11.901.jar",
                 ],
             },
             "sparkConf": {
