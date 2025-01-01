@@ -40,8 +40,8 @@ def submit_spark_application():
             },
             "deps": {
                 "jars": [
-                    "local:///opt/spark/jars/hadoop-aws-3.3.1.jar",
-                    "local:///opt/spark/jars/aws-java-sdk-bundle-1.11.901.jar",
+                    "local:///opt/spark/user-jars/hadoop-aws-3.3.1.jar",
+                    "local:///opt/spark/user-jars/aws-java-sdk-bundle-1.11.901.jar",
                 ],
             },
             "sparkConf": {
