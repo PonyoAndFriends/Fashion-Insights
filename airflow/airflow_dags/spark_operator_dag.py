@@ -2,6 +2,7 @@ from airflow import DAG
 from airflow.operators.python import PythonOperator
 from kubernetes import client, config
 from datetime import datetime
+from airflow.models import Variable
 
 def submit_spark_application():
     # Kubernetes 클라이언트 설정
@@ -19,10 +20,10 @@ def submit_spark_application():
         "spec": {
             "type": "Python",
             "mode": "cluster",
-            "image": "your-dockerhub-username/spark-job:latest",
+            "image": "coffeeisnan/spark-job:latest",
             "imagePullPolicy": "Always",
-            "mainApplicationFile": "local:///opt/spark/jobs/s3_job.py",
-            "sparkVersion": "3.3.1",
+            "mainApplicationFile": "local:///opt/spark/jobs/pyspark_example.py",
+            "sparkVersion": "3.5.4",
             "restartPolicy": {
                 "type": "Never",
             },
@@ -44,8 +45,8 @@ def submit_spark_application():
                 ],
             },
             "sparkConf": {
-                "spark.hadoop.fs.s3a.access.key": "your-access-key",
-                "spark.hadoop.fs.s3a.secret.key": "your-secret-key",
+                "spark.hadoop.fs.s3a.access.key": Variable.get("aws_access_key_id"),
+                "spark.hadoop.fs.s3a.secret.key": Variable.get("aws_secret_access_key"),
                 "spark.hadoop.fs.s3a.endpoint": "s3.amazonaws.com",
             },
         },
