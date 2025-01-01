@@ -14,7 +14,7 @@ def submit_spark_application():
         "apiVersion": "sparkoperator.k8s.io/v1beta2",
         "kind": "SparkApplication",
         "metadata": {
-            "name": "s3-processing-job",
+            "name": "s3-processing-job-1",
             "namespace": "default",
         },
         "spec": {
