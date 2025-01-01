@@ -24,6 +24,7 @@ RUN curl -O https://repo1.maven.org/maven2/org/apache/hadoop/hadoop-aws/3.3.2/ha
     && mv hadoop-aws-3.3.2.jar aws-java-sdk-bundle-1.11.1026.jar $SPARK_HOME/jars/
 
 COPY ./airflow_dags/spark_job/s3_example.py /opt/spark/jobs/s3_example.py
+COPY ./airflow_dags/spark_job/example_job.py /opt/spark/jobs/example_job.py
 
 # Kerberos 설정 파일 복사
 COPY krb5.conf /etc/krb5.conf
