@@ -4,6 +4,8 @@ FROM bitnami/spark:3.5.4
 RUN mkdir -p /tmp/.ivy2 && \
     pip install boto3
 
+RUN mkdir -p /tmp/spark-uploads/
+
 ENV SPARK_HOME=/opt/bitnami/spark
 ENV PATH=$SPARK_HOME/bin:$PATH
 
