@@ -1,6 +1,7 @@
 from airflow import DAG
 from airflow.providers.cncf.kubernetes.operators.kubernetes_pod import KubernetesPodOperator
 from airflow.utils.dates import days_ago
+from kubernetes.client import V1Volume, V1ConfigMapVolumeSource, V1VolumeMount
 
 # 기본 DAG 설정
 default_args = {
@@ -13,20 +14,20 @@ default_args = {
 # sprark 코드 파일 경로
 PYSPARK_FILE = "/opt/spark/jobs/s3_example.py"
 
-# 마운트
+# ConfigMap을 기반으로 볼륨 및 볼륨 마운트 생성
 volumes = [
-    {
-        "name": "krb5-config-volume",
-        "configMap": {"name": "krb5-config"},
-    }
+    V1Volume(
+        name="krb5-config-volume",
+        config_map=V1ConfigMapVolumeSource(name="krb5-config")
+    )
 ]
 volume_mounts = [
-    {
-        "name": "krb5-config-volume",
-        "mountPath": "/etc/krb5.conf",
-        "subPath": "krb5.conf",
-        "readOnly": True,
-    }
+    V1VolumeMount(
+        name="krb5-config-volume",
+        mount_path="/etc/krb5.conf",
+        sub_path="krb5.conf",
+        read_only=True
+    )
 ]
 
 # DAG 정의
