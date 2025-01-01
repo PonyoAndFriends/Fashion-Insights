@@ -25,7 +25,7 @@ with DAG(
     # Spark 파드 실행
     spark_task = KubernetesPodOperator(
         namespace='airflow',
-        image='coffeeisnan/spark_test_image:3',
+        image='coffeeisnan/spark_test_image:5',
         cmds=["/opt/bitnami/spark/bin/spark-submit"],
         arguments=[
             '--class', 'org.apache.spark.examples.S3Example',
@@ -34,6 +34,7 @@ with DAG(
             '--conf', 'spark.kubernetes.namespace=airflow',
             '--conf', 'spark.executor.instances=2',
             '--conf', 'spark.kubernetes.authenticate.driver.serviceAccountName=spark-service-account',
+            '--conf', 'spark.jars.ivy=/tmp/.ivy2',  # Ivy 디렉터리 설정
             PYSPARK_FILE,  # Spark 애플리케이션
             's3a://source-bucket-hs/input-data.json',  # 입력 파일
             's3a://destination-bucket-hs/output-data.json'  # 출력 파일
