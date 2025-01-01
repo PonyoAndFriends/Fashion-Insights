@@ -35,7 +35,7 @@ with DAG(
             '--conf', 'spark.kubernetes.authenticate.driver.serviceAccountName=spark-service-account',
             '--conf', 'spark.jars.ivy=/tmp/.ivy2',  # Ivy 디렉터리 설정
             '--conf', 'spark.kubernetes.container.image=coffeeisnan/spark_test_image:9',
-            '--conf', 'spark.kubernetes.file.upload.path=s3a:intermediate-bucket-hs/',
+            '--conf', 'spark.kubernetes.file.upload.path=/tmp/spark-uploads/',
             PYSPARK_FILE,  # Spark 애플리케이션
             's3a://source-bucket-hs/input-data.json',  # 입력 파일
             's3a://destination-bucket-hs/output-data.json'  # 출력 파일
