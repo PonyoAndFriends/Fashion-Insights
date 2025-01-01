@@ -9,12 +9,27 @@ def submit_spark_application():
     config.load_incluster_config()  # EKS 내부에서 실행 중인 경우
     api_instance = client.CustomObjectsApi()
 
+    spark_app_name = "s3-processing-job"
+
+    # 기존 SparkApplication 삭제
+    try:
+        api_instance.delete_namespaced_custom_object(
+            group="sparkoperator.k8s.io",
+            version="v1beta2",
+            namespace="default",
+            plural="sparkapplications",
+            name=spark_app_name,
+        )
+    except client.exceptions.ApiException as e:
+        if e.status != 404:
+            raise
+
     # SparkApplication CRD 정의
     spark_application = {
         "apiVersion": "sparkoperator.k8s.io/v1beta2",
         "kind": "SparkApplication",
         "metadata": {
-            "name": "s3-processing-job-4",
+            "name": spark_app_name,
             "namespace": "default",
         },
         "spec": {
