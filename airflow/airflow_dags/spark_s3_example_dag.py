@@ -68,5 +68,5 @@ with DAG(
         name='spark-s3-task',
         task_id='spark_task',
         get_logs=True,
-        is_delete_operator_pod=True,
+        is_delete_operator_pod=False
     )
