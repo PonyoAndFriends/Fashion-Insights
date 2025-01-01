@@ -28,7 +28,6 @@ with DAG(
         image='coffeeisnan/spark_test_image:6',
         cmds=["/opt/bitnami/spark/bin/spark-submit"],
         arguments=[
-            '--class', 'org.apache.spark.examples.S3Example',
             '--master', 'k8s://https://kubernetes.default.svc',
             '--deploy-mode', 'cluster',
             '--conf', 'spark.kubernetes.namespace=airflow',
@@ -36,6 +35,7 @@ with DAG(
             '--conf', 'spark.kubernetes.authenticate.driver.serviceAccountName=spark-service-account',
             '--conf', 'spark.jars.ivy=/tmp/.ivy2',  # Ivy 디렉터리 설정
             '--conf', 'spark.kubernetes.container.image=coffeeisnan/spark_test_image:6',
+            '--conf', 'spark.kubernetes.file.upload.path=s3a:intermediate-bucket-hs///spark-upload',
             PYSPARK_FILE,  # Spark 애플리케이션
             's3a://source-bucket-hs/input-data.json',  # 입력 파일
             's3a://destination-bucket-hs/output-data.json'  # 출력 파일
