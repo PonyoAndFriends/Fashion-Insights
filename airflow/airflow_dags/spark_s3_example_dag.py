@@ -25,7 +25,7 @@ with DAG(
     # Spark 파드 실행
     spark_task = KubernetesPodOperator(
         namespace='airflow',
-        image='coffeeisnan/spark_test_image:6',
+        image='coffeeisnan/spark_test_image:9',
         cmds=["/opt/bitnami/spark/bin/spark-submit"],
         arguments=[
             '--master', 'k8s://https://kubernetes.default.svc',
