@@ -5,7 +5,7 @@ import os
 # SparkSession 생성
 spark = SparkSession.builder \
     .appName("IAM Role S3 Example") \
-    .config("spark.hadoop.fs.s3a.aws.credentials.provider", "com.amazonaws.auth.InstanceProfileCredentialsProvider") \
+    .config("spark.hadoop.fs.s3a.aws.credentials.provider", "com.amazonaws.auth.WebIdentityTokenCredentialsProvider") \
     .config("spark.hadoop.fs.s3a.impl", "org.apache.hadoop.fs.s3a.S3AFileSystem") \
     .getOrCreate()
 

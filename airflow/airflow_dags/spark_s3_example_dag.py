@@ -35,7 +35,7 @@ with DAG(
             '--conf', 'spark.kubernetes.authenticate.driver.serviceAccountName=spark-service-account',
             '--conf', 'spark.jars.ivy=/tmp/.ivy2',  # Ivy 디렉터리 설정
             '--conf', 'spark.kubernetes.container.image=coffeeisnan/spark_test_image:6',
-            '--conf', 'spark.kubernetes.file.upload.path=s3a:intermediate-bucket-hs///spark-upload',
+            '--conf', 'spark.kubernetes.file.upload.path=s3a:intermediate-bucket-hs/',
             PYSPARK_FILE,  # Spark 애플리케이션
             's3a://source-bucket-hs/input-data.json',  # 입력 파일
             's3a://destination-bucket-hs/output-data.json'  # 출력 파일
@@ -44,6 +44,10 @@ with DAG(
             "limit_memory": "4Gi",
             "limit_cpu": "2",
         },
+        env_vars=[
+            {"name": "AWS_ROLE_ARN", "value": "arn:aws:iam::<ACCOUNT_ID>:role/<ROLE_NAME>"},
+            {"name": "AWS_WEB_IDENTITY_TOKEN_FILE", "value": "/var/run/secrets/eks.amazonaws.com/serviceaccount/token"}
+        ],
         name='spark-s3-task',
         task_id='spark_task',
         get_logs=True,
