@@ -17,7 +17,7 @@ with DAG(
         task_id="spark_cluster_mode_job",
         namespace="airflow",  # 작업 실행할 네임스페이스
         name="spark-cluster-job",
-        image="bitnami/spark:3.5.4",  # Spark 3.5.4 이미지
+        image="coffeeisnan/spark_test_image:10",  # Spark 3.5.4 이미지
         cmds=["/opt/bitnami/spark/bin/spark-submit"],  # Spark-submit 명령어
         arguments=[
             "--master", "k8s://https://kubernetes.default.svc",  # Kubernetes API 주소
