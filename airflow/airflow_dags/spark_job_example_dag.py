@@ -23,7 +23,7 @@ with DAG(
             "--master", "k8s://https://kubernetes.default.svc",  # Kubernetes API 주소
             "--deploy-mode", "cluster",  # 클러스터 모드
             "--conf", "spark.kubernetes.container.image=bitnami/spark:3.5.4",  # Spark 워커 이미지
-            '--conf', 'spark.jars.ivy=/tmp/.ivy2',  # Ivy 디렉터리 설정
+            "--conf", "spark.jars.ivy=/tmp/.ivy2",  # Ivy 디렉터리 설정
             "--conf", "spark.executor.instances=3",  # 워커 파드 개수
             "--conf", "spark.executor.memory=2g",  # 워커 메모리
             "--conf", "spark.executor.cores=1",  # 워커 CPU 코어
