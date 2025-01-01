@@ -1,11 +1,12 @@
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import lit
+import os
 
 # SparkSession 생성
 spark = SparkSession.builder \
     .appName("S3 Example") \
-    .config("spark.hadoop.fs.s3a.access.key", "YOUR_ACCESS_KEY") \
-    .config("spark.hadoop.fs.s3a.secret.key", "YOUR_SECRET_KEY") \
+    .config("spark.hadoop.fs.s3a.access.key", os.getenv("AWS_ACCESS_KEY_ID")) \
+    .config("spark.hadoop.fs.s3a.secret.key", os.getenv("AWS_SECRET_ACCESS_KEY")) \
     .config("spark.hadoop.fs.s3a.endpoint", "s3.amazonaws.com") \
     .getOrCreate()
 
