@@ -44,10 +44,6 @@ with DAG(
             "limit_memory": "4Gi",
             "limit_cpu": "2",
         },
-        env_vars=[
-            {"name": "AWS_ROLE_ARN", "value": "arn:aws:iam::<ACCOUNT_ID>:role/<ROLE_NAME>"},
-            {"name": "AWS_WEB_IDENTITY_TOKEN_FILE", "value": "/var/run/secrets/eks.amazonaws.com/serviceaccount/token"}
-        ],
         name='spark-s3-task',
         task_id='spark_task',
         get_logs=True,
