@@ -25,7 +25,7 @@ with DAG(
     # Spark 파드 실행
     spark_task = KubernetesPodOperator(
         namespace='airflow',
-        image='coffeeisnan/spark_test_image:5',
+        image='coffeeisnan/spark_test_image:6',
         cmds=["/opt/bitnami/spark/bin/spark-submit"],
         arguments=[
             '--class', 'org.apache.spark.examples.S3Example',
