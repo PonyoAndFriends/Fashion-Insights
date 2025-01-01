@@ -1,0 +1,17 @@
+FROM apache/spark:latest
+
+USER root
+
+# 새로운 디렉토리 생성 및 권한 부여
+RUN mkdir -p /opt/spark/user-jars
+
+# JAR 파일을 /tmp로 복사
+ADD https://repo1.maven.org/maven2/org/apache/hadoop/hadoop-aws/3.3.1/hadoop-aws-3.3.1.jar /opt/spark/user-jars
+ADD https://repo1.maven.org/maven2/com/amazonaws/aws-java-sdk-bundle/1.11.901/aws-java-sdk-bundle-1.11.901.jar /opt/spark/user-jars
+
+RUN chmod -R 755 /opt/spark/user-jars/hadoop-aws-3.3.1.jar && chmod -R 755 /opt/spark/user-jars/aws-java-sdk-bundle-1.11.901.jar
+
+# PySpark 애플리케이션 복사
+COPY ./spark_job/ /opt/spark/jobs/
+
+CMD ["/bin/bash"]

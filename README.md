@@ -1,8 +1,8 @@
-# will-be-our-project
-Final project for our team, name and descriptions will be fixed!
+# Fashion-insights
+
+- 3개의 의류 플랫폼, ABLY, Musinsa, 29cm로 부터 모은 데이터로 의류 구매자에게 다양한 인사이트를 제공하는 목적의 프로젝트 입니다.
 
 # 커밋 메시지 규칙
-- 커밋 메시지는 변경 사항을 전달할 수 있도록 작성합니다!
 
 - **[작성 예시]** feat: 더하기 기능 추가
 
@@ -23,4 +23,3 @@ Final project for our team, name and descriptions will be fixed!
 - **chore**: 빌드 업무 수정, 패키지 매니저 수정
 
 - 커밋 메시지 작성 규칙과 브랜치 이름의 경우 강제하지 않았습니다.
-  
