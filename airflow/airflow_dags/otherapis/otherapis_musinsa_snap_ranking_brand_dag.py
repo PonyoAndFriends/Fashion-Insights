@@ -38,7 +38,7 @@ with DAG(
 ) as dag:
 
     calculate_page_range_task = CalculatePageRangeOperator(
-        task_id="calculate_page_ranges_snap_brand_ranking",
+        task_id="calculate_page_ranges_for_snap_brand_ranking",
         total_count=100,
         page_size=PAGE_SIZE,
         parallel_task_num=PARALLEL_TASK_NUM,
@@ -47,7 +47,7 @@ with DAG(
     fetch_snap_ranking_brand_data_tasks = []
     for i in range(PARALLEL_TASK_NUM):
         fetch_task = FetchPagedDataOperator(
-            task_id=f"fetch_musinsa_snap_brand_ranking_task_{i}",
+            task_id=f"fetch_musinsa_snap_brand_ranking_task_{i + 1}",
             url=url,
             params={
                 "page": 0,

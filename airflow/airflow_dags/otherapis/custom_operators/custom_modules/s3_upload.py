@@ -9,10 +9,10 @@ logger = logging.getLogger(__name__)
 
 def load_data_to_s3(s3_dict):
     """
-    boto3를 사용하여 s3에 데이터를 적재 
+    boto3를 사용하여 s3에 데이터를 적재하는 함수
     
     :param s3_dict: s3에 데이터를 적재하기 위한 설정을 담은 딕셔너리
-        data_file, file_path, content_type를 받아옴.
+        data_file, file_path, content_type를 키로 받아옴.
     """
     logger.info("Starting S3 data upload process.")
 
@@ -24,7 +24,7 @@ def load_data_to_s3(s3_dict):
 
         logger.debug("AWS S3 bucket configurations successfully loaded.")
 
-        data_file, file_path, content_type = [s3_dict[key] for key in s3_dict]
+        data_file, file_path, content_type = [s3_dict.get(key, None) for key in s3_dict]
         logger.debug(f"Data file: {data_file}, File path: {file_path}, Content type: {content_type}")
 
         s3 = boto3.client(

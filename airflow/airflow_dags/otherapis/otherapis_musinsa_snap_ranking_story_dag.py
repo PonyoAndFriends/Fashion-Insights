@@ -31,14 +31,14 @@ default_args = {
 with DAG(
     dag_id='musinsa_snap_api_ranking_story_to_s3_dag',
     default_args=default_args,
-    description='Fetch data from Musinsa SNAP API and save to S3',
+    description='Fetch snap ranking story data from Musinsa SNAP API and save to S3',
     schedule_interval=timedelta(days=1),
     start_date=datetime(2023, 12, 25),
     catchup=False,
 ) as dag:
 
     calculate_page_range_task = CalculatePageRangeOperator(
-        task_id="calculate_page_ranges_snap_ranking_story",
+        task_id="calculate_page_ranges_for_snap_ranking_story",
         total_count=100,
         page_size=PAGE_SIZE,
         parallel_task_num=PARALLEL_TASK_NUM,
@@ -48,7 +48,7 @@ with DAG(
     for gender in ['MEN', 'WOMEN']:
         for i in range(PARALLEL_TASK_NUM):
             fetch_task = FetchPagedDataOperator(
-                task_id=f"fetch_{gender}_ranking_task_{i}",
+                task_id=f"fetch_{gender}_ranking_task_{i + 1}",
                 url=url,
                 params={
                     "gender": gender,
