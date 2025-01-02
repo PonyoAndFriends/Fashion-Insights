@@ -1,21 +1,33 @@
 from airflow import DAG
 from airflow.operators.python import PythonOperator
-from datetime import datetime, timedelta
+from datetime import datetime
 from utils.api_utils import fetch_ids_to_search
 from utils.s3_utils import load_data_to_s3
-
-import boto3
 import requests
-import json
+import logging
 
 def create_fetch_data_dag(
-    dag_id,
-    context_dict,
-    schedule_interval,
-    start_date,
-    default_args
+    dag_id: str,
+    context_dict: dict,
+    schedule_interval: str,
+    start_date: datetime,
+    default_args: dict
 ):
-    """Musinsa 데이터를 가져와 S3에 저장하는 DAG 템플릿"""
+    """
+    무신사 SNAP, MAGAZINE 관련 복합 api 호출 DAG
+
+    Args:
+        dag_id (str): DAG ID.
+        context_dict (dict): Context dictionary with API and S3 configurations.
+        schedule_interval (str): Schedule interval for the DAG.
+        start_date (datetime): Start date for the DAG.
+        default_args (dict): Default arguments for the DAG.
+
+    Returns:
+        DAG: Configured Airflow DAG.
+    """
+    logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+
     with DAG(
         dag_id=dag_id,
         default_args=default_args,
@@ -24,6 +36,7 @@ def create_fetch_data_dag(
         catchup=False,
     ) as dag:
 
+        # Task: Fetch IDs to search
         fetch_ids_task = PythonOperator(
             task_id='fetch_ids_task',
             python_callable=fetch_ids_to_search,
@@ -31,34 +44,56 @@ def create_fetch_data_dag(
                 'first_url': context_dict['first_url'],
                 'params': context_dict['first_params'],
                 'headers': context_dict['headers'],
-            }
+            },
         )
 
         def fetch_details_of_ids(**kwargs):
-            import datetime
+            """
+            Fetch details for each ID and store in S3.
+            """
+            from airflow.models import TaskInstance
 
-            ids = list(kwargs['ti'])
+            ti: TaskInstance = kwargs['ti']
+            ids = ti.xcom_pull(task_ids='fetch_ids_task')
             headers = context_dict['headers']
-            for i, id in enumerate(ids):
-                url = context_dict['second_url'] + str(id)
-                res = requests.get(url, headers=headers)
 
-                keys = ['aws_access_key_id', 'aws_secret_access_key', 'aws_region', 's3_bucket_name', 's3_key', 'content_type']
-                aws_access_key_id, aws_secret_access_key, aws_region, s3_bucket_name, s3_key, content_type = [context_dict.get(key, None) for key in keys]
-                
-                now = datetime.now()
-                date_string = now.strftime("%Y-%m-%d")    
-                file_topic = context_dict['file_topic']
-                file_path = s3_key + f"/{file_topic}_raw_data/{date_string}/{file_topic}_{i}th.json"
-                
-                load_data_to_s3(aws_access_key_id, aws_secret_access_key, aws_region, s3_bucket_name, res.text, file_path, content_type)
-        
+            for i, id in enumerate(ids):
+                try:
+                    url = f"{context_dict['second_url']}{id}"
+                    response = requests.get(url, headers=headers)
+                    response.raise_for_status()
+
+                    aws_keys = ['aws_access_key_id', 'aws_secret_access_key', 'aws_region', 's3_bucket_name', 's3_key', 'content_type']
+                    aws_config = {key: context_dict[key] for key in aws_keys}
+
+                    now = datetime.now()
+                    date_string = now.strftime("%Y-%m-%d")
+                    file_topic = context_dict['file_topic']
+                    file_path = f"{aws_config['s3_key']}/{file_topic}_raw_data/{date_string}/{file_topic}_{i}.json"
+
+                    load_data_to_s3(
+                        aws_access_key_id=aws_config['aws_access_key_id'],
+                        aws_secret_access_key=aws_config['aws_secret_access_key'],
+                        aws_region=aws_config['aws_region'],
+                        s3_bucket_name=aws_config['s3_bucket_name'],
+                        data_file=response.text,
+                        file_path=file_path,
+                        content_type=aws_config['content_type']
+                    )
+
+                    logging.info(f"Successfully processed and uploaded ID: {id}")
+                except requests.RequestException as e:
+                    logging.error(f"Failed to fetch details for ID {id}: {e}")
+                except Exception as e:
+                    logging.error(f"Unexpected error for ID {id}: {e}")
+
+        # Task: Fetch details of IDs
         fetch_details_of_ids_task = PythonOperator(
             task_id='fetch_details_of_ids_task',
             python_callable=fetch_details_of_ids,
         )
 
+        # Task dependencies
         fetch_ids_task >> fetch_details_of_ids_task
-        
-        return dag
 
+        return dag
