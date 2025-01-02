@@ -58,6 +58,7 @@ def main():
     params['ageBand'] = args.ageBand
     
     for code in categoryCode:
+        params['categoryCode'] = code
         response = requests.get(url, headers=headers, params=params)
         if response.status_code == 200:
             response_json = response.json()
