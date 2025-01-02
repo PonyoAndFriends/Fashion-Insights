@@ -12,6 +12,8 @@ import time, random
 import sys
 import shutil
 
+import argparse
+
 # s3 connect
 aws_access_key_id = os.getenv('AWS_ACCESS_KEY_ID')
 aws_secret_access_key = os.getenv('AWS_SECRET_ACCESS_KEY')
@@ -32,29 +34,39 @@ headers = {
     "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
 }
 
+# params
 params = {
     "storeCode" : "musinsa",
     "period" : "DAILY",
-    "AGE_BAND" : "AGE_BAND_ALL"
 }
 
 # categoryCode
 categoryCode = ["103000", "002000", "001000"] # 카테고리가 늘어남에 따라 수정 필요
+
+# today_date
 today_date = datetime.now().strftime("%Y-%m-%d")
 
-if __name__ == "__main__":
-    arguments1 = sys.argv[1]
+def main():
+    parser = argparse.ArgumentParser(description="SEXUAL / AGEBAND")
     
-    params['gf'] =  arguments1
+    parser.add_argument('gf', type=str, help='parameter : SEXUAL')
+    parser.add_argument('ageBand', type=str, help='parameter : age_band')
+    
+    args = parser.parse_args()
+    
+    params['gf'] =  args.gf
+    params['ageBand'] = args.ageBand
     
     for code in categoryCode:
         response = requests.get(url, headers=headers, params=params)
         if response.status_code == 200:
             response_json = response.json()
-            print("response 200")
+            logging.info("response 200")
         
         bucket_name = 'project4-raw-data'
-        file_name = f"{today_date}/Musinsa/RankingData/{code}/musinsa_{params['gf']}_{code}.json"
-        
+        file_name = f"{today_date}/Musinsa/RankingData/{code}/musinsa_{params['gf']}_{params['ageBand']}_{code}.json"
+
         validate_and_upload_s3_file(s3_client, bucket_name, file_name, response_json)
-        print(file_name)
+    
+if __name__ == "__main__":
+    main()

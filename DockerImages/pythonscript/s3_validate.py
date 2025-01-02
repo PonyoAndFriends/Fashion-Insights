@@ -2,6 +2,7 @@ import boto3
 from botocore.exceptions import ClientError
 
 import json
+import logging
 
 # connection to s3
 def connect_s3(aws_access_key_id, aws_secret_access_key, region_name):
@@ -22,7 +23,7 @@ def check_file_exists(s3_client, bucket_name, s3_key):
         if e.response['Error']['Code'] == '404':
             return False
         else:
-            print(e)
+            logging.error(e)
             return False
 
 # upload json to s3
@@ -30,19 +31,19 @@ def upload_json_to_s3(s3_client, bucket_name, s3_key, json_data):
     try:
         json_string = json.dumps(json_data)
         s3_client.put_object(Bucket=bucket_name, Key=s3_key, Body=json_string)
-        print(f"File {s3_key} uploaded to {bucket_name}.")
+        logging.info(f"File {s3_key} uploaded to {bucket_name}.")
     except ClientError as e:
-        print(f"Error uploading file: {e}")
+        logging.error(f"Error uploading file: {e}")
 
 # validate s3 file and delete if exists
 def validate_and_upload_s3_file(s3_client, bucket_name, s3_key, json_data):
     if check_file_exists(s3_client, bucket_name, s3_key):
-        print(f'{s3_key} already exists in {bucket_name}')
+        logging.info(f'{s3_key} already exists in {bucket_name}')
         s3_client.delete_object(Bucket=bucket_name, Key=s3_key)
-        print(f"File {s3_key} deleted successfully.")
+        logging.info(f"File {s3_key} deleted successfully.")
         upload_json_to_s3(s3_client, bucket_name, s3_key, json_data)
-        print(f"File {s3_key} uploaded successfully.")
+        logging.info(f"File {s3_key} uploaded successfully.")
     else:
-        print(f'{s3_key} does not exist in {bucket_name}')
+        logging.info(f'{s3_key} does not exist in {bucket_name}')
         upload_json_to_s3(s3_client, bucket_name, s3_key, json_data)
-        print(f"File {s3_key} uploaded successfully.")
+        logging.info(f"File {s3_key} uploaded successfully.")
