@@ -33,7 +33,7 @@ def submit_spark_application():
             "mode": "cluster",
             "image": "coffeeisnan/spark-job:latest",
             "imagePullPolicy": "Always",
-            "mainApplicationFile": "local:///opt/spark/pyspark_s3_example.py",
+            "mainApplicationFile": "local:///opt/spark/jobs/pyspark_s3_example.py",
             "sparkVersion": "3.5.4",
             "restartPolicy": {"type": "Never"},
             "driver": {
