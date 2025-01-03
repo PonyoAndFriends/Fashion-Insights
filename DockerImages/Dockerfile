@@ -14,4 +14,4 @@ WORKDIR /app
 RUN pip install boto3 requests
 
 # 현재 디렉토리의 pythonscripts 폴더를 컨테이너의 /app/pythonscripts로 복사
-COPY pythonscript ./pythonscript
+COPY ./pythonscript/ /app/pythonscript/

@@ -68,6 +68,6 @@ def main():
         file_name = f"{today_date}/Musinsa/RankingData/{code}/musinsa_{params['gf']}_{params['ageBand']}_{code}.json"
 
         validate_and_upload_s3_file(s3_client, bucket_name, file_name, response_json)
-    
+
 if __name__ == "__main__":
     main()
