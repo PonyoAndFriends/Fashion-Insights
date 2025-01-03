@@ -8,7 +8,7 @@ spark = SparkSession.builder.getOrCreate()
 
 # 오늘 날짜
 today_date = datetime.now()
-yesterday_date = today_date - timedelta(days=1)
+yesterday_date = today_date
 yesterday_date_str = yesterday_date.strftime("%Y-%m-%d")
 
 categorycodelist = ["103000", "002000", "001000"]
