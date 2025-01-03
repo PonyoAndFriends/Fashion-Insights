@@ -37,6 +37,7 @@ with DAG(
     catchup=False,
 ) as dag:
 
+    # 100개의 데이터를 정해진 태스크에 할당하기 위해 page_range 리스트를 계산
     calculate_page_range_task = CalculatePageRangeOperator(
         task_id="calculate_page_ranges_for_snap_brand_ranking",
         total_count=100,
@@ -44,13 +45,14 @@ with DAG(
         parallel_task_num=PARALLEL_TASK_NUM,
     )
 
+    # 총 100개의 snap brand ranking 데이터를 가져올 태스크들을 병렬로 처리
     fetch_snap_ranking_brand_data_tasks = []
     for i in range(PARALLEL_TASK_NUM):
         fetch_task = FetchPagedDataOperator(
             task_id=f"fetch_musinsa_snap_brand_ranking_task_{i + 1}",
             url=url,
             params={
-                "page": 0,
+                "page": None,
                 "size": PAGE_SIZE,
             },
             headers=headers,

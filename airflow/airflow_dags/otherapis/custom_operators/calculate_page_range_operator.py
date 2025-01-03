@@ -18,9 +18,11 @@ class CalculatePageRangeOperator(PythonOperator):
         self.parallel_task_num = parallel_task_num
 
     def _calculate_page_range(self):
+        # 전체 페이지 수, 태스크 당 나눠줄 페이지 수 계산
         total_pages = math.ceil(self.total_count / self.page_size)
         pages_per_task = math.ceil(total_pages / self.parallel_task_num)
 
+        # 페이지 범위를 담은 튜플의 리스트를 반환
         page_ranges = [
             (i * pages_per_task + 1, min((i + 1) * pages_per_task, total_pages))
             for i in range(self.parallel_task_num)

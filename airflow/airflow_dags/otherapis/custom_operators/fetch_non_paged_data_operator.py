@@ -24,7 +24,7 @@ class FetchNonPagedDataOperator(PythonOperator):
         self.file_topic = file_topic
 
     def _fetch_data(self):
-        """데이터를 가져오는 함수"""
+        """페이지가 없는 api에서 데이터를 가져오는 함수"""
         url = self.url
         self.log.info(f"Fetching non-paged data from {url}...")
 
@@ -42,6 +42,7 @@ class FetchNonPagedDataOperator(PythonOperator):
                 data_file = response.text
                 file_path = f"/{self.file_topic}_raw_data/{now}/{self.file_topic}.html"
             else:
+                # plain/text 라고 가정.
                 data_file = response.text
                 file_path = f"/{self.file_topic}_raw_data/{now}/{self.file_topic}.txt"
 

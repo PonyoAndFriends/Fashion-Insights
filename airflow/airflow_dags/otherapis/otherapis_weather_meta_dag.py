@@ -13,7 +13,7 @@ default_args = {
     'retries': 2
 }
 
-# DAG 정의 - 기상 관측소는 오랜 기간 변경이 없을 것이므로 수동으로 트리거
+# DAG 정의 - 기상 관측소 메타 데이터는 오랜 기간 변경이 없을 것이므로 수동으로 트리거
 with DAG(
     dag_id='fetch_weather_meta_data_dag',
     default_args=default_args,
@@ -24,12 +24,6 @@ with DAG(
     # API Key 설정
     API_KEY = Variable.get("weather_api_key")
     BASE_URL = r"https://apihub.kma.go.kr/api/typ01/url/stn_inf.php"
-    
-    now = datetime.now()
-    one_week_ago = now - timedelta(weeks=1)
-
-    now_string = now.strftime("%Y%m%d%H%M")
-    one_week_ago_string = one_week_ago.strftime("%Y%m%d%H%M")
 
     url = rf"{BASE_URL}?inf=SFC&help=1&authKey={API_KEY}"
 

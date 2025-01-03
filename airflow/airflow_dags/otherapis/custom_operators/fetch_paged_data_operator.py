@@ -8,7 +8,7 @@ import time
 
 class FetchPagedDataOperator(PythonOperator):
     """
-    페이지네이션 된 데이터를 받아오는 커스텀 오퍼레이터
+    페이지가 있는 데이터를 받아오는 커스텀 오퍼레이터
 
     :param url: api 요청 url
     :param params: api 요청 쿼리 파라미터
@@ -34,6 +34,9 @@ class FetchPagedDataOperator(PythonOperator):
 
         for page in range(start_page, end_page + 1):
             self.params['page'] = page
+            
+            # 반복적으로 api를 호출하므로 대기
+            time.sleep(0.2)
             response = requests.get(self.url, params=self.params, headers=self.headers)
             response.raise_for_status()
 

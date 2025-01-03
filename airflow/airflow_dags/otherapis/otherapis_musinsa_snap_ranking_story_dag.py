@@ -37,6 +37,7 @@ with DAG(
     catchup=False,
 ) as dag:
 
+    # 총 100개의 데이터를 병렬 태스크로 나누어 가져오기 위해 page_range 리스트를 계산
     calculate_page_range_task = CalculatePageRangeOperator(
         task_id="calculate_page_ranges_for_snap_ranking_story",
         total_count=100,
@@ -44,6 +45,7 @@ with DAG(
         parallel_task_num=PARALLEL_TASK_NUM,
     )
 
+    # 남성, 여성에 대해 데이터를 가져올 태스크를 병렬로 구성
     fetch_tasks = []
     for gender in ['MEN', 'WOMEN']:
         for i in range(PARALLEL_TASK_NUM):
@@ -52,7 +54,7 @@ with DAG(
                 url=url,
                 params={
                     "gender": gender,
-                    "page": 0,
+                    "page": None,
                     "size": PAGE_SIZE,
                     "style": "ALL"
                 },

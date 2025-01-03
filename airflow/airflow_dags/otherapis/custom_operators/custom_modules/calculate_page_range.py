@@ -9,10 +9,12 @@ def calculate_page_range(total_count, page_size, parallel_task_num):
     :param page_size: 한 페이지에 담길 데이터의 수를 결정
     :param parallel_task_num: 병렬로 실행할 task의 개수
     """
+    # 전체 페이지 수와 태스크 당 할당할 페이지 수 계산 계산
     total_pages = math.ceil(total_count / page_size)
     pages_per_task = math.ceil(total_pages / parallel_task_num)
     logging.info(f"Calculating page ranges for total {total_count} records, {total_pages} pages for {parallel_task_num} tasks")
 
+    # 태스크의 수 만큼 페이지 범위를 튜플로 만들어 리턴
     page_ranges = [
         (i * pages_per_task + 1, min((i + 1) * pages_per_task, total_pages))
         for i in range(parallel_task_num)

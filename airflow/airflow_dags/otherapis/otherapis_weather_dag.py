@@ -17,17 +17,18 @@ default_args = {
 with DAG(
     dag_id='fetch_weekly_weather_data_dag',
     default_args=default_args,
-    schedule_interval='@daily',
+    schedule_interval=timedelta(days=1),
     catchup=False,
 ) as dag:
 
-    # API Key 설정
+    # API 관련 기본 설정
     api_key = Variable.get("weather_api_key")
     url = r"https://apihub.kma.go.kr/api/typ01/url/kma_sfcdd.php"
     
     now = datetime.now()
     one_day = timedelta(weeks=1)
 
+    # 일별 최저 기온, 최대 기온, 날씨 개황(흐림, 맑음 등)을 포함한 날씨 데이터를 오늘로부터 과거 1주일 날짜만큼 적재
     weather_fetch_task_list = []
     for i in range(7):
         now_string = now.strftime("%Y%m%d")
