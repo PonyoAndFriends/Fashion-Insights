@@ -29,7 +29,7 @@ class SparkSubmitOperator(BaseOperator):
         name: str,  # 필수값
         namespace: str = "default",
         image: str = "coffeeisnan/spark-job:latest",
-        main_application_file_name: str = "pyspark_s3_example.py",
+        main_application_file_name: str = "pyspark_s3_example.py",  # 필수값
         spark_version: str = "3.5.4",
         driver_cores: int = 1,
         driver_memory: str = "1g",
