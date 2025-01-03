@@ -74,7 +74,7 @@ with DAG(
                                 image='coffeeisnan/project4-custom:latest',
                                 cmds=['python', './pythonscript/musinsa_ranking_rawdata_el.py'],
                                 arguments=[sexual_dct["SEXUAL"], age_band_dct["AGE_BAND"]],
-                                is_delete_operator_pod=True,
+                                # is_delete_operator_pod=True,
                                 get_logs=True,
             )
             
