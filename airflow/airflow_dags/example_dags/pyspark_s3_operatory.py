@@ -8,9 +8,7 @@ from datetime import datetime
 def submit_spark_application():
     config.load_incluster_config()
     api_instance = client.CustomObjectsApi()
-    now = datetime.now()
-    now_string = now.strftime("%Y%m%d%H%M%S")
-    spark_app_name = f"musinsa-processing-job-{now_string}"
+    spark_app_name = f"musinsa-processing-job"
 
     try:
         api_instance.delete_namespaced_custom_object(
