@@ -6,7 +6,7 @@ from airflow.providers.amazon.aws.hooks.redshift import RedshiftSQLHook
 
 class S3ToRedshiftCustomOperator(BaseOperator):
     """
-    S3의 파일을 Redshift 내로 bulk update하는 Custom Operator 
+    S3의 파일을 Redshift 내로 bulk update하는 Custom Operator
 
     Args:
         schema (str): 레드시프트의 스키마(데이터베이스) 이름
@@ -28,8 +28,8 @@ class S3ToRedshiftCustomOperator(BaseOperator):
         s3_bucket: str,  # 필수 작성
         s3_key: str,  # 필수 작성
         copy_options: list = None,
-        aws_conn_id: str = 'aws_default',
-        redshift_conn_id: str = 'redshift_default',
+        aws_conn_id: str = "aws_default",
+        redshift_conn_id: str = "redshift_default",
         *args,
         **kwargs,
     ):
@@ -53,7 +53,9 @@ class S3ToRedshiftCustomOperator(BaseOperator):
         redshift_hook = RedshiftSQLHook(postgres_conn_id=self.redshift_conn_id)
 
         # 테이블명이 없다면 생성
-        column_definitions = ", ".join([f"{col} {dtype}" for col, dtype in self.columns.items()])
+        column_definitions = ", ".join(
+            [f"{col} {dtype}" for col, dtype in self.columns.items()]
+        )
         create_table_query = f"""
         CREATE TABLE IF NOT EXISTS {self.schema}.{self.table} (
             {column_definitions}
@@ -74,4 +76,6 @@ class S3ToRedshiftCustomOperator(BaseOperator):
         self.log.info(f"Executing COPY command: {copy_query}")
         redshift_hook.run(copy_query)
 
-        self.log.info(f"Data successfully copied from {s3_path} to {self.schema}.{self.table}")
+        self.log.info(
+            f"Data successfully copied from {s3_path} to {self.schema}.{self.table}"
+        )

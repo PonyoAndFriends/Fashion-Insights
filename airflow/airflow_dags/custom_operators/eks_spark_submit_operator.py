@@ -14,8 +14,8 @@ class SparkSubmitOperator(BaseOperator):
         image (str): 스파크 잡을 실행할 driver와 executor를 위한 이미지 깃헙 액션으로 자동 업데이트 됨.
         main_application_file_name (str): 본인이 실행할 pyspark 코드 파일 이름, 레포의 spark_job 폴더 내에 작성되어야함.
         spark_version (str): 스파크 버전 - 3.5.4를 권장
-        driver_cores (int): 드라이버의 cpu 코어 수 
-        driver_memory (str): 드라이버의 메모리 
+        driver_cores (int): 드라이버의 cpu 코어 수
+        driver_memory (str): 드라이버의 메모리
         executor_cores (int): executor의 코어 수
         executor_memory (str): executor의 메모리 수
         executor_instances (int): executor의 수
@@ -45,7 +45,9 @@ class SparkSubmitOperator(BaseOperator):
         self.name = name
         self.namespace = namespace
         self.image = image
-        self.main_application_file = f"local:///opt/spark/jobs/{main_application_file_name}"
+        self.main_application_file = (
+            f"local:///opt/spark/jobs/{main_application_file_name}"
+        )
         self.spark_version = spark_version
         self.driver_cores = driver_cores
         self.driver_memory = driver_memory
