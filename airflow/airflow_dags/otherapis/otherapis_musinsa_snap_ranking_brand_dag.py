@@ -18,14 +18,14 @@ headers = {
 PARALLEL_TASK_NUM = 4
 PAGE_SIZE = 25
 
-# Airflow 기본 설정
+# 이후 시연 때 email 설정을 True로 변경
 default_args = {
-    'owner': 'airflow',
-    'depends_on_past': False,
+    'owner': 'gjstjd9509@gmail.com',
+    'start_date': datetime(2023, 1, 1),
+    'email': ['gjstjd9509@gmail.com'],
     'email_on_failure': False,
     'email_on_retry': False,
-    'retries': 2,
-    'retry_delay': timedelta(minutes=5),
+    'retries': 2
 }
 
 with DAG(

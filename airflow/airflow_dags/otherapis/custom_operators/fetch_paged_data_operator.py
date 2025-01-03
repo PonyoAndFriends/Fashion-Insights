@@ -28,7 +28,7 @@ class FetchPagedDataOperator(PythonOperator):
         self.headers = headers
         self.page_range = page_range
 
-    def _fetch_paged_data(self, **kwargs):
+    def _fetch_paged_data(self):
         start_page, end_page = self.page_range
         self.log.info(f"Fetching data from pages {start_page} to {end_page}...")
 

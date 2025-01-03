@@ -1,7 +1,7 @@
 import math
 import logging
 
-def calculate_page_range(total_count, page_size, parallel_task_num, *args, **kwargs):
+def calculate_page_range(total_count, page_size, parallel_task_num):
     """
     데이터를 가져올 때 여러 task를 병렬로 실행하기 위해 페이지를 각 태스크에게 분배할 범위를 결정하는 함수
 

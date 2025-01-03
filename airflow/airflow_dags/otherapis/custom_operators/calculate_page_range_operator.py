@@ -17,7 +17,7 @@ class CalculatePageRangeOperator(PythonOperator):
         self.page_size = page_size
         self.parallel_task_num = parallel_task_num
 
-    def _calculate_page_range(self, **kwargs):
+    def _calculate_page_range(self):
         total_pages = math.ceil(self.total_count / self.page_size)
         pages_per_task = math.ceil(total_pages / self.parallel_task_num)
 

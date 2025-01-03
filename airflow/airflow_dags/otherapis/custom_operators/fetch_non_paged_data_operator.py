@@ -23,7 +23,7 @@ class FetchNonPagedDataOperator(PythonOperator):
         self.content_type = content_type
         self.file_topic = file_topic
 
-    def _fetch_data(self, **context):
+    def _fetch_data(self):
         """데이터를 가져오는 함수"""
         url = self.url
         self.log.info(f"Fetching non-paged data from {url}...")
