@@ -21,8 +21,6 @@ SEXUAL_DYNAMIC_PARAMS = [{
     "SEXUAL" : "F"
 }, {
     "SEXUAL" : "M"
-}, {
-    "SEXUAL" : "A"
 }
 ]
 
