@@ -71,7 +71,7 @@ with DAG(
                                 task_id=f'{sexual_dct["SEXUAL"]}_{age_band_dct["AGE_BAND"]}_task',
                                 name=f'{sexual_dct["SEXUAL"]}_{age_band_dct["AGE_BAND"]}_task',
                                 namespace='airflow',
-                                image='ehdgml7755/project4-custom:latest',
+                                image='coffeeisnan/project4-custom:latest',
                                 cmds=['python', './pythonscript/musinsa_ranking_rawdata_el.py'],
                                 arguments=[sexual_dct["SEXUAL"], age_band_dct["AGE_BAND"]],
                                 is_delete_operator_pod=True,
