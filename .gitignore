@@ -265,4 +265,4 @@ airflow-build-dockerfile*
 /dbt/target
 
 # ruff cache
-/.ruff_*
+/.ruff_cache
