@@ -3,10 +3,10 @@ name: Lint and Format with Ruff and Black
 on:
   push:
     branches:
-      - '**'  # 모든 브랜치에 대해 실행
+      - '**'  # 모든 브랜치
   pull_request:
     branches:
-      - '**'  # 모든 브랜치에 대해 실행
+      - '**'
 
 jobs:
   lint-and-format:
@@ -30,12 +30,18 @@ jobs:
     - name: Run Ruff (Lint and Fix)
       run: ruff check . --fix
 
-    - name: Run Black (Format Code)
-      run: black . --check --diff
+    - name: Run Black (Log Diff and Apply Changes)
+      run: |
+        # 1. Log changes with --diff
+        echo "Running Black to log potential changes..."
+        black . --diff
+        # 2. Apply the formatting
+        echo "Applying Black formatting..."
+        black .
 
     - name: Commit changes (if necessary)
       run: |
         git config --global user.name "github-actions[bot]"
         git config --global user.email "github-actions[bot]@users.noreply.github.com"
         git add .
-        git diff --cached --quiet || git commit -m "Apply formatting with Ruff and Black"
+        git diff --cached --quiet || git commit -m "chore: Apply formatting with Ruff and Black"
