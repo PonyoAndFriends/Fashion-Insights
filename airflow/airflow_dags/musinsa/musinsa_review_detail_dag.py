@@ -61,8 +61,8 @@ with DAG(
             image="coffeeisnan/project4-custom:latest",
             cmds=["python", "./pythonscript/musinsa_review_detail.py"],
             arguments=[
-                f"--gender={{{{ ti.xcom_pull(task_ids='split_product_ids', key='gender') }}}}",
-                f"--category={{{{ ti.xcom_pull(task_ids='split_product_ids', key='category') }}}}",
+                "--gender={{ ti.xcom_pull(task_ids='split_product_ids', key='gender') }}",
+                "--category={{ ti.xcom_pull(task_ids='split_product_ids', key='category') }}",
                 f"--product_ids={chunk}",
             ],
             name=f"fetch_review_datail_pod_{index}",
