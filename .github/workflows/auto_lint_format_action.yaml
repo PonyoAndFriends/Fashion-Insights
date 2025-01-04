@@ -12,9 +12,14 @@ jobs:
   lint-and-format:
     runs-on: ubuntu-latest
 
+    permissions: 
+      contents: write  # GitHub Actions가 저장소에 푸시할 수 있도록 권한 부여
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}  # 인증 토큰 사용
 
     - name: Setup Python
       uses: actions/setup-python@v4
@@ -44,4 +49,8 @@ jobs:
         git config --global user.name "github-actions[bot]"
         git config --global user.email "github-actions[bot]@users.noreply.github.com"
         git add .
-        git diff --cached --quiet || git commit -m "chore: Apply formatting with Ruff and Black"
+        git diff --cached --quiet || git commit -m "chore: Apply formatting with Ruff and Black by Github Actions"
+
+    - name: Push changes
+      if: success()  # 이전 단계가 성공한 경우에만 푸시
+      run: git push origin HEAD
