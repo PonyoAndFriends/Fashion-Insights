@@ -1,4 +1,4 @@
-name: Docker Image CI
+name: Build and push docker images for KubernetesPodOperator
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
     paths:
       - DockerImages/**
       - .github/workflows/docker-image.yaml
-    
+
 jobs:
   build-and-push:
     runs-on: ubuntu-latest

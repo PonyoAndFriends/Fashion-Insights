@@ -1,0 +1,41 @@
+name: Lint and Format with Ruff and Black
+
+on:
+  push:
+    branches:
+      - '**'  # 모든 브랜치에 대해 실행
+  pull_request:
+    branches:
+      - '**'  # 모든 브랜치에 대해 실행
+
+jobs:
+  lint-and-format:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Setup Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: 3.11  # 필요에 따라 Python 버전 변경 가능
+
+    - name: Upgrade pip
+      run: pip install --upgrade pip
+
+    - name: Install Ruff and Black
+      run: pip install ruff==0.8.5 black==24.10.0
+
+    - name: Run Ruff (Lint and Fix)
+      run: ruff check . --fix
+
+    - name: Run Black (Format Code)
+      run: black . --check --diff
+
+    - name: Commit changes (if necessary)
+      run: |
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+        git add .
+        git diff --cached --quiet || git commit -m "Apply formatting with Ruff and Black"
