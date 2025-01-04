@@ -95,7 +95,6 @@ with DAG(
     start_date=datetime(2024, 1, 1),
     catchup=False,
 ) as dag:
-
     trigger_spark_application = PythonOperator(
         task_id="submit_spark_application",
         python_callable=submit_spark_application,
