@@ -1,7 +1,6 @@
 import requests
 import json
 import os
-import logging  # 추후 로깅을 추가하십시오
 import argparse
 
 from s3_validate import connect_s3, validate_and_upload_s3_file
@@ -20,7 +19,7 @@ headers = {
     "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
 }
 
-base_url = f"https://goods.musinsa.com/api2/review/v1/view/list"
+base_url = "https://goods.musinsa.com/api2/review/v1/view/list"
 
 today_date = datetime.now().strftime("%Y-%m-%d")
 
