@@ -7,7 +7,7 @@ from pyspark.sql.types import (
     IntegerType,
 )
 from pyspark.sql.functions import col, explode, lit
-from datetime import datetime, timedelta
+from datetime import datetime
 
 # SparkSession 생성
 spark = SparkSession.builder.getOrCreate()

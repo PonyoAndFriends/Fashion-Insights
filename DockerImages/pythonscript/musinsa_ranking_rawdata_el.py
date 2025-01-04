@@ -1,17 +1,10 @@
-import boto3
 import logging
 import requests
 import os
-import json
 from s3_validate import connect_s3, validate_and_upload_s3_file
 
-from datetime import datetime, timedelta
+from datetime import datetime
 
-import time
-import random
-
-import sys
-import shutil
 
 import argparse
 
