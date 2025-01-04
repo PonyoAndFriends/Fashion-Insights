@@ -13,13 +13,11 @@ jobs:
     runs-on: ubuntu-latest
 
     permissions:
-      contents: write  # PR 생성을 위한 권한
+      contents: write  # 푸시 권한 활성화
 
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
-      with:
-        ref: ${{ github.ref }}
 
     - name: Setup Python
       uses: actions/setup-python@v4
@@ -46,14 +44,8 @@ jobs:
         git config --global user.name "github-actions[bot]"
         git config --global user.email "github-actions[bot]@users.noreply.github.com"
         git add .
-        git diff --cached --quiet || git commit -m "chore: Apply formatting with Ruff and Black"
+        git diff --cached --quiet || git commit -m "chore: Apply formatting with Ruff and Black by Github Action"
 
-    - name: Create Pull Request
-      uses: peter-evans/create-pull-request@v5
-      with:
-        token: ${{ secrets.GITHUB_TOKEN }}
-        commit-message: "chore: Apply formatting with Ruff and Black"
-        branch: auto-format/${{ github.head_ref || github.run_id }}
-        title: "chore: Apply formatting with Ruff and Black"
-        body: |
-          This PR applies automatic code formatting and lint fixes using Ruff and Black.
+    - name: Push changes
+      if: success()
+      run: git push origin HEAD
