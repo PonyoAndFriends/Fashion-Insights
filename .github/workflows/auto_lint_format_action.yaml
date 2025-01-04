@@ -3,7 +3,7 @@ name: Lint and Format with Ruff and Black
 on:
   push:
     branches:
-      - '**'  # 모든 브랜치
+      - '**'
   pull_request:
     branches:
       - '**'
@@ -12,19 +12,19 @@ jobs:
   lint-and-format:
     runs-on: ubuntu-latest
 
-    permissions: 
-      contents: write  # GitHub Actions가 저장소에 푸시할 수 있도록 권한 부여
+    permissions:
+      contents: write  # PR 생성을 위한 권한
 
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
       with:
-        token: ${{ secrets.GITHUB_TOKEN }}  # 인증 토큰 사용
+        ref: ${{ github.ref }}
 
     - name: Setup Python
       uses: actions/setup-python@v4
       with:
-        python-version: 3.11  # 필요에 따라 Python 버전 변경 가능
+        python-version: 3.11
 
     - name: Upgrade pip
       run: pip install --upgrade pip
@@ -37,11 +37,8 @@ jobs:
 
     - name: Run Black (Log Diff and Apply Changes)
       run: |
-        # 1. Log changes with --diff
         echo "Running Black to log potential changes..."
         black . --diff
-        # 2. Apply the formatting
-        echo "Applying Black formatting..."
         black .
 
     - name: Commit changes (if necessary)
@@ -49,8 +46,14 @@ jobs:
         git config --global user.name "github-actions[bot]"
         git config --global user.email "github-actions[bot]@users.noreply.github.com"
         git add .
-        git diff --cached --quiet || git commit -m "chore: Apply formatting with Ruff and Black by Github Actions"
+        git diff --cached --quiet || git commit -m "chore: Apply formatting with Ruff and Black"
 
-    - name: Push changes
-      if: success()  # 이전 단계가 성공한 경우에만 푸시
-      run: git push origin HEAD
+    - name: Create Pull Request
+      uses: peter-evans/create-pull-request@v5
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        commit-message: "chore: Apply formatting with Ruff and Black"
+        branch: auto-format/${{ github.head_ref || github.run_id }}
+        title: "chore: Apply formatting with Ruff and Black"
+        body: |
+          This PR applies automatic code formatting and lint fixes using Ruff and Black.
