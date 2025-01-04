@@ -57,5 +57,4 @@ jobs:
         git diff --cached --quiet || git commit -m "chore: Apply formatting with Ruff and Black by Github Actions"
 
     - name: Push changes
-      if: success()
       run: git push origin HEAD
