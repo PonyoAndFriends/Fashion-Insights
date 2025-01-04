@@ -263,3 +263,6 @@ airflow-build-dockerfile*
 # dbt - user specific data - to pretect permission errors
 /dbt/logs
 /dbt/target
+
+# ruff cache
+/.ruff_cache
