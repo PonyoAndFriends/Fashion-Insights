@@ -20,18 +20,18 @@ PAGE_SIZE = 25
 
 # 이후 시연 때 email 설정을 True로 변경
 default_args = {
-    'owner': 'gjstjd9509@gmail.com',
-    'start_date': datetime(2023, 1, 1),
-    'email': ['gjstjd9509@gmail.com'],
-    'email_on_failure': False,
-    'email_on_retry': False,
-    'retries': 2
+    "owner": "gjstjd9509@gmail.com",
+    "start_date": datetime(2023, 1, 1),
+    "email": ["gjstjd9509@gmail.com"],
+    "email_on_failure": False,
+    "email_on_retry": False,
+    "retries": 2,
 }
 
 with DAG(
-    dag_id='musinsa_snap_api_ranking_story_to_s3_dag',
+    dag_id="musinsa_snap_api_ranking_story_to_s3_dag",
     default_args=default_args,
-    description='Fetch snap ranking story data from Musinsa SNAP API and save to S3',
+    description="Fetch snap ranking story data from Musinsa SNAP API and save to S3",
     schedule_interval=timedelta(days=1),
     start_date=datetime(2023, 12, 25),
     catchup=False,
@@ -47,7 +47,7 @@ with DAG(
 
     # 남성, 여성에 대해 데이터를 가져올 태스크를 병렬로 구성
     fetch_tasks = []
-    for gender in ['MEN', 'WOMEN']:
+    for gender in ["MEN", "WOMEN"]:
         for i in range(PARALLEL_TASK_NUM):
             fetch_task = FetchPagedDataOperator(
                 task_id=f"fetch_{gender}_ranking_task_{i + 1}",
@@ -56,12 +56,13 @@ with DAG(
                     "gender": gender,
                     "page": None,
                     "size": PAGE_SIZE,
-                    "style": "ALL"
+                    "style": "ALL",
                 },
                 headers=headers,
                 file_topic=f"musinsa_{gender}_ranking",
                 content_type="application/json",
-                page_range="{{ task_instance.xcom_pull(task_ids='calculate_page_ranges_snap_ranking_story')[%d] }}" % i,
+                page_range="{{ task_instance.xcom_pull(task_ids='calculate_page_ranges_snap_ranking_story')[%d] }}"
+                % i,
             )
             fetch_tasks.append(fetch_task)
 

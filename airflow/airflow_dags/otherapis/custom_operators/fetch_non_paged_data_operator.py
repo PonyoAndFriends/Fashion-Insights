@@ -15,7 +15,10 @@ class FetchNonPagedDataOperator(PythonOperator):
     :param headers: API request header
     :param s3_dict: s3에 데이터를 적재하기 위한 설정을 담은 딕셔너리
     """
-    def __init__(self, url, file_topic, content_type, params=None, headers=None, *args, **kwargs):
+
+    def __init__(
+        self, url, file_topic, content_type, params=None, headers=None, *args, **kwargs
+    ):
         super().__init__(python_callable=self._fetch_data, *args, **kwargs)
         self.url = url
         self.params = params
@@ -35,10 +38,10 @@ class FetchNonPagedDataOperator(PythonOperator):
 
             now = time.strftime("%Y-%m-%d")
 
-            if self.content_type == 'application/json':
+            if self.content_type == "application/json":
                 data_file = json.dumps(response.json(), ensure_ascii=False)
                 file_path = f"/{self.file_topic}_raw_data/{now}/{self.file_topic}.json"
-            elif self.content_type == 'text/html':
+            elif self.content_type == "text/html":
                 data_file = response.text
                 file_path = f"/{self.file_topic}_raw_data/{now}/{self.file_topic}.html"
             else:

@@ -6,10 +6,11 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+
 def load_data_to_s3(s3_dict):
     """
     boto3를 사용하여 s3에 데이터를 적재하는 함수
-    
+
     :param s3_dict: s3에 데이터를 적재하기 위한 설정을 담은 딕셔너리
         data_file, file_path, content_type를 키로 받아옴.
     """
@@ -26,13 +27,15 @@ def load_data_to_s3(s3_dict):
 
         # s3_dict 이라는 딕셔너리로 필요한 인자를 받음
         data_file, file_path, content_type = [s3_dict.get(key, None) for key in s3_dict]
-        logger.debug(f"Data file: {data_file}, File path: {file_path}, Content type: {content_type}")
+        logger.debug(
+            f"Data file: {data_file}, File path: {file_path}, Content type: {content_type}"
+        )
 
         s3 = boto3.client(
-            's3',
+            "s3",
             aws_access_key_id=aws_access_key_id,
             aws_secret_access_key=aws_secret_access_key,
-            region_name=aws_region
+            region_name=aws_region,
         )
         logger.debug("S3 client initialized.")
 
@@ -40,17 +43,21 @@ def load_data_to_s3(s3_dict):
             Bucket=s3_bucket_name,
             Key=file_path,
             Body=data_file,
-            ContentType=content_type
+            ContentType=content_type,
         )
-        logger.info(f"{data_file} uploaded to s3 bucket {s3_bucket_name} at file path: {file_path}.")
+        logger.info(
+            f"{data_file} uploaded to s3 bucket {s3_bucket_name} at file path: {file_path}."
+        )
 
     # 예외처리 및 로깅
     except ClientError as e:
-        error_message = e.response['Error']['Message']
+        error_message = e.response["Error"]["Message"]
         logger.error(f"ClientError: Failed to upload to S3. {error_message}")
         raise
     except EndpointConnectionError as e:
-        logger.error(f"EndpointConnectionError: Could not connect to the endpoint. {str(e)}")
+        logger.error(
+            f"EndpointConnectionError: Could not connect to the endpoint. {str(e)}"
+        )
         raise
     except BotoCoreError as e:
         logger.error(f"BotoCoreError: A general error occurred. {str(e)}")

@@ -1,6 +1,7 @@
 import math
 import logging
 
+
 def calculate_page_range(total_count, page_size, parallel_task_num):
     """
     데이터를 가져올 때 여러 task를 병렬로 실행하기 위해 페이지를 각 태스크에게 분배할 범위를 결정하는 함수
@@ -12,7 +13,9 @@ def calculate_page_range(total_count, page_size, parallel_task_num):
     # 전체 페이지 수와 태스크 당 할당할 페이지 수 계산 계산
     total_pages = math.ceil(total_count / page_size)
     pages_per_task = math.ceil(total_pages / parallel_task_num)
-    logging.info(f"Calculating page ranges for total {total_count} records, {total_pages} pages for {parallel_task_num} tasks")
+    logging.info(
+        f"Calculating page ranges for total {total_count} records, {total_pages} pages for {parallel_task_num} tasks"
+    )
 
     # 태스크의 수 만큼 페이지 범위를 튜플로 만들어 리턴
     page_ranges = [

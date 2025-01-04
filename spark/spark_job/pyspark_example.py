@@ -1,5 +1,4 @@
 from pyspark.sql import SparkSession
-from pyspark.sql.functions import lit
 from pyspark.sql.types import StructType, StructField, IntegerType
 
 # Spark 세션 생성

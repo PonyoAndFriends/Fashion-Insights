@@ -5,17 +5,17 @@ from datetime import datetime, timedelta
 
 # 이후 시연 때 email 설정을 True로 변경
 default_args = {
-    'owner': 'gjstjd9509@gmail.com',
-    'start_date': datetime(2023, 1, 1),
-    'email': ['gjstjd9509@gmail.com'],
-    'email_on_failure': False,
-    'email_on_retry': False,
-    'retries': 2
+    "owner": "gjstjd9509@gmail.com",
+    "start_date": datetime(2023, 1, 1),
+    "email": ["gjstjd9509@gmail.com"],
+    "email_on_failure": False,
+    "email_on_retry": False,
+    "retries": 2,
 }
 
 # DAG 정의
 with DAG(
-    dag_id='fetch_weekly_weather_data_dag',
+    dag_id="fetch_weekly_weather_data_dag",
     default_args=default_args,
     schedule_interval=timedelta(days=1),
     catchup=False,
@@ -24,7 +24,7 @@ with DAG(
     # API 관련 기본 설정
     api_key = Variable.get("weather_api_key")
     url = r"https://apihub.kma.go.kr/api/typ01/url/kma_sfcdd.php"
-    
+
     now = datetime.now()
     one_day = timedelta(days=1)
 

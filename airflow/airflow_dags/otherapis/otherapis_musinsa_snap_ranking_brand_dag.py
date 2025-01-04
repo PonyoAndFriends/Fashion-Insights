@@ -20,18 +20,18 @@ PAGE_SIZE = 25
 
 # 이후 시연 때 email 설정을 True로 변경
 default_args = {
-    'owner': 'gjstjd9509@gmail.com',
-    'start_date': datetime(2023, 1, 1),
-    'email': ['gjstjd9509@gmail.com'],
-    'email_on_failure': False,
-    'email_on_retry': False,
-    'retries': 2
+    "owner": "gjstjd9509@gmail.com",
+    "start_date": datetime(2023, 1, 1),
+    "email": ["gjstjd9509@gmail.com"],
+    "email_on_failure": False,
+    "email_on_retry": False,
+    "retries": 2,
 }
 
 with DAG(
-    dag_id='musinsa_snap_api_brand_ranking_to_s3_dag',
+    dag_id="musinsa_snap_api_brand_ranking_to_s3_dag",
     default_args=default_args,
-    description='Fetch snap brand ranking data from Musinsa SNAP API and save to S3',
+    description="Fetch snap brand ranking data from Musinsa SNAP API and save to S3",
     schedule_interval=timedelta(days=1),
     start_date=datetime(2023, 12, 25),
     catchup=False,
@@ -56,9 +56,10 @@ with DAG(
                 "size": PAGE_SIZE,
             },
             headers=headers,
-            file_topic=f"musinsa_snap_brand_ranking",
+            file_topic="musinsa_snap_brand_ranking",
             content_type="application/json",
-            page_range="{{ task_instance.xcom_pull(task_ids='calculate_page_ranges_snap_brand_ranking')[%d] }}" % i,
+            page_range="{{ task_instance.xcom_pull(task_ids='calculate_page_ranges_snap_brand_ranking')[%d] }}"
+            % i,
         )
         fetch_snap_ranking_brand_data_tasks.append(fetch_task)
 
