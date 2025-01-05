@@ -1,2 +1,11 @@
 # 구글 api 호출을 위한 클라이언트 라이브러리
-google-api-python-client
+google-api-python-client==2.157.0
+
+# requests
+requests==2.32.3
+
+# boto3
+boto3==1.35.87
+
+# botocore
+botocore==1.35.87

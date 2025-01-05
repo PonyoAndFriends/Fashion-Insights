@@ -18,7 +18,7 @@ with DAG(
 ) as dag:
 
     # API 관련 기본 설정
-    api_key = Variable.get("weather_api_key")
+    weather_api_key = Variable.get("weather_api_key")
     url = r"https://apihub.kma.go.kr/api/typ01/url/kma_sfcdd.php"
 
     now = datetime.now()
@@ -28,7 +28,7 @@ with DAG(
     weather_fetch_task_list = []
     for i in range(7):
         now_string = now.strftime("%Y%m%d")
-        url = rf"{url}?tm={now_string}&help=1&authKey={api_key}"
+        url = rf"{url}?tm={now_string}&help=1&authKey={weather_api_key}"
 
         fetch_weather_data_task = FetchNonPagedDataOperator(
             task_id=f"fetch_weather_data_task_{i + 1}",

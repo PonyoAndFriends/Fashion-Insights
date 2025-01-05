@@ -19,9 +19,9 @@ def execute_in_threads(target_function, args_list, max_threads):
 
         # 활성 스레드 관리
         while len(active_threads) >= max_threads:
-            for t in active_threads:
-                if not t.is_alive():
-                    active_threads.remove(t)
+            for td in active_threads:
+                if not td.is_alive():
+                    active_threads.remove(td)
 
         thread.start()
         active_threads.append(thread)

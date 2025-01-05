@@ -12,7 +12,7 @@ def load_data_to_s3(s3_dict):
     boto3를 사용하여 s3에 데이터를 적재하는 함수
 
     :param s3_dict: s3에 데이터를 적재하기 위한 설정을 담은 딕셔너리
-        data_file, file_path, content_type를 키로 받아옴.
+        특히 data_file, file_path, content_type을 호출하는 쪽에서 작성
     """
     logger.info("Starting S3 data upload process.")
 

@@ -1,7 +1,8 @@
 from datetime import datetime
+import requests, json, sys, logging
 import s3_upload
-import requests
-import json
+
+logger = logging.getLogger(__name__)
 
 
 def fetch_page_range_data(
@@ -23,6 +24,7 @@ def fetch_page_range_data(
             params[pagination_keyword] = page
 
             # api 호출
+            logger.info(f"Fetching data for page {page} from URL: {url}")
             response = requests.get(url, headers=headers, params=params)
             response.raise_for_status()
             data = response.json()
@@ -46,6 +48,8 @@ def fetch_page_range_data(
             )
 
             s3_upload.load_data_to_s3(s3_dict)
-            print(f"Successfully uploaded page {page} data to S3.")
+            logger.info(f"Successfully uploaded page {page} data to S3.")
         except requests.exceptions.RequestException as e:
-            print(f"Failed to fetch page {page}: {e}")
+            logger.error(f"Failed to fetch page {page}: {e}")
+        except Exception as e:
+            logger.exception(f"An unexpected error occurred on page {page}: {e}")

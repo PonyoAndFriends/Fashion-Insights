@@ -6,6 +6,7 @@ from custom_operators.calculate_page_range_operator import CalculatePageRangeOpe
 from custom_operators.custom_modules.otherapis_dependencies import (
     MUSINSA_HEADERS,
     OTHERAPI_DEFAULT_ARGS,
+    DEFAULT_S3_DICT
 )
 
 import math
@@ -60,15 +61,7 @@ with DAG(
                     ),
                 ),
                 "file_topic": "musinsa_snap_brand_ranking",
-                "s3_dict": {
-                    "aws_access_key_id": Variable.get("aws_access_key_id"),
-                    "aws_secret_access_key": Variable.get("aws_secret_access_key"),
-                    "aws_region": Variable.get("aws_region"),
-                    "s3_bucket_name": Variable.get("s3_bucket_name"),
-                    "data_file": None,  # 동작 과정에서 생성
-                    "file_path": None,  # 동작 과정에서 생성
-                    "content_type": "application/json",
-                },
+                "s3_dict": DEFAULT_S3_DICT,
                 "pagination_keyword": "page",
             },
             optional_args={

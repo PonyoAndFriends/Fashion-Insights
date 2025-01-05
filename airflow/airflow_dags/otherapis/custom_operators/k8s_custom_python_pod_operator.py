@@ -8,9 +8,9 @@ class CustomKubernetesPodOperator(KubernetesPodOperator):
     """
     KubernetesPodOperator를 확장한 추상화된 커스텀 오퍼레이터.
 
-    :param script_name: Pod 내에서 실행할 스크립트의 이름 또는 경로
+    :param script_path: Pod 내에서 실행할 스크립트의 경로
     :param required_args: 필수 아규먼트 딕셔너리 (key-value 형태)
-    :param optional_args: 선택적 아규먼트 딕셔너리 (key-value 형태, None 값은 제외)
+    :param optional_args: 선택적 아규먼트 딕셔너리 (key-value 형태)
     :param cpu_limit: Pod에 할당할 CPU 제한
     :param memory_limit: Pod에 할당할 메모리 제한
     :param cpu_request: Pod가 요청할 CPU

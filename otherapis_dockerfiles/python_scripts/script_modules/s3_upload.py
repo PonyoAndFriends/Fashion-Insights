@@ -35,9 +35,9 @@ def load_data_to_s3(s3_dict):
         logger.debug(f"s3_dict : {s3_dict}")
 
         # data_file, file_path, content_type 로깅
-        logger.debug(
-            f"Data file: {data_file}, File path: {file_path}, Content type: {content_type}"
-        )
+        logger.debug(f"Data file: {data_file}")
+        logger.debug(f"File path: {file_path}")
+        logger.debug(f"Content type: {content_type}")
 
         # boto를 활용하여 S3에 파일 적재
         s3 = boto3.client(

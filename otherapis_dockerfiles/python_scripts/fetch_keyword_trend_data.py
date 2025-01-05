@@ -1,10 +1,8 @@
-import argparse
-import json
-import requests
+import argparse, json, requests, logging
 from datetime import datetime, timedelta
-from script_modules import run_func_multi_thread
-from script_modules import s3_upload
+from script_modules import run_func_multi_thread, s3_upload
 
+logger = logging.getLogger(__name__)
 
 def split_keywords_into_batches(keywords, batch_size=5):
     """
@@ -14,12 +12,17 @@ def split_keywords_into_batches(keywords, batch_size=5):
     :param batch_size: 각 배치의 최대 크기
     :return: 분할된 튜플 리스트
     """
+    logger.info("Splitting keywords into batches.")
     result = []
-    for keyword_tuple in keywords:
-        *prefix, keyword_list = keyword_tuple  # 튜플에서 마지막 리스트 분리
-        for i in range(0, len(keyword_list), batch_size):
-            # prefix에 분할된 리스트 추가하여 새로운 튜플 생성
-            result.append((*prefix, keyword_list[i : i + batch_size]))
+    try:
+        for keyword_tuple in keywords:
+            *prefix, keyword_list = keyword_tuple  # 튜플에서 마지막 리스트 분리
+            for i in range(0, len(keyword_list), batch_size):
+                # prefix에 분할된 리스트 추가하여 새로운 튜플 생성
+                result.append((*prefix, keyword_list[i : i + batch_size]))
+    except Exception as e:
+        logger.error(f"Error splitting keywords: {e}", exc_info=True)
+        raise
     return result
 
 
@@ -35,6 +38,8 @@ def fetch_fashion_keyword_data_and_load_to_s3(url, headers, keyword_batch, s3_di
     for i, (gender, second_category, third_category, keywords) in enumerate(
         keyword_batch
     ):
+        logger.info(f"Processing batch {i + 1}/{len(keyword_batch)} for gender={gender}, category={second_category}-{third_category}.")
+        logger.info(f"Current keywords: {keywords}")
         body = {
             "startDate": one_week_ago_string,
             "endDate": now_string,
@@ -50,8 +55,10 @@ def fetch_fashion_keyword_data_and_load_to_s3(url, headers, keyword_batch, s3_di
             "gender": "f" if gender == "여성" else "m",
         }
 
+        logger.debug(f"Request body: {body}")
         response = requests.post(url, headers=headers, json=body)
         response.raise_for_status()
+        logger.info(f"API call successful for batch {i + 1}.")
 
         s3_dict["data_file"] = response.json()
 
@@ -61,9 +68,11 @@ def fetch_fashion_keyword_data_and_load_to_s3(url, headers, keyword_batch, s3_di
         )
         s3_dict["content_type"] = "application/json"
         s3_upload.load_data_to_s3(s3_dict)
+        logger.info(f"Batch {i + 1} uploaded to S3 successfully.")
 
 
 def main():
+    logger.info("Script started.")
     parser = argparse.ArgumentParser(
         description="Process keywords and upload API results to S3"
     )
@@ -77,19 +86,32 @@ def main():
     )
     parser.add_argument("--s3_dict", required=True, help="S3 client config as JSON")
 
-    args = parser.parse_args()
+    try:
+        args = parser.parse_args()
 
-    url = args.url
-    headers = args.headers
-    category_list = json.loads(args.category_list)
-    max_threads = args.max_threads
-    s3_dict = json.loads(args.s3_dict)
+        url = args.url
+        headers = json.loads(args.headers)
+        category_list = json.loads(args.category_list)
+        max_threads = args.max_threads
+        s3_dict = json.loads(args.s3_dict)
 
-    splited_keywords = split_keywords_into_batches(category_list, 5)
-    args = [(url, headers, keywords, s3_dict) for keywords in splited_keywords]
-    run_func_multi_thread.execute_in_threads(
-        fetch_fashion_keyword_data_and_load_to_s3, args, max_threads
-    )
+        logger.info(f"Parsed arguments: URL={url}, Max threads={max_threads}")
+        logger.debug(f"Category list: {category_list}")
+        logger.debug(f"S3 configuration: {s3_dict}")
+
+        # 키워드 분할
+        splited_keywords = split_keywords_into_batches(category_list, 5)
+        logger.info(f"Split keywords into {len(splited_keywords)} batches.")
+
+        # 멀티스레드 실행
+        args = [(url, headers, keywords, s3_dict) for keywords in splited_keywords]
+        run_func_multi_thread.execute_in_threads(
+            fetch_fashion_keyword_data_and_load_to_s3, args, max_threads
+        )
+        logger.info("All batches processed successfully. Script completed.")
+    except Exception as e:
+        logger.error(f"Script failed: {e}", exc_info=True)
+        raise
 
 
 if __name__ == "__main__":
