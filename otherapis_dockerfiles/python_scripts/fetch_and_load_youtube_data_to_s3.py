@@ -7,7 +7,9 @@ from script_modules import s3_upload
 from script_modules import run_func_multi_thread
 from datetime import datetime
 
+
 logger = logging.getLogger(__name__)
+
 
 def parse_duration(duration):
     """ISO 8601 포맷의 영상 길이를 초 단위로 변환"""
@@ -92,13 +94,16 @@ def get_videos_with_details(
                 logger.error(f"Error processing video: {video_info['id']}, error: {e}", exc_info=True)
 
         logger.info(f"Collected {len(videos)} videos for category: {category}")
+
         s3_dict["data_file"] = videos
         s3_dict["file_path"] = (
             f"/{file_topic}_raw_data/{now_string}/{gender}_{first_depth}_{second_depth}_{file_topic}_data.json"
         )
+
         logger.debug(f"Uploading data to S3 file path: {s3_dict['file_path']}")
         s3_upload.load_data_to_s3(s3_dict)
         logger.info(f"Data uploaded to S3 for category: {category}")
+
 
 
 if __name__ == "__main__":

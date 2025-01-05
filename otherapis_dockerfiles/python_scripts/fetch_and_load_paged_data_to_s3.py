@@ -45,6 +45,7 @@ def process_page_ranges(
         raise
 
 
+
 def main():
     logger.info("Script started.")
     parser = argparse.ArgumentParser(description="Fetch data and upload to S3")
