@@ -1,23 +1,19 @@
 from airflow import DAG
 from airflow.models import Variable
 from custom_operators.fetch_non_paged_data_operator import FetchNonPagedDataOperator
+from custom_operators.custom_modules.otherapis_dependencies import OTHERAPI_DEFAULT_ARGS
 from datetime import datetime
 
-# 이후 시연 때 email 설정을 True로 변경
-default_args = {
-    "owner": "gjstjd9509@gmail.com",
-    "start_date": datetime(2023, 1, 1),
-    "email": ["gjstjd9509@gmail.com"],
-    "email_on_failure": False,
-    "email_on_retry": False,
-    "retries": 2,
-}
+default_args = OTHERAPI_DEFAULT_ARGS
 
 # DAG 정의 - 기상 관측소 메타 데이터는 오랜 기간 변경이 없을 것이므로 수동으로 트리거
 with DAG(
     dag_id="fetch_weather_meta_data_dag",
     default_args=default_args,
+    description="Fetch korean weather station metadata from open api and load to s3 bucket",
     schedule_interval="@once",
+    start_date=datetime(2024, 1, 1),
+    tags=["otherapi", "weather", "station", "openAPI", "Daily"],
     catchup=False,
 ) as dag:
 

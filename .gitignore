@@ -266,3 +266,6 @@ airflow-build-dockerfile*
 
 # ruff cache
 /.ruff_cache
+
+# test files
+/test

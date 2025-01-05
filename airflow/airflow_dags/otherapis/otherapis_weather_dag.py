@@ -2,22 +2,18 @@ from airflow import DAG
 from airflow.models import Variable
 from custom_operators.fetch_non_paged_data_operator import FetchNonPagedDataOperator
 from datetime import datetime, timedelta
+from custom_operators.custom_modules.otherapis_dependencies import OTHERAPI_DEFAULT_ARGS
 
-# 이후 시연 때 email 설정을 True로 변경
-default_args = {
-    "owner": "gjstjd9509@gmail.com",
-    "start_date": datetime(2023, 1, 1),
-    "email": ["gjstjd9509@gmail.com"],
-    "email_on_failure": False,
-    "email_on_retry": False,
-    "retries": 2,
-}
+default_args = OTHERAPI_DEFAULT_ARGS
 
 # DAG 정의
 with DAG(
     dag_id="fetch_weekly_weather_data_dag",
     default_args=default_args,
-    schedule_interval=timedelta(days=1),
+    description="Fetch weekly weather data from open api and load to s3 bucket",
+    schedule_interval='@daily',
+    start_date=datetime(2024, 1, 1),
+    tags=["otherapi", "weather", "openAPI", "Daily"],
     catchup=False,
 ) as dag:
 
