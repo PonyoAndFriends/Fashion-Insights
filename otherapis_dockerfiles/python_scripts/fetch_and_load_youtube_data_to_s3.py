@@ -1,6 +1,7 @@
 import json
 import googleapiclient.discovery
-import re, logging
+import re
+import logging
 import argparse
 
 from script_modules import s3_upload
@@ -18,7 +19,9 @@ def parse_duration(duration):
         hours = int(match.group(1)) if match.group(1) else 0
         minutes = int(match.group(2)) if match.group(2) else 0
         seconds = int(match.group(3)) if match.group(3) else 0
-        logger.debug(f"Parsed duration: {duration} -> {hours * 3600 + minutes * 60 + seconds} seconds")
+        logger.debug(
+            f"Parsed duration: {duration} -> {hours * 3600 + minutes * 60 + seconds} seconds"
+        )
         return hours * 3600 + minutes * 60 + seconds
     except Exception as e:
         logger.error(f"Failed to parse duration: {duration}, error: {e}", exc_info=True)
@@ -91,7 +94,10 @@ def get_videos_with_details(
                     if len(videos) == max_results:  # 최대 결과 수 제한
                         break
             except Exception as e:
-                logger.error(f"Error processing video: {video_info['id']}, error: {e}", exc_info=True)
+                logger.error(
+                    f"Error processing video: {video_info['id']}, error: {e}",
+                    exc_info=True,
+                )
 
         logger.info(f"Collected {len(videos)} videos for category: {category}")
 
@@ -103,7 +109,6 @@ def get_videos_with_details(
         logger.debug(f"Uploading data to S3 file path: {s3_dict['file_path']}")
         s3_upload.load_data_to_s3(s3_dict)
         logger.info(f"Data uploaded to S3 for category: {category}")
-
 
 
 if __name__ == "__main__":
@@ -130,7 +135,9 @@ if __name__ == "__main__":
         max_threads = args.max_threads
         s3_dict = json.loads(args.s3_dict)
 
-        logger.info(f"Parsed arguments: API key provided, File topic: {file_topic}, Max threads: {max_threads}")
+        logger.info(
+            f"Parsed arguments: API key provided, File topic: {file_topic}, Max threads: {max_threads}"
+        )
         logger.debug(f"Category list: {category_list}")
         logger.debug(f"S3 configuration: {s3_dict}")
 
@@ -140,7 +147,12 @@ if __name__ == "__main__":
 
         # 각 입력 데이터와 관련된 작업 생성
         args_list = [
-            (youtube, (gender, first_depth, second_depth, categories), s3_dict, file_topic)
+            (
+                youtube,
+                (gender, first_depth, second_depth, categories),
+                s3_dict,
+                file_topic,
+            )
             for gender, first_depth, second_depth, categories in category_list
         ]
 

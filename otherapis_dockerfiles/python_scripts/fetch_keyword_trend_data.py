@@ -1,8 +1,12 @@
-import argparse, json, requests, logging
+import argparse
+import json
+import requests
+import logging
 from datetime import datetime, timedelta
 from script_modules import run_func_multi_thread, s3_upload
 
 logger = logging.getLogger(__name__)
+
 
 def split_keywords_into_batches(keywords, batch_size=5):
     """
@@ -38,7 +42,9 @@ def fetch_fashion_keyword_data_and_load_to_s3(url, headers, keyword_batch, s3_di
     for i, (gender, second_category, third_category, keywords) in enumerate(
         keyword_batch
     ):
-        logger.info(f"Processing batch {i + 1}/{len(keyword_batch)} for gender={gender}, category={second_category}-{third_category}.")
+        logger.info(
+            f"Processing batch {i + 1}/{len(keyword_batch)} for gender={gender}, category={second_category}-{third_category}."
+        )
         logger.info(f"Current keywords: {keywords}")
         body = {
             "startDate": one_week_ago_string,

@@ -1,5 +1,7 @@
 from datetime import datetime
-import requests, json, sys, logging
+import requests
+import json
+import logging
 import s3_upload
 
 logger = logging.getLogger(__name__)

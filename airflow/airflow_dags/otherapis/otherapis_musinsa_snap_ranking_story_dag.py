@@ -5,7 +5,7 @@ from custom_operators.calculate_page_range_operator import CalculatePageRangeOpe
 from custom_operators.custom_modules.otherapis_dependencies import (
     MUSINSA_HEADERS,
     OTHERAPI_DEFAULT_ARGS,
-    DEFAULT_S3_DICT
+    DEFAULT_S3_DICT,
 )
 import math
 

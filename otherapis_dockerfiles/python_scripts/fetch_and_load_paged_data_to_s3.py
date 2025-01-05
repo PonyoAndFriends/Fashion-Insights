@@ -1,7 +1,10 @@
-import argparse, logging, json
+import argparse
+import logging
+import json
 from script_modules import fetch_one_page_range_data, run_func_multi_thread
 
 logger = logging.getLogger(__name__)
+
 
 def process_page_ranges(
     url,
@@ -41,9 +44,10 @@ def process_page_ranges(
         )
         logger.info("All page ranges processed successfully.")
     except Exception as e:
-        logger.error(f"An error occurred during multi-threaded execution: {e}", exc_info=True)
+        logger.error(
+            f"An error occurred during multi-threaded execution: {e}", exc_info=True
+        )
         raise
-
 
 
 def main():
@@ -72,7 +76,9 @@ def main():
     pagination_keyword = args.pagination_keyword
     headers = json.loads(args.headers) if args.headers else None
     params = json.loads(args.params) if args.params else None
-    logger.info(f"Arguments parsed: URL={url}, File topic={file_topic}, Page ranges={page_ranges}")
+    logger.info(
+        f"Arguments parsed: URL={url}, File topic={file_topic}, Page ranges={page_ranges}"
+    )
 
     process_page_ranges(
         url,

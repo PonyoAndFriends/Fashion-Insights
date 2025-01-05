@@ -5,9 +5,14 @@ from custom_operators.custom_modules.otherapis_categories import (
     MALE_CATEGORY_LIST,
     FEMALE_CATEGORY_LIST,
 )
-from custom_operators.custom_modules.otherapis_dependencies import OTHERAPI_DEFAULT_ARGS, DEFAULT_S3_DICT
+from custom_operators.custom_modules.otherapis_dependencies import (
+    OTHERAPI_DEFAULT_ARGS,
+    DEFAULT_S3_DICT,
+)
 from custom_operators.k8s_custom_python_pod_operator import CustomKubernetesPodOperator
-from custom_operators.keyword_dictionary_process_oprerator import CategoryDictionaryMergeAndExtractOperator
+from custom_operators.keyword_dictionary_process_oprerator import (
+    CategoryDictionaryMergeAndExtractOperator,
+)
 
 
 # Pod내에서 실행할 스레드의 최대 개수
