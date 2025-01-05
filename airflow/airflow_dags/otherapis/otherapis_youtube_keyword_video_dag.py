@@ -15,24 +15,19 @@ from custom_operators.keyword_dictionary_process_oprerator import (
 MAX_THREAD = 10
 
 # API 설정값
-url = "https://openapi.naver.com/v1/datalab/shopping/category/keywords"
-headers = {
-    "X-Naver-Client-Id": Variable.get("x-naver-client-id"),
-    "X-Naver-Client-secret": Variable.get("x-naver-client-secret"),
-    "Content-Type": "application/json",
-}
+youtube_api_key = Variable.get("youtube_api_key")
 
 # 기본 DAG 설정
 default_args = OTHERAPI_DEFAULT_ARGS
 
 # DAG 정의
 with DAG(
-    dag_id="keyword_trends_for_categories_dag",
+    dag_id="fetch_fashion_categories_yotubue_video_dag",
     default_args=default_args,
-    description="Fetch and save keywords trend data from naver api",
+    description="Fetch and save Youtube videos and data from youtube api",
     schedule_interval="@daily",
     start_date=datetime(2024, 1, 1),
-    tags=["otherapi", "keyword", "trends", "daily"],
+    tags=["otherapi", "youtube", "category", "daily"],
     catchup=False,
 ) as dag:
 
@@ -41,24 +36,23 @@ with DAG(
         {"gender": "male", "category_list": MALE_CATEGORY_LIST},
     ]
 
-    keyword_list_tasks = []
+    category_list_tasks = []
     fetch_keyword_data_tasks = []
 
     for task in tasks_config:
-        gender_keywords_list_task = KeywordDictionaryMergeAndExtractOperator(
-            task_id=f"making_{task['gender']}_keywords_list_task",
+        gender_category_list_task = KeywordDictionaryMergeAndExtractOperator(
+            task_id=f"making_{task['gender']}_category_list_task",
             dict_list=task["category_list"],
         )
-        keyword_list_tasks.append(gender_keywords_list_task)
+        category_list_tasks.append(gender_category_list_task)
 
-        gender_fetch_keyword_data_task = CustomKubernetesPodOperator(
-            task_id=f"fetch_{task['gender']}_keyword_data_task",
-            name=f"{task['gender']}_keyword_data_task",
-            script_path="/app/python_script/fetch_keyword_trend_data.py",
+        gender_fetch_youtube_data_task = CustomKubernetesPodOperator(
+            task_id=f"fetch_{task['gender']}_yotubue_data_task",
+            name=f"pod_for_{task['gender']}_category_yotubue_data_task",
+            script_path="/app/python_script/fetch_and_load_youtube_data_to_s3.py",
             required_args={
-                "url": url,
-                "headers": headers,
-                "category_list": f"{{{{ task_instance.xcom_pull(task_ids='making_{task['gender']}_keywords_list_task') }}}}",
+                "youtube_api_key": youtube_api_key,
+                "category_list": f"{{{{ task_instance.xcom_pull(task_ids='making_{task['gender']}_category_list_task') }}}}",
                 "max_threads": MAX_THREAD,
                 "s3_dict": {
                     "aws_access_key_id": Variable.get("aws_access_key_id"),
@@ -77,7 +71,7 @@ with DAG(
             delete_operator_pod=True,
             get_logs=True,
         )
-        fetch_keyword_data_tasks.append(gender_fetch_keyword_data_task)
+        fetch_keyword_data_tasks.append(gender_fetch_youtube_data_task)
 
-    for list_task, fetch_task in zip(keyword_list_tasks, fetch_keyword_data_tasks):
+    for list_task, fetch_task in zip(category_list_tasks, fetch_keyword_data_tasks):
         list_task >> fetch_task

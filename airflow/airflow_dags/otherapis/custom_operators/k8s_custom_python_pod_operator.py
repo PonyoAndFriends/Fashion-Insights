@@ -1,4 +1,6 @@
-from airflow.providers.cncf.kubernetes.operators.kubernetes_pod import KubernetesPodOperator
+from airflow.providers.cncf.kubernetes.operators.kubernetes_pod import (
+    KubernetesPodOperator,
+)
 import json
 
 
@@ -56,16 +58,20 @@ class CustomKubernetesPodOperator(KubernetesPodOperator):
     def _generate_arguments(self):
         """필수 및 선택적 아규먼트를 병합하여 리스트로 반환"""
         args = []
-        
+
         # 필수 아규먼트 추가
         for key, value in self.required_args.items():
             args.append(f"--{key}")
-            args.append(json.dumps(value) if isinstance(value, (dict, list)) else str(value))
-        
+            args.append(
+                json.dumps(value) if isinstance(value, (dict, list)) else str(value)
+            )
+
         # 선택적 아규먼트 추가
         for key, value in self.optional_args.items():
             if value is not None:
                 args.append(f"--{key}")
-                args.append(json.dumps(value) if isinstance(value, (dict, list)) else str(value))
-        
+                args.append(
+                    json.dumps(value) if isinstance(value, (dict, list)) else str(value)
+                )
+
         return args

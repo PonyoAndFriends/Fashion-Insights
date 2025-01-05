@@ -3,7 +3,10 @@ from airflow.models import Variable
 from datetime import datetime
 from custom_operators.k8s_custom_python_pod_operator import CustomKubernetesPodOperator
 from custom_operators.calculate_page_range_operator import CalculatePageRangeOperator
-from custom_operators.custom_modules.otherapis_dependencies import MUSINSA_HEADERS, OTHERAPI_DEFAULT_ARGS
+from custom_operators.custom_modules.otherapis_dependencies import (
+    MUSINSA_HEADERS,
+    OTHERAPI_DEFAULT_ARGS,
+)
 
 import math
 
@@ -47,10 +50,15 @@ with DAG(
         fetch_snap_ranking_brand_data_task = CustomKubernetesPodOperator(
             task_id=f"fetch_musinsa_snap_brand_ranking_task_group_{i // PARALLEL_THREAD_NUM + 1}",
             script_path="/app/python_script/fetch_and_load_paged_data_to_s3.py",
-            required_args = {
-                'url': url,
-                'page_ranges': "{{ task_instance.xcom_pull(task_ids='calculate_page_ranges_for_snap_brand_ranking')[%d:%d] }}"
-                    % (i, min(i + PARALLEL_THREAD_NUM, PARALLEL_POD_NUM * PARALLEL_THREAD_NUM)),
+            required_args={
+                "url": url,
+                "page_ranges": "{{ task_instance.xcom_pull(task_ids='calculate_page_ranges_for_snap_brand_ranking')[%d:%d] }}"
+                % (
+                    i,
+                    min(
+                        i + PARALLEL_THREAD_NUM, PARALLEL_POD_NUM * PARALLEL_THREAD_NUM
+                    ),
+                ),
                 "file_topic": "musinsa_snap_brand_ranking",
                 "s3_dict": {
                     "aws_access_key_id": Variable.get("aws_access_key_id"),
@@ -63,9 +71,9 @@ with DAG(
                 },
                 "pagination_keyword": "page",
             },
-            optional_args = {
+            optional_args={
                 "headers": headers,
-                "params": {"page": None, "size": PAGE_SIZE}
+                "params": {"page": None, "size": PAGE_SIZE},
             },
             cpu_limit="1000m",
             memory_limit="1Gi",

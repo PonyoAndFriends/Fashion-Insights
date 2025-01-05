@@ -11,7 +11,7 @@ with DAG(
     dag_id="fetch_weekly_weather_data_dag",
     default_args=default_args,
     description="Fetch weekly weather data from open api and load to s3 bucket",
-    schedule_interval='@daily',
+    schedule_interval="@daily",
     start_date=datetime(2024, 1, 1),
     tags=["otherapi", "weather", "openAPI", "Daily"],
     catchup=False,

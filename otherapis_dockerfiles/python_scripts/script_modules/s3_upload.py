@@ -74,4 +74,3 @@ def load_data_to_s3(s3_dict):
     except Exception as e:
         logger.error(f"Unexpected error: {str(e)}")
         raise
-

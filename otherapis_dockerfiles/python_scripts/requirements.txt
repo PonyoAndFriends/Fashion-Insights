@@ -1,0 +1,2 @@
+# 구글 api 호출을 위한 클라이언트 라이브러리
+google-api-python-client

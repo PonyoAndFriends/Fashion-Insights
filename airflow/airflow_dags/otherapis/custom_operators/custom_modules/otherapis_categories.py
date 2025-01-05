@@ -1,5 +1,6 @@
-FEMALE_OUTER_CATEGORY = \
-{
+# 실버 레이어 테이블 기반 키워드 트렌드를 가져올 카테고리를 모아놓은 파일 
+
+FEMALE_OUTER_CATEGORY = {
     "여성": {
         "아우터": {
             "자켓": [
@@ -47,8 +48,7 @@ FEMALE_OUTER_CATEGORY = \
 }
 
 
-FEMALE_SHIRT_CATEGORY = \
-{
+FEMALE_SHIRT_CATEGORY = {
     "여성": {
         "상의": {
             "티셔츠": [
@@ -80,8 +80,7 @@ FEMALE_SHIRT_CATEGORY = \
 }
 
 
-FEMALE_PANTS_CATEGORY = \
-{
+FEMALE_PANTS_CATEGORY = {
     "여성": {
         "하의": {
             "팬츠": [
@@ -114,8 +113,7 @@ FEMALE_PANTS_CATEGORY = \
     }
 }
 
-FEMALE_SHOES_CATEGORY = \
-{
+FEMALE_SHOES_CATEGORY = {
     "여성": {
         "신발": {
             "전체": [
@@ -134,8 +132,7 @@ FEMALE_SHOES_CATEGORY = \
 }
 
 
-MALE_OUTER_CATEGORY = \
-{
+MALE_OUTER_CATEGORY = {
     "남성": {
         "아우터": {
             "재킷": [
@@ -178,8 +175,7 @@ MALE_OUTER_CATEGORY = \
     }
 }
 
-MALE_SHIRT_CATEGORY = \
-{
+MALE_SHIRT_CATEGORY = {
     "남성": {
         "상의": {
             "티셔츠": [
@@ -210,9 +206,8 @@ MALE_SHIRT_CATEGORY = \
     }
 }
 
-MALE_PANTS_CATEGORY = \
-{
-    "남성":{
+MALE_PANTS_CATEGORY = {
+    "남성": {
         "하의": {
             "팬츠": [
                 "슬림 팬츠",
@@ -230,8 +225,7 @@ MALE_PANTS_CATEGORY = \
     }
 }
 
-MALE_SHOES_CATEGORY = \
-{
+MALE_SHOES_CATEGORY = {
     "남성": {
         "신발": {
             "전체": [
@@ -247,7 +241,17 @@ MALE_SHOES_CATEGORY = \
     }
 }
 
-MALE_CATEGORY_LIST = [MALE_OUTER_CATEGORY, MALE_SHIRT_CATEGORY, MALE_PANTS_CATEGORY, MALE_SHOES_CATEGORY]
-FEMALE_CATEGORY_LIST = [FEMALE_OUTER_CATEGORY, FEMALE_SHIRT_CATEGORY, FEMALE_PANTS_CATEGORY, FEMALE_SHOES_CATEGORY]
+MALE_CATEGORY_LIST = [
+    MALE_OUTER_CATEGORY,
+    MALE_SHIRT_CATEGORY,
+    MALE_PANTS_CATEGORY,
+    MALE_SHOES_CATEGORY,
+]
+FEMALE_CATEGORY_LIST = [
+    FEMALE_OUTER_CATEGORY,
+    FEMALE_SHIRT_CATEGORY,
+    FEMALE_PANTS_CATEGORY,
+    FEMALE_SHOES_CATEGORY,
+]
 
 __all__ = ["MALE_CATEGORY_LIST", "FEMALE_CATEGORY_LIST"]

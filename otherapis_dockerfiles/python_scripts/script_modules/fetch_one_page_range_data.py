@@ -36,14 +36,14 @@ def fetch_page_range_data(
                 "plain/text": "txt",
             }
 
-            if s3_dict['content_type'] == "application/json":
+            if s3_dict["content_type"] == "application/json":
                 s3_dict["data_file"] = json.dumps(data, ensure_ascii=False)
             else:
                 s3_dict["data_file"] = response.text
 
             s3_dict["file_path"] = (
-                    f"/{file_topic}_raw_data/{now_string}/{file_topic}_page_{page}.{file_ext[s3_dict['content_type']]}"
-                )
+                f"/{file_topic}_raw_data/{now_string}/{file_topic}_page_{page}.{file_ext[s3_dict['content_type']]}"
+            )
 
             s3_upload.load_data_to_s3(s3_dict)
             print(f"Successfully uploaded page {page} data to S3.")

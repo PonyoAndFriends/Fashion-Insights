@@ -4,9 +4,6 @@ from script_modules import fetch_one_page_range_data
 from script_modules import run_func_multi_thread
 
 
-
-
-
 def process_page_ranges(
     url,
     file_topic,
@@ -21,7 +18,6 @@ def process_page_ranges(
     """
     args_list = [
         (
-            fetch_one_page_range_data.fetch_page_range_data,
             (
                 url,
                 start_page,
@@ -36,7 +32,8 @@ def process_page_ranges(
         for start_page, end_page in page_ranges
     ]
 
-    run_func_multi_thread.execute_in_threads(lambda fn, args: fn(*args), args_list, 10)
+    run_func_multi_thread.execute_in_threads(fetch_one_page_range_data.fetch_page_range_data, args_list, 10)
+
 
 def main():
     parser = argparse.ArgumentParser(description="Fetch data and upload to S3")
@@ -46,7 +43,11 @@ def main():
     parser.add_argument(
         "--s3_dict", required=True, help="Configurations for s3 as JSON"
     )
-    parser.add_argument("--pagination_keyword", required=True, help="Name of key in query params for pagination")
+    parser.add_argument(
+        "--pagination_keyword",
+        required=True,
+        help="Name of key in query params for pagination",
+    )
     parser.add_argument("--params", required=False, help="API query params as JSON")
     parser.add_argument("--headers", required=False, help="API Headers as JSON")
 
@@ -61,14 +62,15 @@ def main():
     params = json.loads(args.params) if args.params else None
 
     process_page_ranges(
-    url,
-    file_topic,
-    page_ranges,
-    s3_dict,
-    pagination_keyword,
-    params,
-    headers,
+        url,
+        file_topic,
+        page_ranges,
+        s3_dict,
+        pagination_keyword,
+        params,
+        headers,
     )
+
 
 if __name__ == "__main__":
     main()

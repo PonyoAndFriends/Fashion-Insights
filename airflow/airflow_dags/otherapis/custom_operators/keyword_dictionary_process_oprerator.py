@@ -2,15 +2,17 @@ from airflow.models import BaseOperator
 from airflow.utils.decorators import apply_defaults
 from custom_modules import json_dictionary_process
 
+
 class KeywordDictionaryMergeAndExtractOperator(BaseOperator):
     """
     딕셔너리 리스트를 받아서 merge_dictionaries와 extract_tuples를 순차적으로 실행하는 커스텀 오퍼레이터.
     """
+
     @apply_defaults
     def __init__(self, dict_list, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.dict_list = dict_list
-    
+
     def merge_dictionaries(self, dict_list):
         """
         딕셔너리의 리스트를 받아서 구조를 유지하며 하나의 큰 딕셔너리로 만드는 함수
@@ -22,7 +24,7 @@ class KeywordDictionaryMergeAndExtractOperator(BaseOperator):
                     combined_category[key] = {}
                 for sub_key, sub_value in value.items():
                     combined_category[key][sub_key] = sub_value
-        
+
         return combined_category
 
     def extract_tuples(self, data, keys=[]):
@@ -45,13 +47,13 @@ class KeywordDictionaryMergeAndExtractOperator(BaseOperator):
         return tuples
 
     def execute(self, context):
-        
+
         self.log.info("Merging dictionaries...")
         merged_dict = json_dictionary_process.merge_dictionaries(self.dict_list)
         self.log.info(f"Merged Dictionary: {merged_dict}")
-        
+
         self.log.info("Extracting tuples...")
         extracted_tuples = json_dictionary_process.extract_tuples(merged_dict)
         self.log.info(f"Extracted Tuples: {extracted_tuples}")
-        
+
         return extracted_tuples

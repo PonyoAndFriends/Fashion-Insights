@@ -3,7 +3,10 @@ from airflow.models import Variable
 from datetime import datetime, timedelta
 from custom_operators.k8s_custom_python_pod_operator import CustomKubernetesPodOperator
 from custom_operators.calculate_page_range_operator import CalculatePageRangeOperator
-from custom_operators.custom_modules.otherapis_dependencies import MUSINSA_HEADERS, OTHERAPI_DEFAULT_ARGS
+from custom_operators.custom_modules.otherapis_dependencies import (
+    MUSINSA_HEADERS,
+    OTHERAPI_DEFAULT_ARGS,
+)
 import math
 
 # API 정보
@@ -47,22 +50,23 @@ with DAG(
                 required_args={
                     "url": url,
                     "page_ranges": "{{ task_instance.xcom_pull(task_ids='calculate_page_ranges_for_snap_ranking_story')[%d:%d] }}"
-                            % (
-                                i,
-                                min(
-                                    i + PARALLEL_THREAD_NUM, PARALLEL_POD_NUM * PARALLEL_THREAD_NUM
-                                ),
-                            ),
+                    % (
+                        i,
+                        min(
+                            i + PARALLEL_THREAD_NUM,
+                            PARALLEL_POD_NUM * PARALLEL_THREAD_NUM,
+                        ),
+                    ),
                     "file_topic": f"musinsa_{gender}_ranking_story_group",
                     "s3_dict": {
-                            "aws_access_key_id": Variable.get("aws_access_key_id"),
-                            "aws_secret_access_key": Variable.get("aws_secret_access_key"),
-                            "aws_region": Variable.get("aws_region"),
-                            "s3_bucket_name": Variable.get("s3_bucket_name"),
-                            "data_file": None,  # 동작 과정에서 생성
-                            "file_path": None,  # 동작 과정에서 생성
-                            "content_type": "application/json",
-                        },
+                        "aws_access_key_id": Variable.get("aws_access_key_id"),
+                        "aws_secret_access_key": Variable.get("aws_secret_access_key"),
+                        "aws_region": Variable.get("aws_region"),
+                        "s3_bucket_name": Variable.get("s3_bucket_name"),
+                        "data_file": None,  # 동작 과정에서 생성
+                        "file_path": None,  # 동작 과정에서 생성
+                        "content_type": "application/json",
+                    },
                     "pagenation_keyword": "page",
                 },
                 optional_args={
@@ -79,6 +83,8 @@ with DAG(
                 cpu_request="500m",
                 memory_request="512Mi",
             )
-            fetch_snap_ranking_story_data_tasks.append(fetch_snap_ranking_story_data_task)
+            fetch_snap_ranking_story_data_tasks.append(
+                fetch_snap_ranking_story_data_task
+            )
 
     calculate_page_range_task >> fetch_snap_ranking_story_data_tasks

@@ -17,7 +17,9 @@ class FetchNonPagedDataOperator(BaseOperator):
     :param s3_dict: s3에 데이터를 적재하기 위한 설정을 담은 딕셔너리
     """
 
-    def __init__(self, url, file_topic, content_type, params=None, headers=None, *args, **kwargs):
+    def __init__(
+        self, url, file_topic, content_type, params=None, headers=None, *args, **kwargs
+    ):
         super().__init__(*args, **kwargs)
         self.url = url
         self.params = params
