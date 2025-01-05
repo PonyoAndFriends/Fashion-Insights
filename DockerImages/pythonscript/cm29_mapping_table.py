@@ -1,4 +1,3 @@
-
 SHOES_CATEGORIES = [
     "Flats_Loafers",
     "Boots",
@@ -7,7 +6,8 @@ SHOES_CATEGORIES = [
     "Slippers_Mules",
     "Sneakers",
     "Loafers",
-    "Dress_Shoes"]
+    "Dress_Shoes",
+]
 
 CATEGORY_TREE = {
     "Woman_Clothing": {
