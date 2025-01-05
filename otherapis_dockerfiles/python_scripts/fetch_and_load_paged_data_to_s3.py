@@ -32,7 +32,9 @@ def process_page_ranges(
         for start_page, end_page in page_ranges
     ]
 
-    run_func_multi_thread.execute_in_threads(fetch_one_page_range_data.fetch_page_range_data, args_list, 10)
+    run_func_multi_thread.execute_in_threads(
+        fetch_one_page_range_data.fetch_page_range_data, args_list, 10
+    )
 
 
 def main():

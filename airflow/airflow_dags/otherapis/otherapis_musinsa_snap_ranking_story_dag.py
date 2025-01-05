@@ -1,6 +1,6 @@
 from airflow import DAG
 from airflow.models import Variable
-from datetime import datetime, timedelta
+from datetime import datetime
 from custom_operators.k8s_custom_python_pod_operator import CustomKubernetesPodOperator
 from custom_operators.calculate_page_range_operator import CalculatePageRangeOperator
 from custom_operators.custom_modules.otherapis_dependencies import (
