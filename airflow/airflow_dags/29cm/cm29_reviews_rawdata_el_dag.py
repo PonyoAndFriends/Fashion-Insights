@@ -10,37 +10,38 @@ REVIEW_FOLDER_PATH = "29cm_reviews"
 
 # DAG 기본 설정
 default_args = {
-    'owner': 'pcy7805@naver.com',
-    'depends_on_past': False,
-    'email_on_failure': False,
-    'email_on_retry': False,
-    'retries': 5,
-    'retry_delay': timedelta(minutes=30),
+    "owner": "pcy7805@naver.com",
+    "depends_on_past": False,
+    "email_on_failure": False,
+    "email_on_retry": False,
+    "retries": 5,
+    "retry_delay": timedelta(minutes=30),
 }
 
 with DAG(
     dag_id="29cm_Reviews_Raw_Data_EL_DAG",
     default_args=default_args,
     description="29cm reviews data extraction and loading to s3",
-    schedule_interval='0 0 * * *',
+    schedule_interval="0 0 * * *",
     start_date=days_ago(1),
     catchup=False,
-    tags=['29CM', 'REVIEWS_RAWDATA', 'EXTRACT', 'LOAD', 'S3']
+    tags=["29CM", "REVIEWS_RAWDATA", "EXTRACT", "LOAD", "S3"],
 ) as dag:
 
     today = datetime.now().strftime("%Y-%m-%d")
 
     genders = ["Woman", "Man"]
     for gender in genders:
-        for medium_folder in ["Pants","Tops","Shoes","Outerwear","Knitwear"]:
+        for medium_folder in ["Pants", "Tops", "Shoes", "Outerwear", "Knitwear"]:
             folder_path = f"{REVIEW_FOLDER_PATH}/{today}/{gender}/{medium_folder}"
             json_files = list_files_in_s3(folder_path)
 
             with TaskGroup(group_id=f"{gender}_{medium_folder}_group") as medium_group:
                 for file_key in json_files:
                     if file_key.endswith("_ids.json"):
-                        category_name = os.path.basename(
-                            file_key).replace("_ids.json", "")
+                        category_name = os.path.basename(file_key).replace(
+                            "_ids.json", ""
+                        )
                         PythonOperator(
                             task_id=f"fetch_reviews_{gender}_{medium_folder}_{category_name}",
                             python_callable=fetch_and_save_reviews_from_all_files,

@@ -8,8 +8,8 @@ from cm29_mapping_table import SHOES_CATEGORIES, CATEGORY_TREE
 
 # 로그 설정
 logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s - %(levelname)s - %(message)s")
+    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
+)
 logger = logging.getLogger(__name__)
 
 # API URL 및 헤더 설정
@@ -41,24 +41,42 @@ def extract_product_data(product, rank):
     """랭킹 상품 데이터 추출"""
     categories = product.get("frontCategoryInfo", [])
 
-    category_large_set = set([
-        category.get("categoryLargeName", "") for category in categories
-        if category.get("categoryLargeName")
-    ])
-    sexual = (
-        "M/W" if "남성의류" in category_large_set and "여성의류" in category_large_set
-        else "M" if "남성의류" in category_large_set
-        else "W" if "여성의류" in category_large_set
-        else None
+    category_large_set = set(
+        [
+            category.get("categoryLargeName", "")
+            for category in categories
+            if category.get("categoryLargeName")
+        ]
     )
-    category_medium_names = list(set([
-        category.get("categoryMediumName", "") for category in categories
-        if category.get("categoryMediumName") and category.get("categoryMediumName") != "EXCLUSIVE"
-    ]))
-    category_small_names = list(set([
-        category.get("categorySmallName", "") for category in categories
-        if category.get("categorySmallName") and category.get("categorySmallName") not in ["상의", "하의", "아우터"]
-    ]))
+    sexual = (
+        "M/W"
+        if "남성의류" in category_large_set and "여성의류" in category_large_set
+        else (
+            "M"
+            if "남성의류" in category_large_set
+            else "W" if "여성의류" in category_large_set else None
+        )
+    )
+    category_medium_names = list(
+        set(
+            [
+                category.get("categoryMediumName", "")
+                for category in categories
+                if category.get("categoryMediumName")
+                and category.get("categoryMediumName") != "EXCLUSIVE"
+            ]
+        )
+    )
+    category_small_names = list(
+        set(
+            [
+                category.get("categorySmallName", "")
+                for category in categories
+                if category.get("categorySmallName")
+                and category.get("categorySmallName") not in ["상의", "하의", "아우터"]
+            ]
+        )
+    )
     created_at = datetime.now().strftime("%Y-%m-%d")
     collection_platform = "29CM"
 
@@ -86,12 +104,7 @@ def extract_product_data(product, rank):
     }
 
 
-def fetch_and_save_data_to_s3(
-        large_id,
-        medium_id,
-        small_id,
-        s3_path,
-        gender_folder):
+def fetch_and_save_data_to_s3(large_id, medium_id, small_id, s3_path, gender_folder):
     """API를 통해 데이터를 가져와 S3에 저장"""
     payload = {
         "facetGroupInput": {
@@ -111,7 +124,8 @@ def fetch_and_save_data_to_s3(
         response = requests.post(API_URL, headers=HEADERS, json=payload)
         if response.status_code != 200:
             logger.error(
-                f"Failed to fetch data for {s3_path}. Status code: {response.status_code}")
+                f"Failed to fetch data for {s3_path}. Status code: {response.status_code}"
+            )
             return []
 
         data = response.json()
@@ -132,20 +146,24 @@ def fetch_and_save_data_to_s3(
         if any(category in s3_path for category in SHOES_CATEGORIES):
             product_data_key = f"{PRODUCT_FOLDER_PATH}/{today}/{gender_folder}/Shoes/{s3_path.split('/')[-1]}.json"
         else:
-            product_data_key = f"{PRODUCT_FOLDER_PATH}/{today}/{gender_folder}/{s3_path}.json"
+            product_data_key = (
+                f"{PRODUCT_FOLDER_PATH}/{today}/{gender_folder}/{s3_path}.json"
+            )
 
         # 상품 ID 저장 경로
         if any(category in s3_path for category in SHOES_CATEGORIES):
             product_id_key = f"{REVIEW_FOLDER_PATH}/{today}/{gender_folder}/Shoes/{s3_path.split('/')[-1]}_ids.json"
         else:
-            product_id_key = f"{REVIEW_FOLDER_PATH}/{today}/{gender_folder}/{s3_path}_ids.json"
+            product_id_key = (
+                f"{REVIEW_FOLDER_PATH}/{today}/{gender_folder}/{s3_path}_ids.json"
+            )
 
         # S3에 상품 데이터 저장
         s3_client.put_object(
             Bucket=S3_BUCKET_NAME,
             Key=product_data_key,
             Body=json.dumps(processed_data, ensure_ascii=False, indent=4),
-            ContentType="application/json"
+            ContentType="application/json",
         )
         logger.info(f"Product data saved to S3: {product_data_key}")
 
@@ -155,7 +173,7 @@ def fetch_and_save_data_to_s3(
             Bucket=S3_BUCKET_NAME,
             Key=product_id_key,
             Body=json.dumps(product_ids, ensure_ascii=False, indent=4),
-            ContentType="application/json"
+            ContentType="application/json",
         )
         logger.info(f"Product IDs saved to S3: {product_id_key}")
 
@@ -177,7 +195,9 @@ def process_category_data():
             if medium_category in SHOES_CATEGORIES:
                 s3_path = f"Shoes/{medium_category}"
                 logger.info(f"Processing: {gender_folder} > {s3_path}")
-                fetch_and_save_data_to_s3(large_id, medium_info, None, s3_path, gender_folder)
+                fetch_and_save_data_to_s3(
+                    large_id, medium_info, None, s3_path, gender_folder
+                )
 
             # 일반 의류 데이터 처리
             elif isinstance(medium_info, dict) and "subcategories" in medium_info:
@@ -185,9 +205,13 @@ def process_category_data():
                 for small_category, small_id in medium_info["subcategories"].items():
                     s3_path = f"{medium_category}/{small_category}"
                     logger.info(f"Processing: {gender_folder} > {s3_path}")
-                    fetch_and_save_data_to_s3(large_id, medium_id, small_id, s3_path, gender_folder)
+                    fetch_and_save_data_to_s3(
+                        large_id, medium_id, small_id, s3_path, gender_folder
+                    )
 
             elif isinstance(medium_info, str):  # 중분류가 문자열인 경우
                 s3_path = medium_category
                 logger.info(f"Processing: {gender_folder} > {s3_path}")
-                fetch_and_save_data_to_s3(large_id, medium_info, None, s3_path, gender_folder)
+                fetch_and_save_data_to_s3(
+                    large_id, medium_info, None, s3_path, gender_folder
+                )
