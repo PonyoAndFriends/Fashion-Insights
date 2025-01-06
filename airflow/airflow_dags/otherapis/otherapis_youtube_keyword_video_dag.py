@@ -59,6 +59,7 @@ with DAG(
                 "category_list": f"{{{{ task_instance.xcom_pull(task_ids='making_{task['gender']}_category_list_task') }}}}",
                 "max_threads": MAX_THREAD,
                 "s3_dict": DEFAULT_S3_DICT,
+                "file_topic": "youtoube_videos_by_categories",
             },
             cpu_limit="1000m",
             memory_limit="1Gi",
