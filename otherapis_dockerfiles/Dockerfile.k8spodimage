@@ -8,7 +8,7 @@ WORKDIR /app
 RUN mkdir -p /app/python_script/
 
 # 현재 디렉토리의 pythonscripts 폴더를 컨테이너의 /app/pythonscripts로 복사
-COPY ./python_script/ /app/python_script/
+COPY ./otherapis_dockerfiles/python_scripts/ /app/python_scripts/
 
 # 사용 모듈 설치
 RUN pip install -r /app/python_script/requirements.txt
