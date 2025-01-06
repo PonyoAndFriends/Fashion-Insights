@@ -4,6 +4,7 @@ from kubernetes import client, config
 from datetime import datetime
 from airflow.models import Variable
 
+
 def submit_spark_application():
     # Kubernetes 클라이언트 설정
     config.load_incluster_config()  # EKS 내부에서 실행 중인 경우
@@ -78,6 +79,7 @@ def submit_spark_application():
         body=spark_application,
     )
 
+
 default_args = {
     "owner": "airflow",
     "depends_on_past": False,
@@ -93,7 +95,6 @@ with DAG(
     start_date=datetime(2024, 1, 1),
     catchup=False,
 ) as dag:
-
     trigger_spark_application = PythonOperator(
         task_id="submit_spark_application",
         python_callable=submit_spark_application,
