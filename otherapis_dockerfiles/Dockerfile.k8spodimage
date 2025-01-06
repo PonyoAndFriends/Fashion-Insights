@@ -11,4 +11,4 @@ RUN mkdir -p /app/python_script/
 COPY ./otherapis_dockerfiles/python_scripts/ /app/python_scripts/
 
 # 사용 모듈 설치
-RUN pip install -r /app/python_script/requirements.txt
+RUN pip install -r /app/python_scripts/requirements.txt
