@@ -70,7 +70,7 @@ def fetch_fashion_keyword_data_and_load_to_s3(url, headers, keyword_batch, s3_di
 
         # 데이터를 구분하여 덮어쓰지 않고 저장하기 위해 파일 이름 끝에 숫자를 추가
         s3_dict["file_path"] = (
-            f"/keyword_trend_raw_data/{now_string}/{gender}_{second_category}_{third_category}_trend_{i}.json"
+            f"/{now_string}/keyword_trend_raw_data/{gender}_{second_category}_{third_category}_trend_{i}.json"
         )
         s3_dict["content_type"] = "application/json"
         s3_upload.load_data_to_s3(s3_dict)

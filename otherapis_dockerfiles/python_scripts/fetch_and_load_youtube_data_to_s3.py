@@ -103,7 +103,7 @@ def get_videos_with_details(
 
         s3_dict["data_file"] = videos
         s3_dict["file_path"] = (
-            f"/{file_topic}_raw_data/{now_string}/{gender}_{first_depth}_{second_depth}_{category}_data.json"
+            f"/{now_string}/{file_topic}_raw_data/{gender}_{first_depth}_{second_depth}_{category}_data.json"
         )
 
         logger.debug(f"Uploading data to S3 file path: {s3_dict['file_path']}")
