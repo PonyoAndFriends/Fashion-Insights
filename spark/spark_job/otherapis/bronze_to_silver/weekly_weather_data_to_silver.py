@@ -1,6 +1,13 @@
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import col, split, trim
-from pyspark.sql.types import StructType, StructField, StringType, FloatType, IntegerType, DateType
+from pyspark.sql.types import (
+    StructType,
+    StructField,
+    StringType,
+    FloatType,
+    IntegerType,
+    DateType,
+)
 from custom_modules import s3_spark_module
 import sys
 
@@ -17,33 +24,35 @@ raw_df = s3_spark_module.read_and_partition_s3_data(spark, source_path, "txt")
 
 # START7777과 END7777 사이의 데이터 필터링 (주석 및 빈 줄 제거)
 filtered_df = raw_df.filter(
-    (col("value").strip() != "") &  # 빈 줄 제거
-    (~col("value").startswith("#")) &  # 주석 제거
-    (~col("value").startswith("START7777")) &  # START 제거
-    (~col("value").startswith("END7777"))  # END 제거
+    (col("value").strip() != "")  # 빈 줄 제거
+    & (~col("value").startswith("#"))  # 주석 제거
+    & (~col("value").startswith("START7777"))  # START 제거
+    & (~col("value").startswith("END7777"))  # END 제거
 )
 
 # 데이터를 쉼표(,)로 분리하고 각 컬럼 매핑
 split_df = filtered_df.withColumn("columns", split(trim(col("value")), ","))
 
 # 스키마 정의
-schema = StructType([
-    StructField("TM", StringType(), True),  # 관측일
-    StructField("STN", IntegerType(), True),  # 국내 지점번호
-    StructField("WS_AVG", FloatType(), True),  # 일 평균 풍속
-    StructField("WS_MAX", FloatType(), True),  # 최대풍속
-    StructField("TA_AVG", FloatType(), True),  # 일 평균기온
-    StructField("TA_MAX", FloatType(), True),  # 최고기온
-    StructField("TA_MIN", FloatType(), True),  # 최저기온
-    StructField("HM_AVG", FloatType(), True),  # 일 평균 상대습도
-    StructField("HM_MIN", FloatType(), True),  # 최저습도
-    StructField("FG_DUR", FloatType(), True),  # 안개계속시간
-    StructField("CA_TOT", FloatType(), True),  # 일 평균 전운량
-    StructField("RN_DAY", FloatType(), True),  # 일 강수량
-    StructField("RN_DUR", FloatType(), True),  # 강수계속시간
-    StructField("RN_60M_MAX", FloatType(), True),  # 1시간 최다강수량
-    StructField("RN_POW_MAX", FloatType(), True),  # 최대 강우강도
-])
+schema = StructType(
+    [
+        StructField("TM", StringType(), True),  # 관측일
+        StructField("STN", IntegerType(), True),  # 국내 지점번호
+        StructField("WS_AVG", FloatType(), True),  # 일 평균 풍속
+        StructField("WS_MAX", FloatType(), True),  # 최대풍속
+        StructField("TA_AVG", FloatType(), True),  # 일 평균기온
+        StructField("TA_MAX", FloatType(), True),  # 최고기온
+        StructField("TA_MIN", FloatType(), True),  # 최저기온
+        StructField("HM_AVG", FloatType(), True),  # 일 평균 상대습도
+        StructField("HM_MIN", FloatType(), True),  # 최저습도
+        StructField("FG_DUR", FloatType(), True),  # 안개계속시간
+        StructField("CA_TOT", FloatType(), True),  # 일 평균 전운량
+        StructField("RN_DAY", FloatType(), True),  # 일 강수량
+        StructField("RN_DUR", FloatType(), True),  # 강수계속시간
+        StructField("RN_60M_MAX", FloatType(), True),  # 1시간 최다강수량
+        StructField("RN_POW_MAX", FloatType(), True),  # 최대 강우강도
+    ]
+)
 
 # 스키마를 적용하여 데이터프레임 생성
 data_df = split_df.select(
@@ -61,7 +70,7 @@ data_df = split_df.select(
     col("columns")[11].cast(FloatType()).alias("RN_DAY"),
     col("columns")[12].cast(FloatType()).alias("RN_DUR"),
     col("columns")[13].cast(FloatType()).alias("RN_60M_MAX"),
-    col("columns")[14].cast(FloatType()).alias("RN_POW_MAX")
+    col("columns")[14].cast(FloatType()).alias("RN_POW_MAX"),
 )
 
 # 필요한 컬럼의 데이터 변환

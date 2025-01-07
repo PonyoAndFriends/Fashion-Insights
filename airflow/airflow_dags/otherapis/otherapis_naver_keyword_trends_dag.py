@@ -61,7 +61,9 @@ with DAG(
             required_args={
                 "url": url,
                 "headers": headers,
-                "all_keywords": f"{{{{ task_instance.xcom_pull(task_ids='making_{task['gender']}_keywords_list_task') }}}}",
+                "all_keywords": "{{ task_instance.xcom_pull(task_ids='making_"
+                + f"{task['gender']}"
+                + "_keywords_list_task') }}",
                 "s3_dict": DEFAULT_S3_DICT,
             },
             cpu_limit="1000m",
@@ -73,14 +75,21 @@ with DAG(
         )
         fetch_keyword_data_tasks.append(gender_fetch_keyword_data_task)
 
-        file_path = f"/{datetime.now().strftime("%Y-%m-%d")}/otherapis/{task['gender']}_keyword_trends/"
+        now_string = datetime.now().strftime("%Y-%m-%d")
+        file_path = f"/{now_string}/otherapis/{task['gender']}_keyword_trends/"
         spark_job_submit_task = SparkApplicationOperator(
             task_id=f"naver_keywords_trend_{task['gender']}_submit_spark_job_task",
             name=f"naveer_keywords_trend_{task['gender']}_from_bronze_to_silver_data",
             main_application_file=r"otherapis\bronze_to_silver\naver_keyword_trend_to_silver.py",
-            application_args=[make_s3_url(Variable.get("bronze_bucket"), file_path), make_s3_url(Variable.get("silver_bucket"), file_path), task['gender']],
+            application_args=[
+                make_s3_url(Variable.get("bronze_bucket"), file_path),
+                make_s3_url(Variable.get("silver_bucket"), file_path),
+                task["gender"],
+            ],
         )
         spark_job_submit_task.append(spark_job_submit_task)
 
-    for list_task, fetch_task, spark_task in zip(keyword_list_tasks, fetch_keyword_data_tasks, spark_submit_tasks):
+    for list_task, fetch_task, spark_task in zip(
+        keyword_list_tasks, fetch_keyword_data_tasks, spark_submit_tasks
+    ):
         list_task >> fetch_task >> spark_task

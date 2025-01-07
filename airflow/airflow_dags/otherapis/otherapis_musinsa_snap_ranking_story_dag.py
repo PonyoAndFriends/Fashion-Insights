@@ -85,16 +85,25 @@ with DAG(
             fetch_snap_ranking_story_data_tasks.append(
                 fetch_snap_ranking_story_data_task
             )
-    
+
     fetch_snap_ranking_story_data_spark_submit_tasks = []
     for gender in ["MEN", "WOMEN"]:
         file_topic = f"musinsa_{gender}_ranking_story_group"
-        file_path = f"/{datetime.now().strftime('%Y-%m-%d')}/otherapis/{file_topic}_raw_data/"
+        file_path = (
+            f"/{datetime.now().strftime('%Y-%m-%d')}/otherapis/{file_topic}_raw_data/"
+        )
         spark_job_submit_task = SparkApplicationOperator(
             task_id=f"musinsa_snap_ranking_story_{gender}_submit_spark_job_task",
             name=f"musinsa_snap_ranking_stroy_{gender}_from_bronze_to_silver_data",
             main_application_file=r"otherapis/bronze_to_silver/musinsa_snap_ranking_story_to_silver.py",
-            application_args=[make_s3_url(Variable.get("bronze_bucket"), file_path), make_s3_url(Variable.get("silver_bucket"), file_path)],
+            application_args=[
+                make_s3_url(Variable.get("bronze_bucket"), file_path),
+                make_s3_url(Variable.get("silver_bucket"), file_path),
+            ],
         )
 
-    calculate_page_range_task >> fetch_snap_ranking_story_data_tasks >> spark_job_submit_task
+    (
+        calculate_page_range_task
+        >> fetch_snap_ranking_story_data_tasks
+        >> spark_job_submit_task
+    )

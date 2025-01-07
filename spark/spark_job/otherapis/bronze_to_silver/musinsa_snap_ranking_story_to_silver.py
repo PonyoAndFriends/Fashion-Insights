@@ -5,7 +5,7 @@ from pyspark.sql.types import (
     StringType,
     IntegerType,
     ArrayType,
-    TimestampType
+    TimestampType,
 )
 from pyspark.sql.functions import col
 from custom_modules import s3_spark_module

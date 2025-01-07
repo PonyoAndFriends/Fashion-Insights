@@ -80,12 +80,19 @@ with DAG(
             memory_request="512Mi",
         )
         fetch_snap_ranking_brand_data_tasks.append(fetch_snap_ranking_brand_data_task)
-    
+
     spark_job_submit_task = SparkApplicationOperator(
         task_id="musinsa_snap_ranking_brand_submit_spark_job_task",
         name="musinsa_snap_ranking_brand_from_bronze_to_silver_data",
         main_application_file=r"otherapis/bronze_to_silver/musinsa_snap_brand_ranking_to_silver.py",
-        application_args=[make_s3_url(Variable.get("bronze_bucket"), FILE_PATH), make_s3_url(Variable.get("silver_bucket"), FILE_PATH)],
+        application_args=[
+            make_s3_url(Variable.get("bronze_bucket"), FILE_PATH),
+            make_s3_url(Variable.get("silver_bucket"), FILE_PATH),
+        ],
     )
 
-    calculate_page_range_task >> fetch_snap_ranking_brand_data_tasks >> spark_job_submit_task
+    (
+        calculate_page_range_task
+        >> fetch_snap_ranking_brand_data_tasks
+        >> spark_job_submit_task
+    )

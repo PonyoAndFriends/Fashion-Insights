@@ -1,5 +1,6 @@
 from pyspark.sql import SparkSession
 
+
 def read_and_partition_s3_data(
     spark: SparkSession,
     s3_path: str,
@@ -7,7 +8,7 @@ def read_and_partition_s3_data(
     partition_column: str = None,
     target_partition_size_mb: int = 128,
     min_partitions: int = None,
-    max_partitions: int = None
+    max_partitions: int = None,
 ):
     """
     Reads data from S3, optimizes partitioning, and returns a DataFrame.
@@ -33,14 +34,15 @@ def read_and_partition_s3_data(
         df = spark.read.csv(s3_path, header=True, inferSchema=True)
     elif file_format == "html":
         print("Reading HTML file (requires external parsing)...")
-        raise NotImplementedError("HTML reading is not directly supported by Spark. Use external parsers like pandas.")
+        raise NotImplementedError(
+            "HTML reading is not directly supported by Spark. Use external parsers like pandas."
+        )
     else:
         raise ValueError(f"Unsupported file format: {file_format}")
 
     # Step 2: Calculate the number of partitions
     total_size_bytes = (
-        spark._jvm.org.apache.hadoop.fs.FileSystem
-        .get(spark._jsc.hadoopConfiguration())
+        spark._jvm.org.apache.hadoop.fs.FileSystem.get(spark._jsc.hadoopConfiguration())
         .getContentSummary(spark._jvm.org.apache.hadoop.fs.Path(s3_path))
         .getLength()
     )

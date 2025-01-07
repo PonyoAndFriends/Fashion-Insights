@@ -56,14 +56,18 @@ def get_top_five_keyword(url, headers, all_keywords):
     remainders = all_keywords[5:]
 
     for new_keyword in remainders:
-        sorted_keywords_with_new_keyword = sort_by_weekly_ratio(url, headers, all_keywords[:4] + [new_keyword])
+        sorted_keywords_with_new_keyword = sort_by_weekly_ratio(
+            url, headers, all_keywords[:4] + [new_keyword]
+        )
 
         if sorted_keywords_with_new_keyword[-1] == new_keyword:
             current_fifth = current_top_5[-1]
-            current_top_5[-1] = sort_by_weekly_ratio(url, headers, [current_fifth, new_keyword])
+            current_top_5[-1] = sort_by_weekly_ratio(
+                url, headers, [current_fifth, new_keyword]
+            )
         else:
             current_top_5 = sorted_keywords_with_new_keyword
-    
+
     return current_top_5
 
 
@@ -78,7 +82,8 @@ def fetch_final_data(url, headers, s3_dict, gender, top_5_keywords):
         "timeUnit": "date",
         "category": "50000000",
         "keyword": [
-            {"name": f"{keyword}_trend", "param": [keyword]} for keyword in top_5_keywords
+            {"name": f"{keyword}_trend", "param": [keyword]}
+            for keyword in top_5_keywords
         ],
     }
 
@@ -89,7 +94,9 @@ def fetch_final_data(url, headers, s3_dict, gender, top_5_keywords):
 
     # 최종 데이터 업로드
     s3_dict["data_file"] = response.json()
-    s3_dict["file_path"] = f"/{now_string}/otherapis/{gender}_keyword_trends/final_top_5_keywords_data.json"
+    s3_dict["file_path"] = (
+        f"/{now_string}/otherapis/{gender}_keyword_trends/final_top_5_keywords_data.json"
+    )
     s3_dict["content_type"] = "application/json"
     s3_upload.load_data_to_s3(s3_dict)
     logger.info("Final top 5 keyword data uploaded to S3.")
@@ -102,7 +109,9 @@ def main():
     )
     parser.add_argument("--url", required=True, help="API endpoint URL")
     parser.add_argument("--headers", required=True, help="API headers as JSON string")
-    parser.add_argument("--gender", required=True, help="Gender of current category list")
+    parser.add_argument(
+        "--gender", required=True, help="Gender of current category list"
+    )
     parser.add_argument("--all_keywords", required=True, help="List of all keywords")
     parser.add_argument("--s3_dict", required=True, help="S3 client config as JSON")
 

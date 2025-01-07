@@ -58,7 +58,9 @@ with DAG(
             script_path="/app/python_script/fetch_and_load_youtube_data_to_s3.py",
             required_args={
                 "youtube_api_key": youtube_api_key,
-                "category_list": f"{{{{ task_instance.xcom_pull(task_ids='making_{task['gender']}_category_list_task') }}}}",
+                "category_list": "{{ task_instance.xcom_pull(task_ids='making_"
+                + task["gender"]
+                + "_category_list_task') }}",
                 "max_threads": MAX_THREAD,
                 "s3_dict": DEFAULT_S3_DICT,
                 "file_topic": "youtoube_videos_by_categories",
@@ -73,15 +75,21 @@ with DAG(
         fetch_keyword_data_tasks.append(gender_fetch_youtube_data_task)
 
         file_topic = "youtoube_videos_by_categories"
-        file_path = f"/{datetime.now().strftime("%Y-%m-%d")}/otherapis/{task['gender']}_{file_topic}_raw_data/"
+        now_string = datetime.now().strftime("%Y-%m-%d")
+        file_path = f"/{now_string}/otherapis/{task['gender']}_{file_topic}_raw_data/"
         spark_job_submit_task = SparkApplicationOperator(
             task_id=f"youtube_category_videos_{task['gender']}_submit_spark_job_task",
             name=f"youtube_category_videos_{task['gender']}_from_bronze_to_silver_data",
             main_application_file=r"otherapis\bronze_to_silver\youtube_data_to_silver.py",
-            application_args=[make_s3_url(Variable.get("bronze_bucket"), file_path), make_s3_url(Variable.get("silver_bucket"), file_path), task['gender']],
+            application_args=[
+                make_s3_url(Variable.get("bronze_bucket"), file_path),
+                make_s3_url(Variable.get("silver_bucket"), file_path),
+                task["gender"],
+            ],
         )
         spark_submit_tasks.append(spark_job_submit_task)
 
-
-    for list_task, fetch_task, spark_submit_task in zip(category_list_tasks, fetch_keyword_data_tasks, spark_submit_tasks):
+    for list_task, fetch_task, spark_submit_task in zip(
+        category_list_tasks, fetch_keyword_data_tasks, spark_submit_tasks
+    ):
         list_task >> fetch_task >> spark_submit_task

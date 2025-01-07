@@ -10,7 +10,7 @@ from pyspark.sql.types import (
     StringType,
     IntegerType,
     ArrayType,
-    TimestampType
+    TimestampType,
 )
 from custom_modules import s3_spark_module
 import sys
@@ -48,8 +48,7 @@ table_df = brands_df.select(
 
 # Labels 데이터 처리: name 필드만 리스트로 묶어서 저장
 labels_df = table_df.withColumn("label", explode("labels")).select(
-    col("brand_id"),
-    col("label.name").alias("name")
+    col("brand_id"), col("label.name").alias("name")
 )
 
 # brand_id별 name 리스트 생성
@@ -67,7 +66,7 @@ final_table_with_labels = table_df.join(label_names_df, "brand_id", "left").sele
     "previous_rank",
     "follower_count",
     "label_names",
-    "created_at"
+    "created_at",
 )
 
 # JSON 데이터 스키마 정의
@@ -86,7 +85,9 @@ schema = StructType(
 )
 
 # 스키마 적용
-final_table_with_schema = spark.createDataFrame(final_table_with_labels.rdd, schema=schema)
+final_table_with_schema = spark.createDataFrame(
+    final_table_with_labels.rdd, schema=schema
+)
 
 
 # 3. 결과를 S3 대상 경로로 저장

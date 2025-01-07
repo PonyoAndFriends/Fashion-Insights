@@ -1,6 +1,12 @@
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import col, explode, lit, current_timestamp
-from pyspark.sql.types import StructType, StructField, StringType, IntegerType, TimestampType
+from pyspark.sql.types import (
+    StructType,
+    StructField,
+    StringType,
+    IntegerType,
+    TimestampType,
+)
 from custom_modules import s3_spark_module
 import sys
 
@@ -22,8 +28,7 @@ exploded_df = None
 
 for category in categories:
     category_df = raw_df.select(
-        explode(col(category)).alias("video_data"),
-        lit(category).alias("category_name")
+        explode(col(category)).alias("video_data"), lit(category).alias("category_name")
     )
     exploded_df = category_df if exploded_df is None else exploded_df.union(category_df)
 
@@ -39,23 +44,25 @@ processed_df = exploded_df.select(
     col("video_data.publishedAt").cast(TimestampType()).alias("published_at"),
     col("video_data.viewCount").cast(IntegerType()).alias("view_count"),
     col("video_data.likeCount").cast(IntegerType()).alias("like_count"),
-    current_timestamp().alias("created_at")
+    current_timestamp().alias("created_at"),
 )
 
 # 스키마 정의
-schema = StructType([
-    StructField("video_id", StringType(), False),
-    StructField("gender", StringType(), True),
-    StructField("category_name", StringType(), False),
-    StructField("channel_title", StringType(), False),
-    StructField("title", StringType(), False),
-    StructField("img_url", StringType(), False),
-    StructField("duration_seconds", IntegerType(), False),
-    StructField("published_at", TimestampType(), False),
-    StructField("view_count", IntegerType(), False),
-    StructField("like_count", IntegerType(), True),
-    StructField("created_at", TimestampType(), False)
-])
+schema = StructType(
+    [
+        StructField("video_id", StringType(), False),
+        StructField("gender", StringType(), True),
+        StructField("category_name", StringType(), False),
+        StructField("channel_title", StringType(), False),
+        StructField("title", StringType(), False),
+        StructField("img_url", StringType(), False),
+        StructField("duration_seconds", IntegerType(), False),
+        StructField("published_at", TimestampType(), False),
+        StructField("view_count", IntegerType(), False),
+        StructField("like_count", IntegerType(), True),
+        StructField("created_at", TimestampType(), False),
+    ]
+)
 
 # 스키마 적용
 final_df = spark.createDataFrame(processed_df.rdd, schema=schema)
