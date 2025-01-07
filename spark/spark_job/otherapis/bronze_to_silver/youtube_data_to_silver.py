@@ -27,7 +27,7 @@ gender = args[3] if len(args) > 3 else None
 raw_df = s3_spark_module.read_and_partition_s3_data(spark, source_path, "json")
 
 # 모든 카테고리 추출 및 동적 처리
-categories = raw_df.columns  
+categories = raw_df.columns
 exploded_df = None
 
 for category in categories:
