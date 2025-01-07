@@ -1,16 +1,18 @@
 from pyspark.sql import SparkSession
-from pyspark.sql.functions import col, lit, udf, regexp_extract
+from pyspark.sql.functions import col
 from pyspark.sql.types import StructType, StructField, StringType, FloatType, IntegerType, DateType
+import sys
 
 # 스파크 세션 생성
 spark = SparkSession.builder.appName("Weather Data Processing").getOrCreate()
 
-# S3 텍스트 파일 경로
-input_path = "s3://source-bucket-name/path-to-txt-files/"
-output_path = "s3://destination-bucket-name/output-path/"
+# 실행 시 전달받은 인자
+args = sys.argv
+source_path = args[1]
+target_path = args[2]
 
 # 텍스트 파일 읽기
-raw_rdd = spark.sparkContext.textFile(input_path)
+raw_rdd = spark.sparkContext.textFile(source_path)
 
 # START7777과 END 사이의 데이터 추출
 data_rdd = raw_rdd.filter(lambda line: not line.startswith("#") and line.strip() != "").filter(
@@ -46,4 +48,4 @@ data_df = spark.createDataFrame(
 processed_df = data_df.withColumn("TM", col("TM").cast(DateType()))
 
 # 결과 저장
-processed_df.write.mode("overwrite").parquet(output_path)
+processed_df.write.mode("overwrite").parquet(target_path)

@@ -72,6 +72,7 @@ def get_videos_with_details(
                         {
                             "search_category": "",
                             "videoId": video_info["id"],
+                            "category_name": f"{gender}_{first_depth}_{second_depth}_{category}",
                             "title": video_info["snippet"]["title"],
                             "publishedAt": video_info["snippet"]["publishedAt"],
                             "description": video_info["snippet"].get("description", ""),

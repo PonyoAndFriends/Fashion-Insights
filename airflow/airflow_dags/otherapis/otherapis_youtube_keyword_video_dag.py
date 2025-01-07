@@ -11,7 +11,7 @@ from custom_operators.custom_modules.otherapis_dependencies import (
 )
 from custom_operators.k8s_custom_python_pod_operator import CustomKubernetesPodOperator
 from custom_operators.keyword_dictionary_process_oprerator import (
-    CategoryDictionaryMergeAndExtractOperator,
+    CategoryDictionaryMergeAndExplodeOperator,
 )
 
 
@@ -44,7 +44,7 @@ with DAG(
     fetch_keyword_data_tasks = []
 
     for task in tasks_config:
-        gender_category_list_task = CategoryDictionaryMergeAndExtractOperator(
+        gender_category_list_task = CategoryDictionaryMergeAndExplodeOperator(
             task_id=f"making_{task['gender']}_category_list_task",
             dict_list=task["category_list"],
         )

@@ -56,7 +56,7 @@ def read_and_partition_s3_data(
     print(f"Target partition size: {target_partition_size_mb} MB")
     print(f"Estimated partitions: {estimated_partitions}")
 
-    # Step 3: Repartition data
+    # Step 3: Repartition data - 성능이 안나오면 coalesce 사용 가능.
     if partition_column:
         print(f"Repartitioning by column: {partition_column}")
         df = df.repartition(estimated_partitions, partition_column)
@@ -65,29 +65,3 @@ def read_and_partition_s3_data(
         df = df.repartition(estimated_partitions)
 
     return df
-
-# Example usage
-# if __name__ == "__main__":
-#     # Initialize SparkSession
-#     spark = SparkSession.builder \
-#         .appName("S3 Data Partitioning") \
-#         .config("spark.sql.files.maxPartitionBytes", "134217728")  # 128 MB
-#         .config("spark.sql.files.openCostInBytes", "1048576")      # 1 MB
-#         .config("spark.sql.shuffle.partitions", "200")            # Default shuffle partitions
-#         .config("spark.hadoop.fs.s3a.multipart.size", "104857600")  # 100 MB
-#         .config("spark.hadoop.fs.s3a.threads.max", "2048")          # Max threads for S3
-#         .getOrCreate()
-
-#     # Read and partition data
-#     s3_path = "s3://your-bucket-name/your-data-path/"
-#     df = read_and_partition_s3_data(
-#         spark=spark,
-#         s3_path=s3_path,
-#         partition_column="date",         # Optional: specify partition column
-#         target_partition_size_mb=128,   # Target partition size in MB
-#         min_partitions=10,              # Minimum number of partitions
-#         max_partitions=500              # Maximum number of partitions
-#     )
-
-#     # Example transformation
-#     df.show()
