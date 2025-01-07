@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 # API URL 및 헤더 설정
 API_URL = "https://search-api.29cm.co.kr/api/v4/plp/category"
 HEADERS = {
-    "Authorization": "Bearer ", #Bearer 토큰 임시로 비워둠..
+    "Authorization": "Bearer ",  # Bearer 토큰 임시로 비워둠..
     "Content-Type": "application/json",
 }
 
