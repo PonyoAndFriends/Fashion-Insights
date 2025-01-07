@@ -1,3 +1,4 @@
+
 SHOES_CATEGORIES = [
     "Flats_Loafers",
     "Boots",
@@ -6,8 +7,7 @@ SHOES_CATEGORIES = [
     "Slippers_Mules",
     "Sneakers",
     "Loafers",
-    "Dress_Shoes",
-]
+    "Dress_Shoes"]
 
 CATEGORY_TREE = {
     "Woman_Clothing": {
@@ -24,7 +24,7 @@ CATEGORY_TREE = {
                     "Shirts": "268103106",
                     "Blouses": "268103107",
                     "Pique_Collar_Shirts": "268103109",
-                    "Polos": "268103110",
+                    "Polos_TShirts": "268103110",
                 },
             },
             "Pants": {
@@ -98,7 +98,7 @@ CATEGORY_TREE = {
                     "V_Necks": "268105107",
                     "Cashmere": "268105105",
                     "Cardigans": "268105103",
-                    "Vests": "268105104",
+                    "Knit_Vests": "268105104",
                     "Polos": "268105105",
                     "Turtlenecks": "268105102",
                     "Other_Knitwear": "268105110",
@@ -183,10 +183,10 @@ CATEGORY_TREE = {
                     "Turtlenecks": "272110103",
                     "V_Necks": "272110102",
                     "Crewnecks": "272110101",
-                    "Polos": "272110107",
+                    "Polos_Knit": "272110107",
                     "ZipUps": "272110106",
                     "Cardigans": "272110104",
-                    "Vests": "272110105",
+                    "Knit_Vests": "272110105",
                     "Hoodies": "272110108",
                 },
             },

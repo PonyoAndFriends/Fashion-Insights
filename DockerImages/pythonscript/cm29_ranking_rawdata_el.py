@@ -49,7 +49,7 @@ def extract_product_data(product, rank):
             if category.get("categoryLargeName")
         ]
     )
-    sexual = (
+    gender = (
         "M/W"
         if "남성의류" in category_large_set and "여성의류" in category_large_set
         else (
@@ -81,10 +81,12 @@ def extract_product_data(product, rank):
     created_at = datetime.now().strftime("%Y-%m-%d")
     collection_platform = "29CM"
 
+    img_url = "https://img.29cm.co.kr" + product["imageUrl"]
+
     return {
-        "rank": rank,
+        "ranking": rank,
         "product_id": product["itemNo"],
-        "item_name": product["itemName"],
+        "product_name": product["itemName"],
         "frontBrandNo": product["frontBrandNo"],
         "brand_name_kr": product["frontBrandNameKor"],
         "brand_name_en": product["frontBrandNameEng"],
@@ -94,12 +96,12 @@ def extract_product_data(product, rank):
         "review_counting": product["reviewCount"],
         "review_avg_rating": product["reviewAveragePoint"],
         "like_counting": product["heartCount"],
-        "sexual": sexual,
+        "gender": gender,
         "categoryMediumNames": category_medium_names,
         "categorySmallNames": category_small_names,
-        "collection_platform": collection_platform,
+        "platform": collection_platform,
         "created_at": created_at,
-        "image_url": product["imageUrl"],
+        "img_url": img_url,
         "soldout_status": product["isSoldOut"],
         "isNew": product["isNew"],
     }
