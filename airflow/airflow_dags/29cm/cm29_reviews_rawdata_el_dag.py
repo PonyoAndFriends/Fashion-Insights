@@ -4,9 +4,10 @@ from airflow import DAG
 from airflow.operators.python import PythonOperator
 from airflow.utils.task_group import TaskGroup
 from airflow.utils.dates import days_ago
-from cm29_reviews_etl import list_files_in_s3, fetch_and_save_reviews_from_all_files
+from cm29_reviews_rawdata_el_dag import list_files_in_s3, fetch_and_save_reviews_from_all_files
 
 REVIEW_FOLDER_PATH = "29cm_reviews"
+PLATFORM_FOLDER_PATH = "29cm"
 
 # DAG 기본 설정
 default_args = {
@@ -33,7 +34,7 @@ with DAG(
     genders = ["Woman", "Man"]
     for gender in genders:
         for medium_folder in ["Pants", "Tops", "Shoes", "Outerwear", "Knitwear"]:
-            folder_path = f"{REVIEW_FOLDER_PATH}/{today}/{gender}/{medium_folder}"
+            folder_path = f"{today}/{PLATFORM_FOLDER_PATH}/{REVIEW_FOLDER_PATH}/{gender}/{medium_folder}"
             json_files = list_files_in_s3(folder_path)
 
             with TaskGroup(group_id=f"{gender}_{medium_folder}_group") as medium_group:

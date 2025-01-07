@@ -25,7 +25,8 @@ AWS_SECRET_KEY = os.getenv("AWS_SECRET_KEY")
 
 # S3 설정
 S3_BUCKET_NAME = "pcy-test-rawdata-bucket"
-PRODUCT_FOLDER_PATH = "29cm"
+PLATFORM_FOLDER_PATH = "29cm"
+PRODUCT_FOLDER_PATH = "29cm_product"
 REVIEW_FOLDER_PATH = "29cm_reviews"
 
 # boto3 클라이언트 설정
@@ -81,7 +82,7 @@ def extract_product_data(product, rank):
     collection_platform = "29CM"
 
     return {
-        "rank": rank,  # 순위 추가
+        "rank": rank,
         "product_id": product["itemNo"],
         "item_name": product["itemName"],
         "frontBrandNo": product["frontBrandNo"],
@@ -144,19 +145,15 @@ def fetch_and_save_data_to_s3(large_id, medium_id, small_id, s3_path, gender_fol
 
         # 상품 데이터 저장 경로
         if any(category in s3_path for category in SHOES_CATEGORIES):
-            product_data_key = f"{PRODUCT_FOLDER_PATH}/{today}/{gender_folder}/Shoes/{s3_path.split('/')[-1]}.json"
+            product_data_key = f"{today}/{PLATFORM_FOLDER_PATH}/{PRODUCT_FOLDER_PATH}/{gender_folder}/Shoes/{s3_path.split('/')[-1]}.json"
         else:
-            product_data_key = (
-                f"{PRODUCT_FOLDER_PATH}/{today}/{gender_folder}/{s3_path}.json"
-            )
+            product_data_key = f"{today}/{PLATFORM_FOLDER_PATH}/{PRODUCT_FOLDER_PATH}/{gender_folder}/{s3_path}.json"
 
         # 상품 ID 저장 경로
         if any(category in s3_path for category in SHOES_CATEGORIES):
-            product_id_key = f"{REVIEW_FOLDER_PATH}/{today}/{gender_folder}/Shoes/{s3_path.split('/')[-1]}_ids.json"
+            product_id_key = f"{today}/{PLATFORM_FOLDER_PATH}/{REVIEW_FOLDER_PATH}/{gender_folder}/Shoes/{s3_path.split('/')[-1]}_ids.json"
         else:
-            product_id_key = (
-                f"{REVIEW_FOLDER_PATH}/{today}/{gender_folder}/{s3_path}_ids.json"
-            )
+            product_id_key = f"{today}/{PLATFORM_FOLDER_PATH}/{REVIEW_FOLDER_PATH}/{gender_folder}/{s3_path}_ids.json"
 
         # S3에 상품 데이터 저장
         s3_client.put_object(
