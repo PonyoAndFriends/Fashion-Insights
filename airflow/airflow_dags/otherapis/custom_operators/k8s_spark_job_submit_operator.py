@@ -1,8 +1,6 @@
 from airflow.models import BaseOperator
 from kubernetes import client, config
-from airflow.models import Variable
 from custom_modules.spark_dependencies import *
-from custom_modules.otherapis_dependencies import OTHERAPI_DEFAULT_ARGS
 
 
 class SparkApplicationOperator(BaseOperator):

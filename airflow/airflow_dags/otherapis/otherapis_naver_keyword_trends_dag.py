@@ -1,5 +1,4 @@
 from airflow import DAG
-from airflow.models import Variable
 from datetime import datetime
 from custom_operators.custom_modules.otherapis_categories import (
     MALE_CATEGORY_LIST,

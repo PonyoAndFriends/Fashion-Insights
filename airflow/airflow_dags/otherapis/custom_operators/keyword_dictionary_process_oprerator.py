@@ -40,7 +40,6 @@ class CategoryDictionaryMergeAndExplodeOperator(BaseOperator):
             tuples.append((*keys, data))
         return tuples
 
-
     def execute(self, context):
         self.log.info("Merging dictionaries...")
         merged_dict = self.merge_dictionaries(self.dict_list)
