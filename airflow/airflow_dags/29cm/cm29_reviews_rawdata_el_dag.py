@@ -4,7 +4,10 @@ from airflow import DAG
 from airflow.operators.python import PythonOperator
 from airflow.utils.task_group import TaskGroup
 from airflow.utils.dates import days_ago
-from cm29_reviews_rawdata_el_dag import list_files_in_s3, fetch_and_save_reviews_from_all_files
+from cm29_reviews_rawdata_el_dag import (
+    list_files_in_s3,
+    fetch_and_save_reviews_from_all_files,
+)
 
 REVIEW_FOLDER_PATH = "29cm_reviews"
 PLATFORM_FOLDER_PATH = "29cm"
