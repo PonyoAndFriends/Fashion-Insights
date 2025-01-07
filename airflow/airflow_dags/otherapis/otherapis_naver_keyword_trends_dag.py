@@ -78,7 +78,7 @@ with DAG(
             task_id=f"naver_keywords_trend_{task['gender']}_submit_spark_job_task",
             name=f"naveer_keywords_trend_{task['gender']}_from_bronze_to_silver_data",
             main_application_file=r"otherapis\bronze_to_silver\naver_keyword_trend_to_silver.py",
-            application_args=[make_s3_url(Variable.get("bronze_bucket"), file_path), make_s3_url(Variable.get("silver_bucket"), file_path)],
+            application_args=[make_s3_url(Variable.get("bronze_bucket"), file_path), make_s3_url(Variable.get("silver_bucket"), file_path), task['gender']],
         )
         spark_job_submit_task.append(spark_job_submit_task)
 
