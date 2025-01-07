@@ -2,7 +2,9 @@ from pyspark.sql import SparkSession
 from pyspark.sql.functions import col, split
 from pyspark.sql.types import StructType, StructField, StringType, IntegerType
 from custom_modules import s3_spark_module
-import sys
+import sys, logging
+
+logger = logging.getLogger(__name__)
 
 # Spark 세션 생성
 spark = SparkSession.builder.appName("WeatherDataProcessing").getOrCreate()
@@ -46,4 +48,4 @@ final_df = spark.createDataFrame(data_df.rdd, schema)
 # 결과 저장
 final_df.write.mode("overwrite").parquet(target_path)
 
-print(f"Data processed and saved to {target_path}")
+logger.info(f"Data processed and saved to {target_path}")

@@ -9,10 +9,12 @@ from pyspark.sql.types import (
 )
 from pyspark.sql.functions import col
 from custom_modules import s3_spark_module
-import sys
+import sys, logging
+
+logger = logging.getLogger(__name__)
 
 # SparkSession 생성
-spark = SparkSession.builder.appName("JSON to Spark Table").getOrCreate()
+spark = SparkSession.builder.appName("snap_ranking_story_to_silver_s3").getOrCreate()
 
 # 실행 시 전달받은 인자
 args = sys.argv
@@ -47,3 +49,5 @@ final_df = spark.createDataFrame(transformed_df.rdd, schema=schema)
 
 # 데이터 저장 예시 (Parquet 파일로 저장)
 final_df.write.mode("overwrite").parquet(target_path)
+
+logger.info(f"Processed JSON data has been saved to: {target_path}")

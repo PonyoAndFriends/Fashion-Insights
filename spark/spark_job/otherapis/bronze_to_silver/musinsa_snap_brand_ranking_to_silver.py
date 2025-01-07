@@ -13,21 +13,22 @@ from pyspark.sql.types import (
     TimestampType,
 )
 from custom_modules import s3_spark_module
-import sys
+import sys, logging
+
+logger = logging.getLogger(__name__)
 
 # 스파크 세션 생성
-spark = SparkSession.builder.appName("Transform JSON to Table").getOrCreate()
+spark = SparkSession.builder.appName("musinsa_snap_brand_ranking_to_silver_s3").getOrCreate()
 
 # 실행 시 전달받은 인자
 args = sys.argv
 source_path = args[1]
 target_path = args[2]
 
-# 1. S3에서 모든 JSON 파일 읽기
+# S3에서 모든 JSON 파일 읽기
 raw_json_df = s3_spark_module.read_and_partition_s3_data(spark, source_path, "json")
 
-# 2. JSON 처리
-# 필요한 컬럼 추출 및 테이블 스키마에 맞게 변환
+# JSON 처리 - 필요한 컬럼 추출 및 테이블 스키마에 맞게 변환
 brands_df = (
     raw_json_df.selectExpr("data.list")
     .withColumn("list", explode(col("list")))
@@ -90,8 +91,8 @@ final_table_with_schema = spark.createDataFrame(
 )
 
 
-# 3. 결과를 S3 대상 경로로 저장
+# 결과를 S3 대상 경로로 저장
 final_table_with_schema.write.mode("overwrite").parquet(target_path)
 
-# 4. 완료 메시지
-print(f"Processed JSON data has been saved to: {target_path}")
+# 완료 메시지
+logger.info(f"Processed JSON data has been saved to: {target_path}")

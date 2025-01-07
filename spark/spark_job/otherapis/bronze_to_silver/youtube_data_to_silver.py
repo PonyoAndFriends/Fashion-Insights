@@ -8,7 +8,11 @@ from pyspark.sql.types import (
     TimestampType,
 )
 from custom_modules import s3_spark_module
-import sys
+import sys, logging
+
+
+logger = logging.getLogger(__name__)
+
 
 # Spark 세션 생성
 spark = SparkSession.builder.appName("YouTubeDataProcessing").getOrCreate()
@@ -17,13 +21,13 @@ spark = SparkSession.builder.appName("YouTubeDataProcessing").getOrCreate()
 args = sys.argv
 source_path = args[1]
 target_path = args[2]
-gender = args[3] if len(args) > 3 else None  # 성별 인자 (기본값: None)
+gender = args[3] if len(args) > 3 else None
 
 # JSON 데이터 읽기
 raw_df = s3_spark_module.read_and_partition_s3_data(spark, source_path, "json")
 
 # 모든 카테고리 추출 및 동적 처리
-categories = raw_df.columns  # "슬랙스", "데님팬츠" 등 카테고리 이름들
+categories = raw_df.columns  
 exploded_df = None
 
 for category in categories:
@@ -70,4 +74,4 @@ final_df = spark.createDataFrame(processed_df.rdd, schema=schema)
 # 결과 저장
 final_df.write.mode("overwrite").parquet(target_path)
 
-print(f"Data processed and saved to {target_path}")
+logger.info(f"Data processed and saved to {target_path}")

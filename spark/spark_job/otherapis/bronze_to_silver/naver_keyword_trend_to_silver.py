@@ -10,10 +10,12 @@ from pyspark.sql.types import (
     TimestampType,
 )
 from custom_modules import s3_spark_module
-import sys
+import sys, logging
+
+logger = logging.getLogger(__name__)
 
 # 스파크 세션 생성
-spark = SparkSession.builder.appName("Process Trend Data").getOrCreate()
+spark = SparkSession.builder.appName("naver_keyword_trend_to_silver_s3").getOrCreate()
 
 # 실행 시 전달받은 인자
 args = sys.argv
@@ -21,10 +23,10 @@ source_path = args[1]
 target_path = args[2]
 gender = args[3]  # gender 값을 명시적으로 전달받음
 
-# 1. JSON 파일 읽기
+# JSON 파일 읽기
 raw_df = s3_spark_module.read_and_partition_s3_data(spark, source_path, "json")
 
-# 2. 기본 컬럼 변환
+# 기본 컬럼 변환
 trend_df = raw_df.select(
     lit(None).cast(IntegerType()).alias("trend_id"),  # trend_id placeholder
     col("startDate").cast(DateType()).alias("start_date"),
@@ -34,7 +36,7 @@ trend_df = raw_df.select(
     explode(col("results")).alias("result"),
 )
 
-# 3. results 컬럼 데이터 변환
+# results 컬럼 데이터 변환
 result_df = trend_df.select(
     col("trend_id"),
     col("start_date"),
@@ -45,7 +47,7 @@ result_df = trend_df.select(
     explode(col("result.data")).alias("data"),  # data 리스트 explode
 )
 
-# 4. data 컬럼 데이터 변환 및 추가 컬럼 설정
+# data 컬럼 데이터 변환 및 추가 컬럼 설정
 final_df = result_df.select(
     col("trend_id"),
     col("start_date"),
@@ -60,7 +62,7 @@ final_df = result_df.select(
     current_timestamp().alias("created_at"),  # 데이터 수집 시간
 )
 
-# 5. 스키마 정의
+# 스키마 정의
 schema = StructType(
     [
         StructField("trend_id", IntegerType(), True),
@@ -78,10 +80,10 @@ schema = StructType(
     ]
 )
 
-# 6. 스키마를 적용한 최종 DataFrame 생성
+# 스키마를 적용한 최종 DataFrame 생성
 final_df_with_schema = spark.createDataFrame(final_df.rdd, schema=schema)
 
-# 7. Parquet 형식으로 저장
+# Parquet 형식으로 저장
 final_df_with_schema.write.mode("overwrite").parquet(target_path)
 
-print(f"Processed data saved to: {target_path}")
+logger.info(f"Processed data saved to: {target_path}")

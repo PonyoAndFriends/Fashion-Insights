@@ -9,7 +9,9 @@ from pyspark.sql.types import (
     DateType,
 )
 from custom_modules import s3_spark_module
-import sys
+import sys, logging
+
+logger = logging.getLogger(__name__)
 
 # 스파크 세션 생성
 spark = SparkSession.builder.appName("Weather Data Processing").getOrCreate()
@@ -79,4 +81,4 @@ processed_df = data_df.withColumn("TM", col("TM").cast(DateType()))
 # 결과 저장
 processed_df.write.mode("overwrite").parquet(target_path)
 
-print(f"Data processed and saved to {target_path}")
+logger.info(f"Data processed and saved to {target_path}")
