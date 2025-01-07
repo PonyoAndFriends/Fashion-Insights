@@ -55,11 +55,17 @@ class SparkApplicationOperator(BaseOperator):
                 plural="sparkapplications",
                 name=self.name,
             )
-            state = response.get("status", {}).get("applicationState", {}).get("state", "UNKNOWN")
+            state = (
+                response.get("status", {})
+                .get("applicationState", {})
+                .get("state", "UNKNOWN")
+            )
             self.log.info(f"SparkApplication {self.name} current state: {state}")
 
             if state in ["COMPLETED", "FAILED", "ERROR"]:
-                self.log.info(f"SparkApplication {self.name} finished with state: {state}")
+                self.log.info(
+                    f"SparkApplication {self.name} finished with state: {state}"
+                )
                 return state
             time.sleep(5)
 
@@ -68,7 +74,9 @@ class SparkApplicationOperator(BaseOperator):
         core_v1_api = client.CoreV1Api()
         driver_pod_name = f"spark-{self.name}-driver"
         try:
-            logs = core_v1_api.read_namespaced_pod_log(name=driver_pod_name, namespace=self.namespace)
+            logs = core_v1_api.read_namespaced_pod_log(
+                name=driver_pod_name, namespace=self.namespace
+            )
             self.log.info(f"Driver Pod Logs for {driver_pod_name}:\n{logs}")
         except Exception as e:
             self.log.error(f"Failed to fetch driver logs: {e}")
@@ -92,7 +100,9 @@ class SparkApplicationOperator(BaseOperator):
             if e.status != 404:
                 self.log.error(f"Failed to delete existing SparkApplication: {e}")
                 raise
-            self.log.info(f"No existing SparkApplication named {self.name} found. Proceeding with creation.")
+            self.log.info(
+                f"No existing SparkApplication named {self.name} found. Proceeding with creation."
+            )
 
         # SparkApplication 생성
         spark_application = {
@@ -134,5 +144,5 @@ class SparkApplicationOperator(BaseOperator):
         self.fetch_driver_logs()
 
         # 작업 실패 시 예외 발생
-        if state not in  ["COMPLETED"]:
+        if state not in ["COMPLETED"]:
             raise Exception(f"SparkApplication {self.name} failed with state: {state}")
