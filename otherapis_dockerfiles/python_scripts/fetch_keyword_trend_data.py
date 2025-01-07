@@ -3,78 +3,96 @@ import json
 import requests
 import logging
 from datetime import datetime, timedelta
-from script_modules import run_func_multi_thread, s3_upload
+from script_modules import s3_upload
+
+WANT_RANK = 5  # 원하는 등수
 
 logger = logging.getLogger(__name__)
 
 
-def split_keywords_into_batches(keywords, batch_size=5):
+def sort_by_weekly_ratio(url, headers, keywords):
     """
-    API에서 호출가능 한도에 따라 키워드 리스트에서 튜플의 마지막 원소(리스트)를 기준으로 batch_size 크기로 분할.
-
-    :param keywords: 튜플의 리스트 (마지막 원소가 리스트)
-    :param batch_size: 각 배치의 최대 크기
-    :return: 분할된 튜플 리스트
-    """
-    logger.info("Splitting keywords into batches.")
-    result = []
-    try:
-        for keyword_tuple in keywords:
-            *prefix, keyword_list = keyword_tuple  # 튜플에서 마지막 리스트 분리
-            for i in range(0, len(keyword_list), batch_size):
-                # prefix에 분할된 리스트 추가하여 새로운 튜플 생성
-                result.append((*prefix, keyword_list[i : i + batch_size]))
-    except Exception as e:
-        logger.error(f"Error splitting keywords: {e}", exc_info=True)
-        raise
-    return result
-
-
-def fetch_fashion_keyword_data_and_load_to_s3(url, headers, keyword_batch, s3_dict):
-    """
-    API 호출과 결과를 S3에 업로드하는 함수 (requests 사용).
+    키워드 트렌드 데이터 api를 호출, 1주일 단위로 반환했을 때 기준 오늘의 ratio 필드로 상대적 순위를 결정
+    상대 순위를 기반으로 정렬된 키워드들을 반환
     """
     now = datetime.now()
     one_week_ago = now - timedelta(days=7)
     now_string = now.strftime("%Y-%m-%d")
     one_week_ago_string = one_week_ago.strftime("%Y-%m-%d")
 
-    for i, (gender, second_category, third_category, keywords) in enumerate(
-        keyword_batch
-    ):
-        logger.info(
-            f"Processing batch {i + 1}/{len(keyword_batch)} for gender={gender}, category={second_category}-{third_category}."
-        )
-        logger.info(f"Current keywords: {keywords}")
-        body = {
-            "startDate": one_week_ago_string,
-            "endDate": now_string,
-            "timeUnit": "date",
-            "category": "50000000",
-            "keyword": [
-                {
-                    "name": f"{gender}_{second_category}_{third_category}_{keyword}_trend",
-                    "param": [keyword],
-                }
-                for keyword in keywords
-            ],
-            "gender": "f" if gender == "여성" else "m",
-        }
+    ratios = []  # 오늘의 ratio 값을 저장
 
-        logger.debug(f"Request body: {body}")
-        response = requests.post(url, headers=headers, json=body)
-        response.raise_for_status()
-        logger.info(f"API call successful for batch {i + 1}.")
+    logger.info(f"Fetching data for keywords={keywords}.")
+    body = {
+        "startDate": one_week_ago_string,
+        "endDate": now_string,
+        "timeUnit": "date",
+        "category": "50000000",
+        "keyword": [
+            {"name": f"{keyword}_trend", "param": [keyword]} for keyword in keywords
+        ],
+    }
 
-        s3_dict["data_file"] = response.json()
+    response = requests.post(url, headers=headers, json=body)
+    response.raise_for_status()
 
-        # 데이터를 구분하여 덮어쓰지 않고 저장하기 위해 파일 이름 끝에 숫자를 추가
-        s3_dict["file_path"] = (
-            f"/{now_string}/keyword_trend_raw_data/{gender}_{second_category}_{third_category}_trend_{i}.json"
-        )
-        s3_dict["content_type"] = "application/json"
-        s3_upload.load_data_to_s3(s3_dict)
-        logger.info(f"Batch {i + 1} uploaded to S3 successfully.")
+    data = response.json()
+
+    # 오늘의 ratio 값 추출
+    for result in data["results"]:
+        keyword = result["keyword"][0]
+        today_ratio = result["data"][-1]["ratio"]  # 마지막 날짜의 ratio 값
+        ratios.append((keyword, today_ratio))
+
+    ratios.sort(key=lambda x: x[1], reverse=True)
+    return [keyword for keyword, _ in ratios]
+
+
+def get_top_five_keyword(url, headers, all_keywords):
+    """
+    상위 5개의 트렌드를 얻기 위하여 api를 반복 호출하며 서로 순위를 비교함
+    """
+    current_top_5 = sort_by_weekly_ratio(url, headers, all_keywords[:5])
+    remainders = all_keywords[5:]
+
+    for new_keyword in remainders:
+        sorted_keywords_with_new_keyword = sort_by_weekly_ratio(url, headers, all_keywords[:4] + [new_keyword])
+
+        if sorted_keywords_with_new_keyword[-1] == new_keyword:
+            current_fifth = current_top_5[-1]
+            current_top_5[-1] = sort_by_weekly_ratio(url, headers, [current_fifth, new_keyword])
+        else:
+            current_top_5 = sorted_keywords_with_new_keyword
+    
+    return current_top_5
+
+
+def fetch_final_data(url, headers, s3_dict, gender, top_5_keywords):
+    """
+    최종 상위 5개 키워드로 API 호출하여 데이터를 반환.
+    """
+    logger.info(f"Fetching final data for top 5 keywords: {top_5_keywords}")
+    body = {
+        "startDate": (datetime.now() - timedelta(days=7)).strftime("%Y-%m-%d"),
+        "endDate": datetime.now().strftime("%Y-%m-%d"),
+        "timeUnit": "date",
+        "category": "50000000",
+        "keyword": [
+            {"name": f"{keyword}_trend", "param": [keyword]} for keyword in top_5_keywords
+        ],
+    }
+
+    response = requests.post(url, headers=headers, json=body)
+    response.raise_for_status()
+
+    now_string = datetime.now().strftime("%Y-%m-%d")
+
+    # 최종 데이터 업로드
+    s3_dict["data_file"] = response.json()
+    s3_dict["file_path"] = f"/{now_string}/otherapis/{gender}_keyword_trends/final_top_5_keywords_data.json"
+    s3_dict["content_type"] = "application/json"
+    s3_upload.load_data_to_s3(s3_dict)
+    logger.info("Final top 5 keyword data uploaded to S3.")
 
 
 def main():
@@ -82,14 +100,10 @@ def main():
     parser = argparse.ArgumentParser(
         description="Process keywords and upload API results to S3"
     )
-    parser.add_argument("--url", required=True, help="JSON string of keywords")
-    parser.add_argument("--headers", required=True, help="S3 client config as JSON")
-    parser.add_argument(
-        "--category_list", required=True, help="JSON string of keywords"
-    )
-    parser.add_argument(
-        "--max_threads", type=int, default=15, help="Maximum number of threads"
-    )
+    parser.add_argument("--url", required=True, help="API endpoint URL")
+    parser.add_argument("--headers", required=True, help="API headers as JSON string")
+    parser.add_argument("--gender", required=True, help="Gender of current category list")
+    parser.add_argument("--all_keywords", required=True, help="List of all keywords")
     parser.add_argument("--s3_dict", required=True, help="S3 client config as JSON")
 
     try:
@@ -97,24 +111,16 @@ def main():
 
         url = args.url
         headers = json.loads(args.headers)
-        category_list = json.loads(args.category_list)
-        max_threads = args.max_threads
+        gender = args.gender
+        all_keywords = json.loads(args.all_keywords)
         s3_dict = json.loads(args.s3_dict)
 
-        logger.info(f"Parsed arguments: URL={url}, Max threads={max_threads}")
-        logger.debug(f"Category list: {category_list}")
-        logger.debug(f"S3 configuration: {s3_dict}")
+        logger.info("Parsed arguments and started processing.")
 
-        # 키워드 분할
-        splited_keywords = split_keywords_into_batches(category_list, 5)
-        logger.info(f"Split keywords into {len(splited_keywords)} batches.")
+        top_five_keywords = get_top_five_keyword(url, headers, all_keywords)
+        fetch_final_data(url, headers, s3_dict, gender, top_five_keywords)
 
-        # 멀티스레드 실행
-        args = [(url, headers, keywords, s3_dict) for keywords in splited_keywords]
-        run_func_multi_thread.execute_in_threads(
-            fetch_fashion_keyword_data_and_load_to_s3, args, max_threads
-        )
-        logger.info("All batches processed successfully. Script completed.")
+        logger.info("Script completed successfully.")
     except Exception as e:
         logger.error(f"Script failed: {e}", exc_info=True)
         raise

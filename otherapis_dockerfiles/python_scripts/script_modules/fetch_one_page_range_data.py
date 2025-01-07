@@ -46,7 +46,7 @@ def fetch_page_range_data(
                 s3_dict["data_file"] = response.text
 
             s3_dict["file_path"] = (
-                f"/{now_string}/{file_topic}_raw_data/{file_topic}_page_{page}.{file_ext[s3_dict['content_type']]}"
+                f"/{now_string}/otherapis/{file_topic}_raw_data/{file_topic}_page_{page}.{file_ext[s3_dict['content_type']]}"
             )
 
             s3_upload.load_data_to_s3(s3_dict)

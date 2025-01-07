@@ -8,10 +8,11 @@ from custom_operators.custom_modules.otherapis_categories import (
 from custom_operators.custom_modules.otherapis_dependencies import (
     OTHERAPI_DEFAULT_ARGS,
     DEFAULT_S3_DICT,
+    NAVER_HEADER,
 )
 from custom_operators.k8s_custom_python_pod_operator import CustomKubernetesPodOperator
 from custom_operators.keyword_dictionary_process_oprerator import (
-    CategoryDictionaryMergeAndExtractOperator,
+    CategoryDictionaryMergeAndExplodeOperator,
 )
 
 
@@ -20,11 +21,7 @@ MAX_THREAD = 10
 
 # API 설정값
 url = "https://openapi.naver.com/v1/datalab/shopping/category/keywords"
-headers = {
-    "X-Naver-Client-Id": Variable.get("x-naver-client-id"),
-    "X-Naver-Client-secret": Variable.get("x-naver-client-secret"),
-    "Content-Type": "application/json",
-}
+headers = NAVER_HEADER
 
 # 기본 DAG 설정
 default_args = OTHERAPI_DEFAULT_ARGS
@@ -49,7 +46,7 @@ with DAG(
     fetch_keyword_data_tasks = []
 
     for task in tasks_config:
-        gender_keywords_list_task = CategoryDictionaryMergeAndExtractOperator(
+        gender_keywords_list_task = CategoryDictionaryMergeAndExplodeOperator(
             task_id=f"making_{task['gender']}_keywords_list_task",
             dict_list=task["category_list"],
         )
@@ -62,8 +59,7 @@ with DAG(
             required_args={
                 "url": url,
                 "headers": headers,
-                "category_list": f"{{{{ task_instance.xcom_pull(task_ids='making_{task['gender']}_keywords_list_task') }}}}",
-                "max_threads": MAX_THREAD,
+                "all_keywords": f"{{{{ task_instance.xcom_pull(task_ids='making_{task['gender']}_keywords_list_task') }}}}",
                 "s3_dict": DEFAULT_S3_DICT,
             },
             cpu_limit="1000m",

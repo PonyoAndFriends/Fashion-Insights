@@ -1,7 +1,7 @@
 from airflow.models import BaseOperator
 
 
-class CategoryDictionaryMergeAndExtractOperator(BaseOperator):
+class CategoryDictionaryMergeAndExplodeOperator(BaseOperator):
     """
     딕셔너리 리스트를 받아서 merge_dictionaries와 extract_tuples를 순차적으로 실행하는 커스텀 오퍼레이터.
     """
@@ -26,22 +26,20 @@ class CategoryDictionaryMergeAndExtractOperator(BaseOperator):
 
     def extract_tuples(self, data, keys=[]):
         """
-        딕셔너리를 탐색하여 3depth까지는 키를 유지하고,
-        그 이후의 4depth의 리스트는 그대로 반환하여 튜플의 리스트를 반환
-        (1st depth(gender), 2nd depth(category), 3rd depth(category), 4th depth(list))
+        딕셔너리와 리스트를 재귀적으로 탐색하여 모든 depth를 펼치고
+        리스트의 원소를 튜플로 반환.
         """
         tuples = []
         if isinstance(data, dict):
             for key, value in data.items():
-                # 3뎁스까지만 튜플 생성
-                if len(keys) < 2:
-                    tuples.extend(self.extract_tuples(value, keys + [key]))
-                else:
-                    tuples.append((keys[0], keys[1], key, value))
+                tuples.extend(self.extract_tuples(value, keys + [key]))
         elif isinstance(data, list):
-            # 3뎁스 이후의 리스트는 그대로 반환
-            tuples.append((keys[0], keys[1], keys[2], data))
+            for item in data:
+                tuples.append((*keys, item))
+        else:
+            tuples.append((*keys, data))
         return tuples
+
 
     def execute(self, context):
         self.log.info("Merging dictionaries...")

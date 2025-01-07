@@ -32,3 +32,9 @@ FILE_EXT = {
     "text/html": "html",
     "plain/text": "txt",
 }
+
+NAVER_HEADER = {
+    "X-Naver-Client-Id": Variable.get("x-naver-client-id"),
+    "X-Naver-Client-secret": Variable.get("x-naver-client-secret"),
+    "Content-Type": "application/json",
+}
