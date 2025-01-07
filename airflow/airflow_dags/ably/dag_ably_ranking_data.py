@@ -1,30 +1,32 @@
 from airflow import DAG
-from airflow.providers.cncf.kubernetes.operators.kubernetes_pod import KubernetesPodOperator
+from airflow.providers.cncf.kubernetes.operators.kubernetes_pod import (
+    KubernetesPodOperator,
+)
 from airflow.utils.dates import days_ago
 
 # 기본 설정값 정의
 default_args = {
-    'owner': 'jeongseoha1203@gmail.com',
-    'depends_on_past': False,
-    'email_on_failure': False,
-    'email_on_retry': False,
-    'retries': 5
+    "owner": "jeongseoha1203@gmail.com",
+    "depends_on_past": False,
+    "email_on_failure": False,
+    "email_on_retry": False,
+    "retries": 5,
 }
 
 # DAG 정의
 dag = DAG(
-    'fetch_and_upload_pipeline',
+    "fetch_and_upload_pipeline",
     default_args=default_args,
-    description='Fetch data from API and upload to S3 using KubernetesPodOperator',
+    description="Fetch data from API and upload to S3 using KubernetesPodOperator",
     schedule_interval=None,
     start_date=days_ago(1),
-    catchup=False
+    catchup=False,
 )
 
 # KubernetesPodOperator 태스크 정의
 fetch_and_upload_task = KubernetesPodOperator(
-    namespace='default',
-    image='python:3.9',  # API 호출 및 파일 업로드를 위한 Python 기반 Docker 이미지
+    namespace="default",
+    image="python:3.9",  # API 호출 및 파일 업로드를 위한 Python 기반 Docker 이미지
     cmds=["python", "-c"],
     arguments=[
         """
@@ -87,8 +89,8 @@ for category_sno, data in categories.items():
         logger.info(f"Uploaded and deleted local file: {file_name}")
         """
     ],
-    name='fetch-and-upload',
-    task_id='fetch_and_upload_task',
+    name="fetch-and-upload",
+    task_id="fetch_and_upload_task",
     get_logs=True,
-    dag=dag
+    dag=dag,
 )
