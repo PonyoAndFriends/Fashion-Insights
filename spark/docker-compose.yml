@@ -1,0 +1,83 @@
+version: "3.9"
+
+# 로컬 테스팅용 docker compose 파일
+services:
+  spark-master:
+    build:
+      context: .  # Dockerfile이 위치한 디렉토리
+      dockerfile: Dockerfile.sparkoperator
+    container_name: spark-master
+    hostname: spark-master
+    ports:
+      - "8080:8080"  # Spark Web UI
+      - "7077:7077"  # Spark Master Port
+    environment:
+      - SPARK_MODE=master
+      - SPARK_MASTER_PORT=7077
+      - SPARK_MASTER_WEBUI_PORT=8080
+    volumes:
+      - ./spark_job:/opt/spark/jobs  # 애플리케이션 경로 마운트
+    networks:
+      - spark-network
+
+  spark-worker-1:
+    build:
+      context: .
+      dockerfile: Dockerfile.sparkoperator
+    container_name: spark-worker-1
+    hostname: spark-worker-1
+    environment:
+      - SPARK_MODE=worker
+      - SPARK_MASTER_URL=spark://spark-master:7077
+      - SPARK_WORKER_MEMORY=1G
+      - SPARK_WORKER_CORES=1
+    depends_on:
+      - spark-master
+    volumes:
+      - ./spark_job:/opt/spark/jobs  # 애플리케이션 경로 마운트
+    networks:
+      - spark-network
+
+  spark-worker-2:
+    build:
+      context: .
+      dockerfile: Dockerfile.sparkoperator
+    container_name: spark-worker-2
+    hostname: spark-worker-2
+    environment:
+      - SPARK_MODE=worker
+      - SPARK_MASTER_URL=spark://spark-master:7077
+      - SPARK_WORKER_MEMORY=1G
+      - SPARK_WORKER_CORES=1
+    depends_on:
+      - spark-master
+    volumes:
+      - ./spark_job:/opt/spark/jobs  # 애플리케이션 경로 마운트
+    networks:
+      - spark-network
+
+  spark-submit:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: spark-submit
+    hostname: spark-submit
+    depends_on:
+      - spark-master
+    entrypoint: tail -f /dev/null  # 컨테이너 실행 시 기본 대기
+    volumes:
+      - ./spark_job:/opt/spark/jobs  # 애플리케이션 경로 마운트
+    networks:
+      - spark-network
+
+networks:
+  spark-network:
+    driver: bridge
+
+
+# 스파크 서브밋 컨테이너로 docker exec 하여 아래와 같이 실행하시면 됩니다.
+# S3 경로 등은 모두 string으로 직접 주셔야 합니다
+# spark-submit \
+#   --master spark://spark-master:7077 \
+#   --jars /opt/spark/user-jars/hadoop-aws-3.3.1.jar,/opt/spark/user-jars/aws-java-sdk-bundle-1.11.901.jar \
+#   /opt/spark/jobs/job1.py

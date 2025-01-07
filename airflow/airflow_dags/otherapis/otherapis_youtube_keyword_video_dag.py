@@ -9,11 +9,12 @@ from custom_operators.custom_modules.otherapis_dependencies import (
     OTHERAPI_DEFAULT_ARGS,
     DEFAULT_S3_DICT,
 )
+from custom_operators.k8s_spark_job_submit_operator import SparkApplicationOperator
 from custom_operators.k8s_custom_python_pod_operator import CustomKubernetesPodOperator
 from custom_operators.keyword_dictionary_process_oprerator import (
     CategoryDictionaryMergeAndExplodeOperator,
 )
-
+from custom_operators.custom_modules.s3_upload import make_s3_url
 
 # Pod내에서 실행할 스레드의 최대 개수
 MAX_THREAD = 10
@@ -36,12 +37,13 @@ with DAG(
 ) as dag:
 
     tasks_config = [
-        {"gender": "female", "category_list": FEMALE_CATEGORY_LIST},
-        {"gender": "male", "category_list": MALE_CATEGORY_LIST},
+        {"gender": "여성", "category_list": FEMALE_CATEGORY_LIST},
+        {"gender": "남성", "category_list": MALE_CATEGORY_LIST},
     ]
 
     category_list_tasks = []
     fetch_keyword_data_tasks = []
+    spark_submit_tasks = []
 
     for task in tasks_config:
         gender_category_list_task = CategoryDictionaryMergeAndExplodeOperator(
@@ -70,5 +72,16 @@ with DAG(
         )
         fetch_keyword_data_tasks.append(gender_fetch_youtube_data_task)
 
-    for list_task, fetch_task in zip(category_list_tasks, fetch_keyword_data_tasks):
-        list_task >> fetch_task
+        file_topic = "youtoube_videos_by_categories"
+        file_path = f"/{datetime.now().strftime("%Y-%m-%d")}/otherapis/{task['gender']}_{file_topic}_raw_data/"
+        spark_job_submit_task = SparkApplicationOperator(
+            task_id=f"youtube_category_videos_{task['gender']}_submit_spark_job_task",
+            name=f"youtube_category_videos_{task['gender']}_from_bronze_to_silver_data",
+            main_application_file=r"otherapis\bronze_to_silver\youtube_data_to_silver.py",
+            application_args=[make_s3_url(Variable.get("bronze_bucket"), file_path), make_s3_url(Variable.get("silver_bucket"), file_path), task['gender']],
+        )
+        spark_submit_tasks.append(spark_job_submit_task)
+
+
+    for list_task, fetch_task, spark_submit_task in zip(category_list_tasks, fetch_keyword_data_tasks, spark_submit_tasks):
+        list_task >> fetch_task >> spark_submit_task

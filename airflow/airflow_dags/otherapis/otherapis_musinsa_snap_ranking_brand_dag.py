@@ -1,5 +1,7 @@
 from airflow import DAG
+from airflow.models import Variable
 from datetime import datetime
+from custom_operators.k8s_spark_job_submit_operator import SparkApplicationOperator
 from custom_operators.k8s_custom_python_pod_operator import CustomKubernetesPodOperator
 from custom_operators.calculate_page_range_operator import CalculatePageRangeOperator
 from custom_operators.custom_modules.otherapis_dependencies import (
@@ -7,6 +9,7 @@ from custom_operators.custom_modules.otherapis_dependencies import (
     OTHERAPI_DEFAULT_ARGS,
     DEFAULT_S3_DICT,
 )
+from custom_operators.custom_modules.s3_upload import make_s3_url
 
 import math
 
@@ -19,6 +22,10 @@ TOTAL_DATA_COUNT = 100
 PARALLEL_POD_NUM = 2
 PARALLEL_THREAD_NUM = 10
 PAGE_SIZE = math.ceil(TOTAL_DATA_COUNT // (PARALLEL_POD_NUM * PARALLEL_THREAD_NUM))
+
+# 파일 경로 설정
+FILE_TOPIC = "musinsa_snap_brand_ranking"
+FILE_PATH = f"/{datetime.now().strftime('%Y-%m-%d')}/otherapis/{FILE_TOPIC}_raw_data/"
 
 # DAG의 기본 args 정의
 default_args = OTHERAPI_DEFAULT_ARGS
@@ -59,7 +66,7 @@ with DAG(
                         i + PARALLEL_THREAD_NUM, PARALLEL_POD_NUM * PARALLEL_THREAD_NUM
                     ),
                 ),
-                "file_topic": "musinsa_snap_brand_ranking",
+                "file_topic": FILE_TOPIC,
                 "s3_dict": DEFAULT_S3_DICT,
                 "pagination_keyword": "page",
             },
@@ -73,5 +80,12 @@ with DAG(
             memory_request="512Mi",
         )
         fetch_snap_ranking_brand_data_tasks.append(fetch_snap_ranking_brand_data_task)
+    
+    spark_job_submit_task = SparkApplicationOperator(
+        task_id="musinsa_snap_ranking_brand_submit_spark_job_task",
+        name="musinsa_snap_ranking_brand_from_bronze_to_silver_data",
+        main_application_file=r"otherapis/bronze_to_silver/musinsa_snap_brand_ranking_to_silver.py",
+        application_args=[make_s3_url(Variable.get("bronze_bucket"), FILE_PATH), make_s3_url(Variable.get("silver_bucket"), FILE_PATH)],
+    )
 
-    calculate_page_range_task >> fetch_snap_ranking_brand_data_tasks
+    calculate_page_range_task >> fetch_snap_ranking_brand_data_tasks >> spark_job_submit_task

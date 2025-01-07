@@ -4,8 +4,8 @@ from pyspark.sql.types import (
     StructField,
     StringType,
     IntegerType,
-    TimestampType,
     ArrayType,
+    TimestampType
 )
 from pyspark.sql.functions import col
 from custom_modules import s3_spark_module
@@ -20,7 +20,7 @@ source_path = args[1]
 target_path = args[2]
 
 # JSON 데이터 로드
-raw_df = s3_spark_module.read_and_partition_s3_data(spark, source_path, "json")
+raw_json_df = s3_spark_module.read_and_partition_s3_data(spark, source_path, "json")
 
 # JSON 데이터 스키마 정의
 schema = StructType(
@@ -34,7 +34,7 @@ schema = StructType(
 )
 
 # 데이터 변환
-transformed_df = raw_df.select(
+transformed_df = raw_json_df.select(
     col("data.list.id").alias("story_id"),
     col("data.list.contentType").alias("content_type"),
     col("data.list.aggregations.likeCount").alias("aggregation_like_count"),
@@ -44,9 +44,6 @@ transformed_df = raw_df.select(
 
 # 스키마 적용
 final_df = spark.createDataFrame(transformed_df.rdd, schema=schema)
-
-# 데이터 저장 또는 출력
-final_df.show(truncate=False)
 
 # 데이터 저장 예시 (Parquet 파일로 저장)
 final_df.write.mode("overwrite").parquet(target_path)

@@ -21,7 +21,7 @@ def load_data_to_s3(s3_dict):
         aws_access_key_id = Variable.get("aws_access_key_id")
         aws_secret_access_key = Variable.get("aws_secret_access_key")
         aws_region = Variable.get("aws_region")
-        s3_bucket_name = Variable.get("s3_bucket_name")
+        s3_bucket_name = Variable.get("bronze_bucket")
 
         logger.debug("AWS S3 bucket configurations successfully loaded.")
 
@@ -65,3 +65,7 @@ def load_data_to_s3(s3_dict):
     except Exception as e:
         logger.error(f"Unexpected error: {str(e)}")
         raise
+
+
+def make_s3_url(s3_bucket_name, s3_file_path):
+    return f"s3://{s3_bucket_name}/{s3_file_path}"

@@ -22,7 +22,7 @@ class SparkApplicationOperator(BaseOperator):
     def __init__(
         self,
         name,
-        main_application_file,
+        main_application_file,  # 레포 기준 spark_job 아래부터 경로를 작성
         application_args=None,
         driver_config=SPARK_DRIVER_DEFAULT_CONFIG,
         executor_config=SPARK_EXECUTOR_DEFAULT_CONFIG,
@@ -39,7 +39,7 @@ class SparkApplicationOperator(BaseOperator):
         self.namespace = namespace
         self.application_args = application_args
         self.image = image
-        self.main_application_file = main_application_file
+        self.main_application_file = "/opt/spark/jobs/" + main_application_file
         self.spark_version = spark_version
         self.driver_config = driver_config
         self.executor_config = executor_config
