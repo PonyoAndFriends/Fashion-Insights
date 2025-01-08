@@ -1,83 +1,45 @@
-version: "3.9"
-
-# 로컬 테스팅용 docker compose 파일
+volumes:
+  shared-workspace:
+    name: "hadoop-distributed-file-system"
+    driver: local
+  spark_job:
+    driver: local
 services:
   spark-master:
-    build:
-      context: .  # Dockerfile이 위치한 디렉토리
-      dockerfile: Dockerfile.sparkoperator
+    image: bitnami/spark:3.5.4
     container_name: spark-master
-    hostname: spark-master
     ports:
-      - "8080:8080"  # Spark Web UI
-      - "7077:7077"  # Spark Master Port
-    environment:
-      - SPARK_MODE=master
-      - SPARK_MASTER_PORT=7077
-      - SPARK_MASTER_WEBUI_PORT=8080
+      - 4040:8080
+      - 7077:7077
     volumes:
-      - ./spark_job:/opt/spark/jobs  # 애플리케이션 경로 마운트
-    networks:
-      - spark-network
-
+      - ./spark_job:/opt/bitnami/spark/jobs # 로컬 디렉토리를 정확히 매핑
+    environment:
+      - SPARK_MODE=master # 명시적으로 Master 모드 설정
   spark-worker-1:
-    build:
-      context: .
-      dockerfile: Dockerfile.sparkoperator
+    image: bitnami/spark:3.5.4
     container_name: spark-worker-1
-    hostname: spark-worker-1
     environment:
-      - SPARK_MODE=worker
-      - SPARK_MASTER_URL=spark://spark-master:7077
-      - SPARK_WORKER_MEMORY=1G
+      - SPARK_MODE=worker # 명시적으로 Worker 모드 설정
+      - SPARK_MASTER=spark://spark-master:7077 # Master URL 설정
       - SPARK_WORKER_CORES=1
+      - SPARK_WORKER_MEMORY=512m
+    ports:
+      - 4041:8081
+    volumes:
+      - ./spark_job:/opt/bitnami/spark/jobs # 로컬 디렉토리를 정확히 매핑
     depends_on:
       - spark-master
-    volumes:
-      - ./spark_job:/opt/spark/jobs  # 애플리케이션 경로 마운트
-    networks:
-      - spark-network
-
   spark-worker-2:
-    build:
-      context: .
-      dockerfile: Dockerfile.sparkoperator
+    image: bitnami/spark:3.5.4
     container_name: spark-worker-2
-    hostname: spark-worker-2
     environment:
-      - SPARK_MODE=worker
-      - SPARK_MASTER_URL=spark://spark-master:7077
-      - SPARK_WORKER_MEMORY=1G
+      - SPARK_MODE=worker # 명시적으로 Worker 모드 설정
+      - SPARK_MASTER=spark://spark-master:7077 # Master URL 설정
       - SPARK_WORKER_CORES=1
+      - SPARK_WORKER_MEMORY=512m
+    volumes:
+      - ./spark_job:/opt/bitnami/spark/jobs # 로컬 디렉토리를 정확히 매핑
+    ports:
+      - 4042:8081
     depends_on:
       - spark-master
-    volumes:
-      - ./spark_job:/opt/spark/jobs  # 애플리케이션 경로 마운트
-    networks:
-      - spark-network
-
-  spark-submit:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: spark-submit
-    hostname: spark-submit
-    depends_on:
-      - spark-master
-    entrypoint: tail -f /dev/null  # 컨테이너 실행 시 기본 대기
-    volumes:
-      - ./spark_job:/opt/spark/jobs  # 애플리케이션 경로 마운트
-    networks:
-      - spark-network
-
-networks:
-  spark-network:
-    driver: bridge
-
-
-# 스파크 서브밋 컨테이너로 docker exec 하여 아래와 같이 실행하시면 됩니다.
-# S3 경로 등은 모두 string으로 직접 주셔야 합니다
-# spark-submit \
-#   --master spark://spark-master:7077 \
-#   --jars /opt/spark/user-jars/hadoop-aws-3.3.1.jar,/opt/spark/user-jars/aws-java-sdk-bundle-1.11.901.jar \
-#   /opt/spark/jobs/job1.py
