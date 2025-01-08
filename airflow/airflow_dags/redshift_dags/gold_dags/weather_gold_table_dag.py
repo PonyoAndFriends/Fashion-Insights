@@ -1,14 +1,10 @@
 from airflow import DAG
-from airflow.models import Variable
 from datetime import datetime
-from custom_sql_operators.custom_query_operator import RedshiftQueryOperator
 from custom_sql_operators.custom_refresh_table_operator import RefreshTableOperator
 from custom_sql_modules.query_dag_dependencies import (
     SILVER_LOAD_DEFAULT_ARGS,
     DEFAULT_SILVER_SHCEMA,
     DEFAULT_GOLD_SHCEMA,
-    NOW_STRING,
-    DEFULAT_SILVER_BUCKET_URL,
 )
 
 # DAG 기본 설정
