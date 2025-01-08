@@ -2,7 +2,8 @@ from pyspark.sql import SparkSession
 from pyspark.sql.functions import col, split
 from pyspark.sql.types import StructType, StructField, StringType, IntegerType
 from custom_modules import s3_spark_module
-import sys, logging
+import sys
+import logging
 
 logger = logging.getLogger(__name__)
 

@@ -9,7 +9,8 @@ from pyspark.sql.types import (
     DateType,
 )
 from custom_modules import s3_spark_module
-import sys, logging
+import sys
+import logging
 
 logger = logging.getLogger(__name__)
 
