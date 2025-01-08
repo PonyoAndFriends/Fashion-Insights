@@ -19,11 +19,11 @@ class RefreshTableOperator(BaseOperator):
         hook = RedshiftSQLHook(redshift_conn_id=self.redshift_conn_id)
 
         # 해당 테이블이 이미 있다면 삭제
-        self.log.info(f"Drop table if exists...")
+        self.log.info("Drop table if exists...")
         hook.run(self.drop_sql)
         self.log.info("Drop query executed successfully.")
 
         # 테이블 재생성
-        self.log.info(f"Create table...")
+        self.log.info("Create table...")
         hook.run(self.create_sql)
         self.log.info("Drop query executed successfully.")

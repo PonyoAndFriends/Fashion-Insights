@@ -1,4 +1,4 @@
-from airflow.models import BaseOperator, Variable
+from airflow.models import BaseOperator
 from kubernetes import client, config
 from custom_modules.spark_dependencies import *
 import time

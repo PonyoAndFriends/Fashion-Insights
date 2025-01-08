@@ -60,7 +60,7 @@ with DAG(
     """
 
     copy_task = RedshiftQueryOperator(
-        task_id=f"copy_naver_keyword_trend_task",
+        task_id="copy_naver_keyword_trend_task",
         op_args=[copy_query],
     )
 
