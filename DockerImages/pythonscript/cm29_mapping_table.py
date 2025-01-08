@@ -1,3 +1,4 @@
+
 SHOES_CATEGORIES = [
     "Flats_Loafers",
     "Boots",
@@ -6,8 +7,7 @@ SHOES_CATEGORIES = [
     "Slippers_Mules",
     "Sneakers",
     "Loafers",
-    "Dress_Shoes",
-]
+    "Dress_Shoes"]
 
 CATEGORY_TREE = {
     "Woman_Clothing": {
@@ -99,7 +99,7 @@ CATEGORY_TREE = {
                     "Cashmere": "268105105",
                     "Cardigans": "268105103",
                     "Knit_Vests": "268105104",
-                    "Polos": "268105105",
+                    "Polos_Knit": "268105105",
                     "Turtlenecks": "268105102",
                     "Other_Knitwear": "268105110",
                 },
@@ -184,7 +184,7 @@ CATEGORY_TREE = {
                     "V_Necks": "272110102",
                     "Crewnecks": "272110101",
                     "Polos_Knit": "272110107",
-                    "ZipUps": "272110106",
+                    "Knit_ZipUps": "272110106",
                     "Cardigans": "272110104",
                     "Knit_Vests": "272110105",
                     "Hoodies": "272110108",
