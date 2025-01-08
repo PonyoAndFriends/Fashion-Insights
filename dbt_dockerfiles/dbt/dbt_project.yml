@@ -1,0 +1,14 @@
+name: my_dbt_project
+version: 1.0.0
+config-version: 2
+
+profile: redshift
+
+models:
+  my_dbt_project:
+    staging:
+      +schema: staging
+    silver:
+      +schema: silver
+    gold:
+      +schema: gold

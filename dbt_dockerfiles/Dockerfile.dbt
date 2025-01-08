@@ -1,0 +1,13 @@
+FROM python:3.11-slim
+
+# Set working directory
+WORKDIR /app
+
+# Add project files
+COPY dbt /app/dbt
+
+# Install DBT and other dependencies
+RUN pip install -r /app/dbt/requirements.txt
+
+# Default command
+CMD ["dbt", "run"]
