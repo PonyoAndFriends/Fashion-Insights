@@ -3,7 +3,12 @@ from airflow.models import Variable
 from datetime import datetime
 from custom_sql_operators.custom_query_operator import RedshiftQueryOperator
 from custom_sql_operators.custom_refresh_table_operator import RefreshTableOperator
-from custom_sql_modules.query_dag_dependencies import SILVER_LOAD_DEFAULT_ARGS, DEFAULT_SILVER_SHCEMA, NOW_STRING, DEFULAT_SILVER_BUCKET_URL
+from custom_sql_modules.query_dag_dependencies import (
+    SILVER_LOAD_DEFAULT_ARGS,
+    DEFAULT_SILVER_SHCEMA,
+    NOW_STRING,
+    DEFULAT_SILVER_BUCKET_URL,
+)
 
 # DAG 기본 설정
 default_args = SILVER_LOAD_DEFAULT_ARGS
@@ -23,12 +28,10 @@ with DAG(
     table = "youtube_video_tb"
     redshift_iam_role = Variable.get("redshift_iam_role")
 
-    drop_sql = \
-    f"""
+    drop_sql = f"""
     DROP TABLE IF EXIST {DEFAULT_SILVER_SHCEMA}.{table};
     """
-    create_sql = \
-    f"""
+    create_sql = f"""
     CREATE TABLE youtube_videos (
         video_id VARCHAR(20) PRIMARY KEY,
         gender VARCHAR(2),
@@ -45,18 +48,16 @@ with DAG(
     """
     refresh_task = RefreshTableOperator(drop_sql, create_sql)
 
-    copy_query = \
-    f"""
+    copy_query = f"""
     COPY INTO {DEFAULT_SILVER_SHCEMA}.{table}
     FROM '{silver_bucket_url}/{now_string}/youtoube_videos_by_categories_raw_data/'
     IAM_ROLE {redshift_iam_role}
     FORMAT AS PARQUET;
     """
 
-    
     copy_task = RedshiftQueryOperator(
         task_id=f"youtube_data_copy_task",
         op_args=[copy_query],
     )
-    
+
     refresh_task >> copy_task

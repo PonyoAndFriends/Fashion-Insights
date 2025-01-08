@@ -1,6 +1,7 @@
 from airflow.models import BaseOperator
 from airflow.providers.amazon.aws.hooks.redshift_sql import RedshiftSQLHook
 
+
 class RedshiftQueryOperator(BaseOperator):
     """
     Custom Operator to execute SQL queries on Redshift.

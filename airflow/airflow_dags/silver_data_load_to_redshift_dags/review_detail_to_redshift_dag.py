@@ -3,7 +3,13 @@ from airflow.models import Variable
 from datetime import datetime
 from custom_sql_operators.custom_query_operator import RedshiftQueryOperator
 from custom_sql_operators.custom_refresh_table_operator import RefreshTableOperator
-from custom_sql_modules.query_dag_dependencies import SILVER_LOAD_DEFAULT_ARGS, DEFAULT_SILVER_SHCEMA, NOW_STRING, DEFULAT_SILVER_BUCKET_URL, PLATFORMS
+from custom_sql_modules.query_dag_dependencies import (
+    SILVER_LOAD_DEFAULT_ARGS,
+    DEFAULT_SILVER_SHCEMA,
+    NOW_STRING,
+    DEFULAT_SILVER_BUCKET_URL,
+    PLATFORMS,
+)
 
 # DAG 기본 설정
 default_args = SILVER_LOAD_DEFAULT_ARGS
@@ -25,13 +31,11 @@ with DAG(
 
     for platform in platforms:
         table = f"{platform}_product_review_detail_tb"
-        drop_sql = \
-        f"""
+        drop_sql = f"""
         DROP TABLE IF EXIST {DEFAULT_SILVER_SHCEMA}.{table};
         """
 
-        create_sql = \
-        f"""
+        create_sql = f"""
         CREATE TABLE {DEFAULT_SILVER_SHCEMA}.{table} (
             platform VARCHAR(100) NOT NULL,
             master_category_name VARCHAR(12),
@@ -57,8 +61,7 @@ with DAG(
             task_id=f"{platform}_review_detail_table_refresh_task",
         )
 
-        copy_query = \
-            f"""
+        copy_query = f"""
             COPY INTO {DEFAULT_SILVER_SHCEMA}.{table}
             FROM '{silver_bucket_url}/{now_string}/{platform}/ProductDetail/'
             IAM_ROLE {redshift_iam_role}
@@ -68,6 +71,6 @@ with DAG(
         copy_task = RedshiftQueryOperator(
             task_id=f"{platform}_review_detail_copy_task",
             op_args=[copy_query],
-            )
-        
+        )
+
         refresh_task >> copy_task

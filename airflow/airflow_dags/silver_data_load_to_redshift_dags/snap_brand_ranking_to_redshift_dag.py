@@ -3,7 +3,12 @@ from airflow.models import Variable
 from datetime import datetime
 from custom_sql_operators.custom_query_operator import RedshiftQueryOperator
 from custom_sql_operators.custom_refresh_table_operator import RefreshTableOperator
-from custom_sql_modules.query_dag_dependencies import SILVER_LOAD_DEFAULT_ARGS, DEFAULT_SILVER_SHCEMA, NOW_STRING, DEFULAT_SILVER_BUCKET_URL
+from custom_sql_modules.query_dag_dependencies import (
+    SILVER_LOAD_DEFAULT_ARGS,
+    DEFAULT_SILVER_SHCEMA,
+    NOW_STRING,
+    DEFULAT_SILVER_BUCKET_URL,
+)
 
 # DAG 기본 설정
 default_args = SILVER_LOAD_DEFAULT_ARGS
@@ -23,12 +28,10 @@ with DAG(
     table = "musinsa_snap_brand_ranking_tb"
     redshift_iam_role = Variable.get("redshift_iam_role")
 
-    drop_sql = \
-    f"""
+    drop_sql = f"""
     DROP TABLE IF EXIST {DEFAULT_SILVER_SHCEMA}.{table};
     """
-    create_sql = \
-    f"""
+    create_sql = f"""
     CREATE TABLE {DEFAULT_SILVER_SHCEMA}.{table} (
         story_id VARCHAR(30) PRIMARY KEY,
         content_type VARCHAR NOT NULL,
@@ -43,8 +46,7 @@ with DAG(
         task_id="snap_brand_ranking_table_refresh_task",
     )
 
-    copy_query = \
-    f"""
+    copy_query = f"""
     COPY INTO {DEFAULT_SILVER_SHCEMA}.{table}
     FROM '{silver_bucket_url}/{now_string}/musinsa_snap_brand_ranking_raw_data/'
     IAM_ROLE {redshift_iam_role}
@@ -55,6 +57,6 @@ with DAG(
         task_id=f"snap_brand_ranking_copy_task",
         op_args=[copy_query],
     )
-    
+
     # 태스크 실행 순서 - COPY의 특성 상 순서대로 실행
     refresh_task >> copy_task

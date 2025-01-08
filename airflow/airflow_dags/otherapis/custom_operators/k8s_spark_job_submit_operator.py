@@ -66,7 +66,9 @@ class SparkApplicationOperator(BaseOperator):
             if e.status != 404:
                 self.log.error(f"Failed to delete existing SparkApplication: {e}")
                 raise
-            self.log.info(f"No existing SparkApplication named {self.name} found. Proceeding with creation.")
+            self.log.info(
+                f"No existing SparkApplication named {self.name} found. Proceeding with creation."
+            )
 
         # SparkApplication 생성
         spark_application = {
@@ -110,12 +112,18 @@ class SparkApplicationOperator(BaseOperator):
                     plural="sparkapplications",
                     name=self.name,
                 )
-                app_state = spark_app.get("status", {}).get("applicationState", {}).get("state")
-                self.log.info(f"SparkApplication {self.name} current state: {app_state}")
+                app_state = (
+                    spark_app.get("status", {}).get("applicationState", {}).get("state")
+                )
+                self.log.info(
+                    f"SparkApplication {self.name} current state: {app_state}"
+                )
 
                 # Driver Pod 이름 가져오기
                 if not driver_pod_name:
-                    driver_pod_name = spark_app.get("status", {}).get("driverInfo", {}).get("podName")
+                    driver_pod_name = (
+                        spark_app.get("status", {}).get("driverInfo", {}).get("podName")
+                    )
                     if driver_pod_name:
                         self.log.info(f"Driver Pod identified: {driver_pod_name}")
 
@@ -123,7 +131,9 @@ class SparkApplicationOperator(BaseOperator):
                 if driver_pod_name:
                     try:
                         logs = core_api.read_namespaced_pod_log(
-                            name=driver_pod_name, namespace=self.namespace, tail_lines=10
+                            name=driver_pod_name,
+                            namespace=self.namespace,
+                            tail_lines=10,
                         )
                         self.log.info(f"Driver Pod Logs:\n{logs}")
                     except client.exceptions.ApiException as e:
@@ -131,13 +141,17 @@ class SparkApplicationOperator(BaseOperator):
 
                 # 작업 상태 처리
                 if app_state == "COMPLETED":
-                    self.log.info(f"SparkApplication {self.name} completed successfully.")
+                    self.log.info(
+                        f"SparkApplication {self.name} completed successfully."
+                    )
                     break
                 elif app_state == "FAILED":
                     self.log.error(f"SparkApplication {self.name} failed.")
                     raise Exception(f"Spark job {self.name} failed.")
                 elif app_state == "ERROR":
-                    self.log.error(f"SparkApplication {self.name} encountered an error.")
+                    self.log.error(
+                        f"SparkApplication {self.name} encountered an error."
+                    )
                     raise Exception(f"Spark job {self.name} encountered an error.")
                 elif app_state == "SUBMITTED":
                     self.log.info(f"SparkApplication {self.name} is still running...")
@@ -145,5 +159,7 @@ class SparkApplicationOperator(BaseOperator):
                 time.sleep(5)
 
             except Exception as e:
-                self.log.error(f"Unexpected error while monitoring SparkApplication: {e}")
+                self.log.error(
+                    f"Unexpected error while monitoring SparkApplication: {e}"
+                )
                 raise

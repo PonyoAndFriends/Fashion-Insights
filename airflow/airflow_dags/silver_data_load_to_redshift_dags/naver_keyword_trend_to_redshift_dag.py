@@ -3,7 +3,12 @@ from airflow.models import Variable
 from datetime import datetime
 from custom_sql_operators.custom_query_operator import RedshiftQueryOperator
 from custom_sql_operators.custom_refresh_table_operator import RefreshTableOperator
-from custom_sql_modules.query_dag_dependencies import SILVER_LOAD_DEFAULT_ARGS, DEFAULT_SILVER_SHCEMA, NOW_STRING, DEFULAT_SILVER_BUCKET_URL
+from custom_sql_modules.query_dag_dependencies import (
+    SILVER_LOAD_DEFAULT_ARGS,
+    DEFAULT_SILVER_SHCEMA,
+    NOW_STRING,
+    DEFULAT_SILVER_BUCKET_URL,
+)
 
 # DAG 기본 설정
 default_args = SILVER_LOAD_DEFAULT_ARGS
@@ -23,12 +28,10 @@ with DAG(
     table = "naver_naver_shopping_kwd_tb"
     redshift_iam_role = Variable.get("redshift_iam_role")
 
-    drop_sql = \
-    f"""
+    drop_sql = f"""
     DROP TABLE IF EXIST {DEFAULT_SILVER_SHCEMA}.{table};
     """
-    create_sql = \
-    f"""
+    create_sql = f"""
     CREATE TABLE {DEFAULT_SILVER_SHCEMA}.{table} (
         trend_id INT IDENTITY(1,1) PRIMARY KEY,
         start_date DATE NOT NULL,
@@ -43,24 +46,22 @@ with DAG(
         created_at TIMESTAMP NOT NULL
     );
     """
-    refresh_task = RefreshTableOperator( 
-        drop_sql, 
+    refresh_task = RefreshTableOperator(
+        drop_sql,
         create_sql,
         task_id="naver_keyword_trend_table_refresh_task",
     )
 
-    copy_query = \
-    f"""
+    copy_query = f"""
     COPY INTO {DEFAULT_SILVER_SHCEMA}.{table}
     FROM '{silver_bucket_url}/{now_string}/keyword_trend_raw_data/'
     IAM_ROLE {redshift_iam_role}
     FORMAT AS PARQUET;
     """
 
-    
     copy_task = RedshiftQueryOperator(
         task_id=f"copy_naver_keyword_trend_task",
         op_args=[copy_query],
     )
-    
+
     refresh_task >> copy_task

@@ -3,7 +3,12 @@ from airflow.models import Variable
 from datetime import datetime
 from custom_sql_operators.custom_query_operator import RedshiftQueryOperator
 from custom_sql_operators.custom_refresh_table_operator import RefreshTableOperator
-from custom_sql_modules.query_dag_dependencies import SILVER_LOAD_DEFAULT_ARGS, DEFAULT_SILVER_SHCEMA, NOW_STRING, DEFULAT_SILVER_BUCKET_URL
+from custom_sql_modules.query_dag_dependencies import (
+    SILVER_LOAD_DEFAULT_ARGS,
+    DEFAULT_SILVER_SHCEMA,
+    NOW_STRING,
+    DEFULAT_SILVER_BUCKET_URL,
+)
 
 # DAG 기본 설정
 default_args = SILVER_LOAD_DEFAULT_ARGS
@@ -24,13 +29,11 @@ with DAG(
     table = "product_detail_tb"
     redshift_iam_role = Variable.get("redshift_iam_role")
 
-    drop_sql = \
-    f"""
+    drop_sql = f"""
     DROP TABLE IF EXIST {DEFAULT_SILVER_SHCEMA}.{table};
     """
 
-    create_sql = \
-    f"""
+    create_sql = f"""
     CREATE TABLE {DEFAULT_SILVER_SHCEMA}.{table} (
         platform VARCHAR(100) NOT NULL,
         master_category_name VARCHAR(12),
@@ -49,8 +52,8 @@ with DAG(
         created_at TIMESTAMP NOT NULL
     );
     """
-    refresh_task = RefreshTableOperator( 
-        drop_sql, 
+    refresh_task = RefreshTableOperator(
+        drop_sql,
         create_sql,
         task_id="product_detail_table_refresh_task",
     )
@@ -73,7 +76,7 @@ with DAG(
             op_args=[query],
         )
         copy_tasks.append(copy_task)
-    
+
     # 태스크 실행 순서 - COPY의 특성 상 순서대로 실행
     previous_task = refresh_task
     for copy_task in copy_tasks:

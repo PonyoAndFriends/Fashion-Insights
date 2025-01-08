@@ -99,7 +99,7 @@ with DAG(
             application_args=[
                 make_s3_url(Variable.get("bronze_bucket"), file_path),
                 make_s3_url(Variable.get("silver_bucket"), file_path),
-                gender
+                gender,
             ],
         )
 

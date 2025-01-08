@@ -45,7 +45,7 @@ transformed_df = raw_json_df.select(
     col("data.list.aggregations.likeCount").alias("aggregation_like_count"),
     col("data.list.tags.name").alias("tags"),
     col("data.list.displayedFrom").alias("created_at"),
-    lit("남성" if gender == "MEN" else "여성").alias("gender")
+    lit("남성" if gender == "MEN" else "여성").alias("gender"),
 ).withColumn("created_at", col("created_at").cast(TimestampType()))
 
 # 스키마 적용
