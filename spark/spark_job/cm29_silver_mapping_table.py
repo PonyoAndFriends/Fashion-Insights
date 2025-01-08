@@ -11,7 +11,6 @@ depth_mapping = {
     "Polos_TShirts": ("상의", "티셔츠", "폴로"),
     "Short_Sleeve_Shirts": ("상의", "셔츠", "반소매 셔츠"),
     "Long_Sleeve_Shirts": ("상의", "셔츠", "긴소매 셔츠"),
-    
     # 하의
     "Shorts": ("하의", "팬츠", "숏 팬츠"),
     "Slim_Fit_Pants": ("하의", "팬츠", "슬림 팬츠"),
@@ -24,7 +23,6 @@ depth_mapping = {
     "Suit_Pants_Slacks": ("하의", "팬츠", "슬랙스"),
     "Bootcut_Pants": ("하의", "팬츠", "부츠컷"),
     "Other_Pants": ("하의", "팬츠", "기타 하의"),
-
     # 아우터
     "Windbreakers": ("아우터", "자켓", "바람막이"),
     "Blazers": ("아우터", "자켓", "블레이저"),
@@ -53,19 +51,16 @@ depth_mapping = {
     "Stadium_Jackets": ("아우터", "자켓", "스타디움 자켓"),
     "Military_Jackets": ("아우터", "자켓", "야상"),
     "Other_Outerwear": ("아우터", "기타", "기타 아우터"),
-
     # 원피스
     "Mini_Dresses": ("하의", "원피스", "미니 원피스"),
     "Midi_Maxi_Dresses": ("하의", "원피스", "미디/맥시 원피스"),
     "Long_Dresses": ("하의", "원피스", "롱 원피스"),
     "Denim_Dresses": ("하의", "원피스", "데님 원피스"),
-
     # 스커트
     "Mini_Skirts": ("하의", "스커트", "미니 스커트"),
     "Midi_Skirts": ("하의", "스커트", "미디 스커트"),
     "Long_Skirts": ("하의", "스커트", "롱 스커트"),
     "Denim_Skirts": ("하의", "스커트", "데님 스커트"),
-
     # 니트웨어
     "Crewnecks": ("상의", "니트", "크루넥"),
     "V_Necks": ("상의", "니트", "브이넥"),
@@ -77,7 +72,6 @@ depth_mapping = {
     "Polos_Knit": ("상의", "니트", "폴로"),
     "Hoodies": ("상의", "니트", "후디"),
     "Knit_ZipUps": ("상의", "니트", "집업"),
-
     # 신발
     "Flats_Loafers": ("신발", "신발", "플랫/로퍼"),
     "Boots": ("신발", "신발", "부츠/워커"),
