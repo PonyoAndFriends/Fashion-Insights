@@ -1,6 +1,7 @@
-from airflow.models import BaseOperator
+from airflow.models import BaseOperator, Variable
 from kubernetes import client, config
 from custom_modules.spark_dependencies import *
+import time
 
 
 class SparkApplicationOperator(BaseOperator):
@@ -49,7 +50,9 @@ class SparkApplicationOperator(BaseOperator):
         config.load_incluster_config()
 
         api_instance = client.CustomObjectsApi()
+        core_api = client.CoreV1Api()
 
+        # 기존 SparkApplication 삭제
         try:
             self.log.info(f"Deleting existing SparkApplication: {self.name}")
             api_instance.delete_namespaced_custom_object(
@@ -63,17 +66,13 @@ class SparkApplicationOperator(BaseOperator):
             if e.status != 404:
                 self.log.error(f"Failed to delete existing SparkApplication: {e}")
                 raise
-            self.log.info(
-                f"No existing SparkApplication named {self.name} found. Proceeding with creation."
-            )
+            self.log.info(f"No existing SparkApplication named {self.name} found. Proceeding with creation.")
 
+        # SparkApplication 생성
         spark_application = {
             "apiVersion": "sparkoperator.k8s.io/v1beta2",
             "kind": "SparkApplication",
-            "metadata": {
-                "name": self.name,
-                "namespace": self.namespace,
-            },
+            "metadata": {"name": self.name, "namespace": self.namespace},
             "spec": {
                 "type": "Python",
                 "mode": "cluster",
@@ -84,7 +83,6 @@ class SparkApplicationOperator(BaseOperator):
                 "restartPolicy": {"type": "Never"},
                 "driver": self.driver_config,
                 "executor": self.executor_config,
-                "deps": self.deps,
                 "sparkConf": self.spark_conf,
                 "arguments": self.application_args,
             },
@@ -99,3 +97,53 @@ class SparkApplicationOperator(BaseOperator):
             body=spark_application,
         )
         self.log.info(f"SparkApplication {self.name} created successfully.")
+
+        # SparkApplication 상태 모니터링 및 Driver Pod 로그 출력
+        self.log.info(f"Monitoring SparkApplication {self.name} status.")
+        driver_pod_name = None
+        while True:
+            try:
+                spark_app = api_instance.get_namespaced_custom_object(
+                    group="sparkoperator.k8s.io",
+                    version="v1beta2",
+                    namespace=self.namespace,
+                    plural="sparkapplications",
+                    name=self.name,
+                )
+                app_state = spark_app.get("status", {}).get("applicationState", {}).get("state")
+                self.log.info(f"SparkApplication {self.name} current state: {app_state}")
+
+                # Driver Pod 이름 가져오기
+                if not driver_pod_name:
+                    driver_pod_name = spark_app.get("status", {}).get("driverInfo", {}).get("podName")
+                    if driver_pod_name:
+                        self.log.info(f"Driver Pod identified: {driver_pod_name}")
+
+                # Driver Pod 로그 가져오기
+                if driver_pod_name:
+                    try:
+                        logs = core_api.read_namespaced_pod_log(
+                            name=driver_pod_name, namespace=self.namespace, tail_lines=10
+                        )
+                        self.log.info(f"Driver Pod Logs:\n{logs}")
+                    except client.exceptions.ApiException as e:
+                        self.log.warning(f"Failed to fetch logs from Driver Pod: {e}")
+
+                # 작업 상태 처리
+                if app_state == "COMPLETED":
+                    self.log.info(f"SparkApplication {self.name} completed successfully.")
+                    break
+                elif app_state == "FAILED":
+                    self.log.error(f"SparkApplication {self.name} failed.")
+                    raise Exception(f"Spark job {self.name} failed.")
+                elif app_state == "ERROR":
+                    self.log.error(f"SparkApplication {self.name} encountered an error.")
+                    raise Exception(f"Spark job {self.name} encountered an error.")
+                elif app_state == "SUBMITTED":
+                    self.log.info(f"SparkApplication {self.name} is still running...")
+
+                time.sleep(5)
+
+            except Exception as e:
+                self.log.error(f"Unexpected error while monitoring SparkApplication: {e}")
+                raise
