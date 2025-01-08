@@ -52,7 +52,7 @@ with DAG(
     """
 
     copy_task = RedshiftQueryOperator(
-        task_id=f"snap_user_story_ranking_copy_task",
+        task_id="snap_user_story_ranking_copy_task",
         op_args=[copy_query],
     )
 

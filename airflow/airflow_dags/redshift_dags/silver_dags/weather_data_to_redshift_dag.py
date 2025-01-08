@@ -61,7 +61,7 @@ with DAG(
     """
 
     copy_task = RedshiftQueryOperator(
-        task_id=f"weekly_weather_data_copy_task",
+        task_id="weekly_weather_data_copy_task",
         op_args=[copy_query],
     )
 

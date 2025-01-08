@@ -31,7 +31,7 @@ with DAG(
     drop_sql = f"""
     DROP TABLE IF EXIST {DEFAULT_SILVER_SHCEMA}.{table};
     """
-    create_sql = f"""
+    create_sql = """
     CREATE TABLE youtube_videos (
         video_id VARCHAR(20) PRIMARY KEY,
         gender VARCHAR(2),
@@ -56,7 +56,7 @@ with DAG(
     """
 
     copy_task = RedshiftQueryOperator(
-        task_id=f"youtube_data_copy_task",
+        task_id="youtube_data_copy_task",
         op_args=[copy_query],
     )
 
