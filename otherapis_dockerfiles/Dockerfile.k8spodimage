@@ -1,0 +1,14 @@
+# 베이스 이미지를 Python 3.11 슬림으로 설정
+FROM python:3.11-slim
+
+# 작업 디렉토리를 설정
+WORKDIR /app
+
+# 없을 경우 스크립트 폴더를 생성
+RUN mkdir -p /app/python_script/
+
+# 현재 디렉토리의 pythonscripts 폴더를 컨테이너의 /app/pythonscripts로 복사
+COPY ./otherapis_dockerfiles/python_scripts/ /app/python_scripts/
+
+# 사용 모듈 설치
+RUN pip install -r /app/python_scripts/requirements.txt

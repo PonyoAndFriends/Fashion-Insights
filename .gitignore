@@ -264,5 +264,8 @@ airflow-build-dockerfile*
 /dbt/logs
 /dbt/target
 
-# ruff_cache
+# ruff cache
 /.ruff_cache
+
+# test files
+/test
