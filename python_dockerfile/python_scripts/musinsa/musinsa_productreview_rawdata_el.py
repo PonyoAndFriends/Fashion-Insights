@@ -34,7 +34,7 @@ def porductid_list_iterable(iterable):
 
 
 def el_productreview(product_id_list, key):
-    bronze_bucket = "project4-raw-data"
+    bronze_bucket = "Team3-2"
     for sort_method in SORT:
         PARAMS["sort"] = sort_method
         for product_id in product_id_list:
@@ -59,7 +59,7 @@ def main():
 
     # product_id list 불러오기
     silver_bucket = "Team3-2"
-    file_key = f"/bronze/{TODAY_DATE}/musinsa/ranking_data/{category3depth}/"
+    file_key = f"bronze/{TODAY_DATE}/musinsa/ranking_data/{category3depth}/"
 
     s3 = s3_module.connect_s3fs()
 
@@ -84,7 +84,7 @@ def main():
             product_ids += temp_ids
 
         for product_list in porductid_list_iterable(product_ids):
-            key = f"/bronze/{TODAY_DATE}/musinsa/product_review_data/{category3depth}/{category4depth}/"
+            key = f"bronze/{TODAY_DATE}/musinsa/product_review_data/{category3depth}/{category4depth}/"
             t = threading.Thread(target=el_productreview, args=(product_list, key))
             t.start()
 

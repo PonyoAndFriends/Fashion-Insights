@@ -42,13 +42,20 @@ SPARK_DEFULAT_DEPS = {
     ],
 }
 
+
 SPARK_DEFAULT_CONF = {
     "spark.hadoop.fs.s3a.access.key": Variable.get("aws_access_key_id"),
     "spark.hadoop.fs.s3a.secret.key": Variable.get("aws_secret_access_key"),
-    "spark.hadoop.fs.s3a.endpoint": "s3.amazonaws.com",
+    "spark.hadoop.fs.s3a.endpoint": "s3.ap-northeast-2.amazonaws.com",
+    "spark.hadoop.fs.s3a.aws.credentials.provider": "com.amazonaws.auth.DefaultAWSCredentialsProviderChain",
     "spark.kubernetes.driver.deleteOnTermination": "true",
     "spark.kubernetes.executor.deleteOnTermination": "true",
     "spark.eventLog.enabled": "true",
     "spark.eventLog.dir": "s3a://spark-log-bucket-hs/spark-logs/",
     "spark.history.fs.logDirectory": "s3a://spark-log-bucket-hs/spark-logs/",
+    "spark.hadoop.mapreduce.fileoutputcommitter.algorithm.version": 2,
+    "spark.hadoop.fs.s3a.committer.magic.enabled": "true",
+    "fs.s3a.committer.name": "magic",
+    "spark.hadoop.fs.s3a.impl": "org.apache.hadoop.fs.s3a.S3AFileSystem",
+    "spark.sql.parquet.compression.codec": "snappy",
 }

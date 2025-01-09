@@ -48,16 +48,22 @@ with DAG(
     """
     refresh_task = RefreshTableOperator(drop_sql, create_sql)
 
-    copy_query = f"""
-    COPY INTO {DEFAULT_SILVER_SHCEMA}.{table}
-    FROM '{silver_bucket_url}/{now_string}/youtoube_videos_by_categories_raw_data/'
-    IAM_ROLE {redshift_iam_role}
-    FORMAT AS PARQUET;
-    """
+    copy_queries = [
+        f"""
+        COPY INTO {DEFAULT_SILVER_SHCEMA}.{table}
+        FROM '{silver_bucket_url}/{now_string}/otherapis/{gender}_youtoube_videos_by_categories_raw_data/'
+        IAM_ROLE {redshift_iam_role}
+        FORMAT AS PARQUET;
+        """
+        for gender in ["남성", "여성"]
+    ]
 
-    copy_task = RedshiftQueryOperator(
-        task_id="youtube_data_copy_task",
-        op_args=[copy_query],
-    )
+    copy_tasks = []
+    for copy_query in copy_queries:
+        copy_task = RedshiftQueryOperator(
+            task_id="youtube_data_copy_task",
+            op_args=[copy_query],
+        )
+        copy_tasks.append(copy_task)
 
-    refresh_task >> copy_task
+    refresh_task >> copy_tasks

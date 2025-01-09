@@ -1,5 +1,6 @@
 from airflow import DAG
 from airflow.models import Variable
+from zoneinfo import ZoneInfo
 from custom_operators.fetch_non_paged_data_operator import FetchNonPagedDataOperator
 from datetime import datetime, timedelta
 from custom_operators.custom_modules.otherapis_dependencies import OTHERAPI_DEFAULT_ARGS
@@ -9,8 +10,9 @@ from custom_operators.custom_modules.s3_upload import make_s3_url
 default_args = OTHERAPI_DEFAULT_ARGS
 
 now_string = datetime.now().strftime("%Y-%m-%d")
-FILE_TOPIC = f"weekly_weather_data_{now_string}"
-FILE_PATH = f"/{now_string}/{FILE_TOPIC}_raw_data/"
+FILE_TOPIC = f"weekly_weather_data"
+BRONZE_FILE_PATH = f"bronze/{now_string}/otherapis/{FILE_TOPIC}_raw_data/"
+SILVER_FILE_PATH = f"silver/{now_string}/otherapis/{FILE_TOPIC}_raw_data/"
 
 # DAG 정의
 with DAG(
@@ -18,7 +20,7 @@ with DAG(
     default_args=default_args,
     description="Fetch weekly weather data from open api and load to s3 bucket",
     schedule_interval="@daily",
-    start_date=datetime(2024, 1, 1),
+    start_date=datetime(2024, 1, 1).astimezone(ZoneInfo("Asia/Seoul")),
     tags=["otherapi", "weather", "openAPI", "Daily"],
     catchup=False,
 ) as dag:
@@ -27,7 +29,7 @@ with DAG(
     weather_api_key = Variable.get("weather_api_key")
     url = r"https://apihub.kma.go.kr/api/typ01/url/kma_sfcdd.php"
 
-    now = datetime.now()
+    now = datetime.now().astimezone(ZoneInfo("Asia/Seoul"))
     one_day = timedelta(days=1)
 
     # 일별 최저 기온, 최대 기온, 날씨 개황(흐림, 맑음 등)을 포함한 날씨 데이터를 오늘로부터 과거 1주일 날짜만큼 적재
@@ -48,10 +50,10 @@ with DAG(
     spark_job_submit_task = SparkApplicationOperator(
         task_id="weekly_weather_submit_spark_job_task",
         name="weekly_weather_data_from_bronze_to_silver_task",
-        main_application_file=r"otherapis\bronze_to_silver\weekly_weather_data_to_silver.py",
+        main_application_file=r"otherapis/bronze_to_silver/weekly_weather_data_to_silver.py",
         application_args=[
-            make_s3_url(Variable.get("bronze_bucket"), FILE_PATH),
-            make_s3_url(Variable.get("silver_bucket"), FILE_PATH),
+            make_s3_url(Variable.get("s3_bucket"), BRONZE_FILE_PATH),
+            make_s3_url(Variable.get("silver_bucket"), SILVER_FILE_PATH),
         ],
     )
 

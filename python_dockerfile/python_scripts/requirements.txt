@@ -12,3 +12,6 @@ botocore==1.35.87
 
 # requests
 requests==2.32.3
+
+# pyarrow
+pyarrow==18.1.0

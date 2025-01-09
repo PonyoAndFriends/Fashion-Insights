@@ -41,7 +41,7 @@ with DAG(
 
     copy_query = f"""
     COPY INTO {DEFAULT_SILVER_SHCEMA}.{table}
-    FROM '{silver_bucket_url}/{now_string}/weather_station_data_raw_data/'
+    FROM '{silver_bucket_url}/{now_string}/otherapis/weather_station_data_raw_data/'
     IAM_ROLE {redshift_iam_role}
     FORMAT AS PARQUET;
     """

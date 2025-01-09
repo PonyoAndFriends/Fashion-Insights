@@ -1,6 +1,7 @@
 from airflow import DAG
 from airflow.models import Variable
 from datetime import datetime
+from zoneinfo import ZoneInfo
 from custom_operators.custom_modules.otherapis_categories import (
     MALE_CATEGORY_LIST,
     FEMALE_CATEGORY_LIST,
@@ -9,6 +10,7 @@ from custom_operators.custom_modules.otherapis_dependencies import (
     OTHERAPI_DEFAULT_ARGS,
     DEFAULT_S3_DICT,
     NAVER_HEADER,
+    OTHERAPI_DEFAULT_PYTHON_SCRIPT_PATH
 )
 from custom_operators.k8s_custom_python_pod_operator import CustomKubernetesPodOperator
 from custom_operators.keyword_dictionary_process_oprerator import (
@@ -33,14 +35,14 @@ with DAG(
     default_args=default_args,
     description="Fetch and save keywords trend data from naver api",
     schedule_interval="@daily",
-    start_date=datetime(2024, 1, 1),
+    start_date=datetime(2024, 1, 1).astimezone(ZoneInfo("Asia/Seoul")),
     tags=["otherapi", "keyword", "trends", "daily"],
     catchup=False,
 ) as dag:
 
     tasks_config = [
-        {"gender": "female", "category_list": FEMALE_CATEGORY_LIST},
-        {"gender": "male", "category_list": MALE_CATEGORY_LIST},
+        {"gender": "여성", "category_list": FEMALE_CATEGORY_LIST},
+        {"gender": "남성", "category_list": MALE_CATEGORY_LIST},
     ]
 
     keyword_list_tasks = []
@@ -57,7 +59,7 @@ with DAG(
         gender_fetch_keyword_data_task = CustomKubernetesPodOperator(
             task_id=f"fetch_{task['gender']}_keyword_data_task",
             name=f"{task['gender']}_keyword_data_task",
-            script_path="/app/python_script/fetch_keyword_trend_data.py",
+            script_path=f"{OTHERAPI_DEFAULT_PYTHON_SCRIPT_PATH}/fetch_keyword_trend_data.py",
             required_args={
                 "url": url,
                 "headers": headers,
@@ -75,15 +77,16 @@ with DAG(
         )
         fetch_keyword_data_tasks.append(gender_fetch_keyword_data_task)
 
-        now_string = datetime.now().strftime("%Y-%m-%d")
-        file_path = f"/{now_string}/otherapis/{task['gender']}_keyword_trends/"
+        now_string = datetime.now().astimezone(ZoneInfo("Asia/Seoul")).strftime("%Y-%m-%d")
+        bronze_file_path = f"bronze/{now_string}/otherapis/{task['gender']}_keyword_trends/"
+        silver_file_path = f"silver/{now_string}/otherapis/{task['gender']}_keyword_trends/"
         spark_job_submit_task = SparkApplicationOperator(
             task_id=f"naver_keywords_trend_{task['gender']}_submit_spark_job_task",
             name=f"naveer_keywords_trend_{task['gender']}_from_bronze_to_silver_data",
-            main_application_file=r"otherapis\bronze_to_silver\naver_keyword_trend_to_silver.py",
+            main_application_file=r"otherapis/bronze_to_silver/naver_keyword_trend_to_silver.py",
             application_args=[
-                make_s3_url(Variable.get("bronze_bucket"), file_path),
-                make_s3_url(Variable.get("silver_bucket"), file_path),
+                make_s3_url(Variable.get("bronze_bucket"), bronze_file_path),
+                make_s3_url(Variable.get("silver_bucket"), silver_file_path),
                 task["gender"],
             ],
         )

@@ -1,6 +1,7 @@
 from airflow.models import BaseOperator
 from custom_modules import s3_upload
 from custom_modules.otherapis_dependencies import FILE_EXT
+from zoneinfo import ZoneInfo
 
 import json
 from datetime import datetime
@@ -39,7 +40,7 @@ class FetchNonPagedDataOperator(BaseOperator):
             self.log.info("Data fetch success")
 
             # 현재 날짜 생성
-            now = datetime.now()
+            now = datetime.now().astimezone(ZoneInfo("Asia/Seoul"))
             now_string = now.strftime("%Y-%m-%d")
 
             # 데이터 처리 및 파일 경로 생성
@@ -48,7 +49,7 @@ class FetchNonPagedDataOperator(BaseOperator):
                 data_file = json.dumps(response.json(), ensure_ascii=False)
             else:
                 data_file = response.text
-            file_path = f"/{now_string}/{self.file_topic}_raw_data/{self.file_topic}.{file_ext[self.content_type]}"
+            file_path = f"{now_string}/otherapis/{self.file_topic}_raw_data/{self.file_topic}.{file_ext[self.content_type]}"
             # S3 업로드를 위한 딕셔너리 준비
             s3_dict = {
                 "data_file": data_file,

@@ -1,4 +1,5 @@
 from datetime import datetime
+from zoneinfo import ZoneInfo
 import requests
 import json
 import logging
@@ -32,7 +33,7 @@ def fetch_page_range_data(
             data = response.json()
 
             # s3_dict의 빈 값, data_file, file_path을 원하는 설정으로 채움.
-            now = datetime.now()
+            now = datetime.now().astimezone(ZoneInfo("Asia/Seoul"))
             now_string = now.strftime("%Y-%m-%d")
             file_ext = {
                 "application/json": "json",
@@ -46,7 +47,7 @@ def fetch_page_range_data(
                 s3_dict["data_file"] = response.text
 
             s3_dict["file_path"] = (
-                f"/{now_string}/otherapis/{file_topic}_raw_data/{file_topic}_page_{page}.{file_ext[s3_dict['content_type']]}"
+                f"bronze/{now_string}/otherapis/{file_topic}_raw_data/{file_topic}_page_{page}.{file_ext[s3_dict['content_type']]}"
             )
 
             s3_upload.load_data_to_s3(s3_dict)

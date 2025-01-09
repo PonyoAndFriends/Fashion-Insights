@@ -3,10 +3,10 @@ name: Build and Push Docker Image for KubernetesPodOperator
 on:
   push:
     paths:
-      - 'otherapis_dockerfiles/**'
+      - 'python_dockerfile/**'
   pull_request:
     paths:
-      - 'otherapis_dockerfiles/**'
+      - 'python_dockerfile/**'
 
 jobs:
   build-and-push:
@@ -30,7 +30,7 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           context: .
-          file: ./otherapis_dockerfiles/Dockerfile.k8spodimage
+          file: ./python_dockerfile/Dockerfile.k8spodimage
           push: true
           tags: |
             coffeeisnan/pod_image:latest
@@ -41,7 +41,7 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           context: .
-          file: ./otherapis_dockerfiles/Dockerfile.k8spodimage
+          file: ./python_dockerfile/Dockerfile.k8spodimage
           push: true
           tags: |
             coffeeisnan/python_pod_image:latest

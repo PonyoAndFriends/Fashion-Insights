@@ -55,7 +55,7 @@ with DAG(
                 task_id=f"product_detail_{sexual[0]}_{category2depth[0]}_task",
                 name=f"product_detail_{sexual[0]}_{category2depth[0]}_task",
                 namespace="airflow",
-                image="ehdgml7755/project4-custom:latest",  # 수정 필요
+                image="coffeeisnan/project4-custom:latest",  # 수정 필요
                 cmds=[
                     "python",
                     "./python_scripts/musinsa/musinsa_productdetail_rawdata_etl.py",

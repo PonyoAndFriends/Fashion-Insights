@@ -178,7 +178,7 @@ def main():
 
         for category4depth in category3depth[1].values():
             silver_bucket = "Team3-2"
-            read_file_path = f"/bronze/{TODAY_DATE}/musinsa/ranking_data/{category3depth[0]}/{sexual_data[1]}_{category2depth}_{category3depth[0]}_{category4depth}.parquet"
+            read_file_path = f"bronze/{TODAY_DATE}/musinsa/ranking_data/{category3depth[0]}/{sexual_data[1]}_{category2depth}_{category3depth[0]}_{category4depth}.parquet"
             file_path = f"{silver_bucket}/{read_file_path}"
             product_lists = s3_module.get_product_ids(file_path)
 
@@ -186,7 +186,7 @@ def main():
                 master_category = (
                     f"{sexual_data[1]}-{category2depth}-{category3depth[0]}"
                 )
-                key = f"/bronze/{TODAY_DATE}/musinsa/product_detail_data/{category3depth[0]}/{category4depth}/"
+                key = f"bronze/{TODAY_DATE}/musinsa/product_detail_data/{category3depth[0]}/{category4depth}/"
                 t = threading.Thread(
                     target=et_product_detail,
                     args=(master_category, category4depth, product_list, key),

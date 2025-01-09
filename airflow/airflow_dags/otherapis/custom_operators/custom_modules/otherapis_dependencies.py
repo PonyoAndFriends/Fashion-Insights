@@ -1,14 +1,12 @@
 from airflow.models import Variable
 
-BRONZE_BUCKET = Variable("bronze_bucket")  # "Team3-2/bronze"
-
-SILVER_BUCKET = Variable("silver_bucket")  # "Team3-2/silver"
+S3_BUCKET = Variable("s3_bucket")  # "Team3-2"
 
 DEFAULT_S3_DICT = {
     "aws_access_key_id": Variable.get("aws_access_key_id"),
     "aws_secret_access_key": Variable.get("aws_secret_access_key"),
     "aws_region": Variable.get("aws_region"),
-    "s3_bucket_name": Variable.get("bronze_bucket"),
+    "s3_bucket_name": Variable("s3_bucket"),
     "data_file": None,
     "file_path": None,
     "content_type": "application/json",
@@ -42,3 +40,5 @@ NAVER_HEADER = {
     "X-Naver-Client-secret": Variable.get("x-naver-client-secret"),
     "Content-Type": "application/json",
 }
+
+OTHERAPI_DEFAULT_PYTHON_SCRIPT_PATH = r"/app/python_scripts/otherapis"

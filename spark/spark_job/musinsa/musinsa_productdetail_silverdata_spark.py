@@ -22,26 +22,8 @@ TODAY_DATE = pendulum.now(tz=LOCAL_TZ).to_date_string()
 
 
 def create_spark_session():
-    # SparkConf 설정
-    conf = SparkConf()
-    conf.set("spark.hadoop.mapreduce.fileoutputcommitter.algorithm.version", 2)
-    conf.set("spark.hadoop.fs.s3a.committer.magic.enabled", "true")
-    conf.set("fs.s3a.committer.name", "magic")
-    conf.set("spark.hadoop.fs.s3a.impl", "org.apache.hadoop.fs.s3a.S3AFileSystem")
-    conf.set("spark.hadoop.fs.s3a.access.key", os.getenv("AWS_ACCESS_KEY_ID"))
-    conf.set("spark.hadoop.fs.s3a.secret.key", os.getenv("AWS_SECRET_ACCESS_KEY"))
-    conf.set(
-        "spark.hadoop.fs.s3a.endpoint", "s3.ap-northeast-2.amazonaws.com"
-    )  # 리전 엔드포인트 수정
-    conf.set(
-        "spark.hadoop.fs.s3a.aws.credentials.provider",
-        "com.amazonaws.auth.DefaultAWSCredentialsProviderChain",
-    )
-    conf.set("spark.executor.memory", "4g")
-    conf.set("spark.driver.memory", "2g")
-    conf.set("spark.sql.parquet.compression.codec", "snappy")  # Parquet 파일 압축 설정
     # SparkSession 생성
-    spark = SparkSession.builder.config(conf=conf).getOrCreate()
+    spark = SparkSession.builder.getOrCreate()
     return spark
 
 
@@ -105,8 +87,8 @@ def main():
         for category3depth, category4depths in category3depths.items():
             for category4depth in category4depths:
                 print(category3depth, category4depth)
-                source_path = f"s3a://project4-raw-data/{TODAY_DATE}/Musinsa/ProductDetailData/{category3depth}/{category4depth}/*.json"
-                load_path = f"s3a://project4-silver-data/{TODAY_DATE}/Musinsa/ProductDetailData/{category3depth}/{category4depth}.parquet"
+                source_path = f"s3a://Team3-2/bronze/{TODAY_DATE}/musinsa/product_detail_data/{category3depth}/{category4depth}/*.json"
+                load_path = f"s3a://Team3-2/silver/{TODAY_DATE}/musinsa/product_detail_data/{category3depth}/{category4depth}.parquet"
                 etl_productdetail(spark, source_path, load_path)
 
 

@@ -66,4 +66,4 @@ def load_data_to_s3(s3_dict):
 
 
 def make_s3_url(s3_bucket_name, s3_file_path):
-    return f"s3://{s3_bucket_name}/{s3_file_path}"
+    return f"s3a://{s3_bucket_name}/{s3_file_path}"

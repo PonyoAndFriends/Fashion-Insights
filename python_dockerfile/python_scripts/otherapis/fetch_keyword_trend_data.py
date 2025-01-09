@@ -4,18 +4,19 @@ import requests
 import logging
 from datetime import datetime, timedelta
 from script_modules import s3_upload
+from zoneinfo import ZoneInfo
 
 WANT_RANK = 5  # 원하는 등수
 
 logger = logging.getLogger(__name__)
 
 
-def sort_by_weekly_ratio(url, headers, keywords):
+def sort_by_weekly_ratio(url, headers, keywords, gender):
     """
     키워드 트렌드 데이터 api를 호출, 1주일 단위로 반환했을 때 기준 오늘의 ratio 필드로 상대적 순위를 결정
     상대 순위를 기반으로 정렬된 키워드들을 반환
     """
-    now = datetime.now()
+    now = datetime.now().astimezone(ZoneInfo("Asia/Seoul"))
     one_week_ago = now - timedelta(days=7)
     now_string = now.strftime("%Y-%m-%d")
     one_week_ago_string = one_week_ago.strftime("%Y-%m-%d")
@@ -29,8 +30,9 @@ def sort_by_weekly_ratio(url, headers, keywords):
         "timeUnit": "date",
         "category": "50000000",
         "keyword": [
-            {"name": f"{keyword}_trend", "param": [keyword]} for keyword in keywords
+            {"name": f"{gender}_{keyword}_trend", "param": [keyword]} for keyword in keywords
         ],
+        "gender": "f" if gender == "여성" else "m"
     }
 
     response = requests.post(url, headers=headers, json=body)
@@ -48,22 +50,22 @@ def sort_by_weekly_ratio(url, headers, keywords):
     return [keyword for keyword, _ in ratios]
 
 
-def get_top_five_keyword(url, headers, all_keywords):
+def get_top_five_keyword(url, headers, all_keywords, gender):
     """
     상위 5개의 트렌드를 얻기 위하여 api를 반복 호출하며 서로 순위를 비교함
     """
-    current_top_5 = sort_by_weekly_ratio(url, headers, all_keywords[:5])
+    current_top_5 = sort_by_weekly_ratio(url, headers, all_keywords[:5], gender)
     remainders = all_keywords[5:]
 
     for new_keyword in remainders:
         sorted_keywords_with_new_keyword = sort_by_weekly_ratio(
-            url, headers, all_keywords[:4] + [new_keyword]
+            url, headers, all_keywords[:4] + [new_keyword], gender
         )
 
         if sorted_keywords_with_new_keyword[-1] == new_keyword:
             current_fifth = current_top_5[-1]
             current_top_5[-1] = sort_by_weekly_ratio(
-                url, headers, [current_fifth, new_keyword]
+                url, headers, [current_fifth, new_keyword], gender
             )
         else:
             current_top_5 = sorted_keywords_with_new_keyword
@@ -71,7 +73,7 @@ def get_top_five_keyword(url, headers, all_keywords):
     return current_top_5
 
 
-def fetch_final_data(url, headers, s3_dict, gender, top_5_keywords):
+def fetch_final_data(url, headers, s3_dict, top_5_keywords, gender):
     """
     최종 상위 5개 키워드로 API 호출하여 데이터를 반환.
     """
@@ -85,17 +87,18 @@ def fetch_final_data(url, headers, s3_dict, gender, top_5_keywords):
             {"name": f"{keyword}_trend", "param": [keyword]}
             for keyword in top_5_keywords
         ],
+        "gender": "f" if gender == "여성" else "m"
     }
 
     response = requests.post(url, headers=headers, json=body)
     response.raise_for_status()
 
-    now_string = datetime.now().strftime("%Y-%m-%d")
+    now_string = datetime.now().astimezone(ZoneInfo("Asia/Seoul")).strftime("%Y-%m-%d")
 
     # 최종 데이터 업로드
     s3_dict["data_file"] = response.json()
     s3_dict["file_path"] = (
-        f"/{now_string}/otherapis/{gender}_keyword_trends/final_top_5_keywords_data.json"
+        f"bronze/{now_string}/otherapis/{gender}_keyword_trends/final_top_5_keywords_data.json"
     )
     s3_dict["content_type"] = "application/json"
     s3_upload.load_data_to_s3(s3_dict)
@@ -126,8 +129,8 @@ def main():
 
         logger.info("Parsed arguments and started processing.")
 
-        top_five_keywords = get_top_five_keyword(url, headers, all_keywords)
-        fetch_final_data(url, headers, s3_dict, gender, top_five_keywords)
+        top_five_keywords = get_top_five_keyword(url, headers, all_keywords, gender)
+        fetch_final_data(url, headers, s3_dict, top_five_keywords, gender)
 
         logger.info("Script completed successfully.")
     except Exception as e:

@@ -7,9 +7,19 @@ import argparse
 from script_modules import s3_upload
 from script_modules import run_func_multi_thread
 from datetime import datetime
+from zoneinfo import ZoneInfo
+from collections import defaultdict
 
 
 logger = logging.getLogger(__name__)
+
+def group_categories_by_key(category_list):
+    """gender, first_depth, second_depth가 같은 항목들을 묶음"""
+    grouped_data = defaultdict(list)
+    for gender, first_depth, second_depth, category in category_list:
+        key = (gender, first_depth, second_depth)
+        grouped_data[key].append(category)
+    return grouped_data
 
 
 def parse_duration(duration):
@@ -33,7 +43,7 @@ def get_videos_with_details(
 ):
     """검색 결과와 세부 정보를 통합하여 반환"""
     gender, first_depth, second_depth, categories = input_category_data
-    now = datetime.now()
+    now = datetime.now().astimezone(ZoneInfo("Asia/Seoul"))
     now_string = now.strftime("%Y-%m-%d")
 
     for category in categories:
@@ -70,7 +80,7 @@ def get_videos_with_details(
                 if 180 <= duration <= 1800:
                     videos.append(
                         {
-                            "search_category": "",
+                            "search_category": f"{category}",
                             "videoId": video_info["id"],
                             "category_name": f"{gender}_{first_depth}_{second_depth}_{category}",
                             "title": video_info["snippet"]["title"],
@@ -104,8 +114,8 @@ def get_videos_with_details(
 
         s3_dict["data_file"] = videos
         s3_dict["file_path"] = (
-            f"/{now_string}/otherapis/{gender}_{file_topic}_raw_data/{gender}_{first_depth}_{second_depth}_{category}_data.json"
-        )
+            f"bronze/{now_string}/otherapis/{gender}_{file_topic}_raw_data/{gender}_{first_depth}_{second_depth}_{category}_data.json"
+        )   
 
         logger.debug(f"Uploading data to S3 file path: {s3_dict['file_path']}")
         s3_upload.load_data_to_s3(s3_dict)
@@ -146,6 +156,11 @@ if __name__ == "__main__":
         youtube = googleapiclient.discovery.build("youtube", "v3", developerKey=api_key)
         logger.info("YouTube API client initialized.")
 
+        # 카테고리 그룹화
+        grouped_categories = group_categories_by_key(category_list)
+        logger.debug(f"Grouped categories: {grouped_categories}")
+
+
         # 각 입력 데이터와 관련된 작업 생성
         args_list = [
             (
@@ -154,7 +169,7 @@ if __name__ == "__main__":
                 s3_dict,
                 file_topic,
             )
-            for gender, first_depth, second_depth, categories in category_list
+            for (gender, first_depth, second_depth), categories in grouped_categories.items()
         ]
 
         run_func_multi_thread.execute_in_threads(

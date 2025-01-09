@@ -61,7 +61,7 @@ with DAG(
     copy_queries = [
         f"""
         COPY INTO {DEFAULT_SILVER_SHCEMA}.{table}
-        FROM '{silver_bucket_url}/{now_string}/{platform}/product_detail/'
+        FROM '{silver_bucket_url}/{now_string}/{platform}/product_detail_data/'
         IAM_ROLE {redshift_iam_role}
         FORMAT AS PARQUET;
         """
@@ -73,7 +73,7 @@ with DAG(
     for i, query in enumerate(copy_queries):
         copy_task = RedshiftQueryOperator(
             task_id=f"{platforms[i]}_product_detail_copy_task",
-            op_args=[query],
+            op_args=query,
         )
         copy_tasks.append(copy_task)
 

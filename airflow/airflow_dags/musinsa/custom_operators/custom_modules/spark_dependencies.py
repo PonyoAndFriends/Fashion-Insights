@@ -56,7 +56,5 @@ SPARK_DEFAULT_CONF = {
     "spark.hadoop.fs.s3a.committer.magic.enabled": "true",
     "fs.s3a.committer.name": "magic",
     "spark.hadoop.fs.s3a.impl": "org.apache.hadoop.fs.s3a.S3AFileSystem",
-    "spark.hadoop.fs.s3a.access.key": Variable.get("AWS_ACCESS_KEY_ID"),
-    "spark.hadoop.fs.s3a.secret.key": Variable.get("AWS_SECRET_ACCESS_KEY"),
     "spark.sql.parquet.compression.codec": "snappy",
 }

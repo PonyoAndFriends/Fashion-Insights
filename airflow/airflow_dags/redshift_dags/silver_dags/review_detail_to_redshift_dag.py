@@ -63,7 +63,7 @@ with DAG(
 
         copy_query = f"""
             COPY INTO {DEFAULT_SILVER_SHCEMA}.{table}
-            FROM '{silver_bucket_url}/{now_string}/{platform}/ProductDetail/'
+            FROM '{silver_bucket_url}/{now_string}/{platform}/product_review_data/'
             IAM_ROLE {redshift_iam_role}
             FORMAT AS PARQUET;
             """

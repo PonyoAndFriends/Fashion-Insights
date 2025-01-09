@@ -40,7 +40,7 @@ with DAG(
         category_name VARCHAR(100) NOT NULL,
         category_code VARCHAR(20) NOT NULL,
         keyword_name VARCHAR(100) NOT NULL,
-        gender VARCHAR(1),
+        gender VARCHAR(5),
         period DATE NOT NULL,
         ratio FLOAT NOT NULL,
         created_at TIMESTAMP NOT NULL
@@ -52,16 +52,19 @@ with DAG(
         task_id="naver_keyword_trend_table_refresh_task",
     )
 
-    copy_query = f"""
-    COPY INTO {DEFAULT_SILVER_SHCEMA}.{table}
-    FROM '{silver_bucket_url}/{now_string}/keyword_trend_raw_data/'
-    IAM_ROLE {redshift_iam_role}
-    FORMAT AS PARQUET;
-    """
+    copy_tasks = []
+    for gender in ["남성", "여성"]:
+        copy_query = f"""
+        COPY INTO {DEFAULT_SILVER_SHCEMA}.{table}
+        FROM '{silver_bucket_url}/{now_string}/otherapis/{gender}_keyword_trend_raw_data/'
+        IAM_ROLE {redshift_iam_role}
+        FORMAT AS PARQUET;
+        """
 
-    copy_task = RedshiftQueryOperator(
-        task_id="copy_naver_keyword_trend_task",
-        op_args=[copy_query],
-    )
+        copy_task = RedshiftQueryOperator(
+            task_id="copy_naver_keyword_trend_task",
+            op_args=copy_query,
+        )
+        copy_tasks.append(copy_task)
 
-    refresh_task >> copy_task
+    refresh_task >> copy_tasks
