@@ -54,9 +54,9 @@ with DAG(
                 namespace="airflow",
                 script_path="./python_scripts/musinsa/musinsa_productreview_rawdata_el.py",
                 required_args={
-                    "category_3_depth": category3depth[0], 
-                    "category_4_depth_list": json.dumps(category3depth[1])
-                    },
+                    "category_3_depth": category3depth[0],
+                    "category_4_depth_list": json.dumps(category3depth[1]),
+                },
                 cpu_limit="1000m",
                 memory_limit="1Gi",
                 cpu_request="500m",

@@ -54,9 +54,9 @@ with DAG(
                 namespace="airflow",
                 script_path="./python_scripts/musinsa/musinsa_ranking_rawdata_el.py",
                 arguments={
-                    "sexual": json.dumps(sexual), 
-                    "category_data": json.dumps(category2depth)
-                    },
+                    "sexual": json.dumps(sexual),
+                    "category_data": json.dumps(category2depth),
+                },
                 cpu_limit="1000m",
                 memory_limit="1Gi",
                 cpu_request="500m",

@@ -13,6 +13,7 @@ from collections import defaultdict
 
 logger = logging.getLogger(__name__)
 
+
 def group_categories_by_key(category_list):
     """gender, first_depth, second_depth가 같은 항목들을 묶음"""
     grouped_data = defaultdict(list)
@@ -115,7 +116,7 @@ def get_videos_with_details(
         s3_dict["data_file"] = videos
         s3_dict["file_path"] = (
             f"bronze/{now_string}/otherapis/{gender}_{file_topic}_raw_data/{gender}_{first_depth}_{second_depth}_{category}_data.json"
-        )   
+        )
 
         logger.debug(f"Uploading data to S3 file path: {s3_dict['file_path']}")
         s3_upload.load_data_to_s3(s3_dict)
@@ -160,7 +161,6 @@ if __name__ == "__main__":
         grouped_categories = group_categories_by_key(category_list)
         logger.debug(f"Grouped categories: {grouped_categories}")
 
-
         # 각 입력 데이터와 관련된 작업 생성
         args_list = [
             (
@@ -169,7 +169,11 @@ if __name__ == "__main__":
                 s3_dict,
                 file_topic,
             )
-            for (gender, first_depth, second_depth), categories in grouped_categories.items()
+            for (
+                gender,
+                first_depth,
+                second_depth,
+            ), categories in grouped_categories.items()
         ]
 
         run_func_multi_thread.execute_in_threads(

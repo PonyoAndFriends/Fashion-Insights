@@ -77,9 +77,15 @@ with DAG(
         fetch_keyword_data_tasks.append(gender_fetch_youtube_data_task)
 
         file_topic = "youtoube_videos_by_categories"
-        now_string = datetime.now().astimezone(ZoneInfo("Asia/Seoul")).strftime("%Y-%m-%d")
-        bronze_file_path = f"bronze/{now_string}/otherapis/{task['gender']}_{file_topic}_raw_data/"
-        silver_file_path = f"silver/{now_string}/otherapis/{task['gender']}_{file_topic}_raw_data/"
+        now_string = (
+            datetime.now().astimezone(ZoneInfo("Asia/Seoul")).strftime("%Y-%m-%d")
+        )
+        bronze_file_path = (
+            f"bronze/{now_string}/otherapis/{task['gender']}_{file_topic}_raw_data/"
+        )
+        silver_file_path = (
+            f"silver/{now_string}/otherapis/{task['gender']}_{file_topic}_raw_data/"
+        )
         spark_job_submit_task = SparkApplicationOperator(
             task_id=f"youtube_category_videos_{task['gender']}_submit_spark_job_task",
             name=f"youtube_category_videos_{task['gender']}_from_bronze_to_silver_data",

@@ -30,9 +30,10 @@ def sort_by_weekly_ratio(url, headers, keywords, gender):
         "timeUnit": "date",
         "category": "50000000",
         "keyword": [
-            {"name": f"{gender}_{keyword}_trend", "param": [keyword]} for keyword in keywords
+            {"name": f"{gender}_{keyword}_trend", "param": [keyword]}
+            for keyword in keywords
         ],
-        "gender": "f" if gender == "여성" else "m"
+        "gender": "f" if gender == "여성" else "m",
     }
 
     response = requests.post(url, headers=headers, json=body)
@@ -87,7 +88,7 @@ def fetch_final_data(url, headers, s3_dict, top_5_keywords, gender):
             {"name": f"{keyword}_trend", "param": [keyword]}
             for keyword in top_5_keywords
         ],
-        "gender": "f" if gender == "여성" else "m"
+        "gender": "f" if gender == "여성" else "m",
     }
 
     response = requests.post(url, headers=headers, json=body)

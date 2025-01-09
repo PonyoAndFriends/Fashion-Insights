@@ -57,8 +57,8 @@ with DAG(
                 namespace="airflow",
                 script_path="./python_scripts/musinsa/musinsa_productdetail_rawdata_etl.py",
                 required_args={
-                    "sexual_dict": json.dumps(sexual), 
-                    "category_2_depth": json.dumps(category2depth)
+                    "sexual_dict": json.dumps(sexual),
+                    "category_2_depth": json.dumps(category2depth),
                 },
                 cpu_limit="1000m",
                 memory_limit="1Gi",

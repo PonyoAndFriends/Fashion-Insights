@@ -10,7 +10,7 @@ from custom_operators.custom_modules.otherapis_dependencies import (
     OTHERAPI_DEFAULT_ARGS,
     DEFAULT_S3_DICT,
     NAVER_HEADER,
-    OTHERAPI_DEFAULT_PYTHON_SCRIPT_PATH
+    OTHERAPI_DEFAULT_PYTHON_SCRIPT_PATH,
 )
 from custom_operators.k8s_custom_python_pod_operator import CustomKubernetesPodOperator
 from custom_operators.keyword_dictionary_process_oprerator import (
@@ -77,9 +77,15 @@ with DAG(
         )
         fetch_keyword_data_tasks.append(gender_fetch_keyword_data_task)
 
-        now_string = datetime.now().astimezone(ZoneInfo("Asia/Seoul")).strftime("%Y-%m-%d")
-        bronze_file_path = f"bronze/{now_string}/otherapis/{task['gender']}_keyword_trends/"
-        silver_file_path = f"silver/{now_string}/otherapis/{task['gender']}_keyword_trends/"
+        now_string = (
+            datetime.now().astimezone(ZoneInfo("Asia/Seoul")).strftime("%Y-%m-%d")
+        )
+        bronze_file_path = (
+            f"bronze/{now_string}/otherapis/{task['gender']}_keyword_trends/"
+        )
+        silver_file_path = (
+            f"silver/{now_string}/otherapis/{task['gender']}_keyword_trends/"
+        )
         spark_job_submit_task = SparkApplicationOperator(
             task_id=f"naver_keywords_trend_{task['gender']}_submit_spark_job_task",
             name=f"naveer_keywords_trend_{task['gender']}_from_bronze_to_silver_data",

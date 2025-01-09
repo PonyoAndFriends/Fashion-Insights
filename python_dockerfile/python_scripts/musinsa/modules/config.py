@@ -23,7 +23,7 @@ class Musinsa_Config:
 class AWS_Config:
     def __init__():
         pass
-    
+
     AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID")
 
     AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY")

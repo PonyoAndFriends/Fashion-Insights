@@ -8,7 +8,7 @@ from custom_operators.custom_modules.otherapis_dependencies import (
     MUSINSA_HEADERS,
     OTHERAPI_DEFAULT_ARGS,
     DEFAULT_S3_DICT,
-    OTHERAPI_DEFAULT_PYTHON_SCRIPT_PATH
+    OTHERAPI_DEFAULT_PYTHON_SCRIPT_PATH,
 )
 from zoneinfo import ZoneInfo
 from custom_operators.custom_modules.s3_upload import make_s3_url
@@ -27,8 +27,8 @@ PAGE_SIZE = math.ceil(TOTAL_DATA_COUNT // (PARALLEL_POD_NUM * PARALLEL_THREAD_NU
 
 # 파일 경로 설정
 FILE_TOPIC = "musinsa_snap_brand_ranking"
-BRONZE_FILE_PATH = f"bronze/{datetime.now().astimezone(ZoneInfo("Asia/Seoul")).strftime('%Y-%m-%d')}/otherapis/{FILE_TOPIC}_raw_data/"
-SILVER_FILE_PATH = f"silver/{datetime.now().astimezone(ZoneInfo("Asia/Seoul")).strftime('%Y-%m-%d')}/otherapis/{FILE_TOPIC}_raw_data/"
+BRONZE_FILE_PATH = f"bronze/{datetime.now().astimezone(ZoneInfo('Asia/Seoul')).strftime('%Y-%m-%d')}/otherapis/{FILE_TOPIC}_raw_data/"
+SILVER_FILE_PATH = f"silver/{datetime.now().astimezone(ZoneInfo('Asia/Seoul')).strftime('%Y-%m-%d')}/otherapis/{FILE_TOPIC}_raw_data/"
 
 # DAG의 기본 args 정의
 default_args = OTHERAPI_DEFAULT_ARGS
@@ -89,7 +89,7 @@ with DAG(
         name="musinsa_snap_ranking_brand_from_bronze_to_silver_data",
         main_application_file=r"otherapis/bronze_to_silver/musinsa_snap_brand_ranking_to_silver.py",
         application_args=[
-            make_s3_url(Variable("s3_bucket"), BRONZE_FILE_PATH),  
+            make_s3_url(Variable("s3_bucket"), BRONZE_FILE_PATH),
             make_s3_url(Variable("s3_bucket"), SILVER_FILE_PATH),
         ],
     )
