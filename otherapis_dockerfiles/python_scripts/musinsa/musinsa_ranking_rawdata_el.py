@@ -4,7 +4,7 @@ import json
 
 import argparse
 
-from pythonscript.modules.s3_module import connect_s3, validate_and_upload_s3_file
+from modules.s3_module import connect_s3, validate_and_upload_s3_file
 from modules.config import Musinsa_Config
 
 # url
@@ -57,8 +57,8 @@ def main():
                 response_json = response.json()
                 logging.info("response 200")
 
-            bucket_name = "project4-raw-data"
-            file_name = f"{TODAY_DATE}/Musinsa/RankingData/{category3depth[0]}/{sexual_data[1]}_{category2depth}_{category3depth[0]}_{category4name}.json"
+            bucket_name = "Team3-2"
+            file_name = f"/bronze/{TODAY_DATE}/musinsa/ranking_data/{category3depth[0]}/{sexual_data[1]}_{category2depth}_{category3depth[0]}_{category4name}.json"
 
             validate_and_upload_s3_file(
                 connect_s3(), bucket_name, file_name, response_json

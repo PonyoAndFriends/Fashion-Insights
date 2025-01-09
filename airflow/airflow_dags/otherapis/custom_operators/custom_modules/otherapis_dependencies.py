@@ -1,8 +1,8 @@
 from airflow.models import Variable
 
-BRONZE_BUCKET = Variable('bronze_bucket') = "Team3-2/bronze"
+BRONZE_BUCKET = Variable("bronze_bucket")  # "Team3-2/bronze"
 
-SILVER_BUCKET = Variable('silver_bucket') = "Team3-2/silver"
+SILVER_BUCKET = Variable("silver_bucket")  # "Team3-2/silver"
 
 DEFAULT_S3_DICT = {
     "aws_access_key_id": Variable.get("aws_access_key_id"),

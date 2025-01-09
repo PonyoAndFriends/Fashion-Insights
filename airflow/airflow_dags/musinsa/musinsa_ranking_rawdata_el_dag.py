@@ -52,7 +52,10 @@ with DAG(
                 name=f"{sexual[0]}_{category2depth[0]}_task",
                 namespace="airflow",
                 image="coffeeisnan/python_pod_image:latest",  # 수정 필요
-                cmds=["python", "./python_scripts/musinsa/musinsa_ranking_rawdata_el.py"],
+                cmds=[
+                    "python",
+                    "./python_scripts/musinsa/musinsa_ranking_rawdata_el.py",
+                ],
                 arguments=[json.dumps(sexual), json.dumps(category2depth)],
                 is_delete_operator_pod=True,
                 get_logs=True,
@@ -68,7 +71,10 @@ with DAG(
         task_id="musinsa_ranking_data_spark_task",
     )
 
-    trigger_tasks = ["Musinsa_ProductReview_RawData_EL_DAG", "Musinsa_ProductDetail_RawData_EL_DAG"]
+    trigger_tasks = [
+        "Musinsa_ProductReview_RawData_EL_DAG",
+        "Musinsa_ProductDetail_RawData_EL_DAG",
+    ]
     for dag_id in []:
         trriger_task = TriggerDagRunOperator(
             trigger_dag_id=dag_id,

@@ -2,7 +2,6 @@ import time
 import argparse
 import requests
 import re
-from datetime import datetime
 import json
 import threading
 
@@ -117,7 +116,7 @@ def et_product2_detail(product_id):
 # product detail parsing => DataFrame Record
 def et_product_detail(master_category, depth4category, product_id_list, key):
     for product_id in product_id_list:
-        bronze_bucket = "project4-raw-data"
+        bronze_bucket = "Team3-2"
         s3_key = key + f"{product_id}.json"
         time.sleep(0.8)
 
@@ -137,11 +136,11 @@ def et_product_detail(master_category, depth4category, product_id_list, key):
         ) = et_product1_detail(product_id)
         like_counting = et_product2_detail(product_id)
 
-        created_at = datetime.now().strftime("%Y-%m-%d")
+        created_at = TODAY_DATE
 
         # data => dict
         data = {
-            "platform": "Musinsa",
+            "platform": "musinsa",
             "master_category_name": master_category,
             "small_category_name": depth4category,
             "product_id": product_id,
@@ -178,8 +177,8 @@ def main():
         category3depth = list(category_info.items())[0]
 
         for category4depth in category3depth[1].values():
-            silver_bucket = "project4-silver-data"
-            read_file_path = f"{TODAY_DATE}/Musinsa/RankingData/{category3depth[0]}/{sexual_data[1]}_{category2depth}_{category3depth[0]}_{category4depth}.parquet"
+            silver_bucket = "Team3-2"
+            read_file_path = f"/bronze/{TODAY_DATE}/musinsa/ranking_data/{category3depth[0]}/{sexual_data[1]}_{category2depth}_{category3depth[0]}_{category4depth}.parquet"
             file_path = f"{silver_bucket}/{read_file_path}"
             product_lists = s3_module.get_product_ids(file_path)
 
@@ -187,7 +186,7 @@ def main():
                 master_category = (
                     f"{sexual_data[1]}-{category2depth}-{category3depth[0]}"
                 )
-                key = f"{TODAY_DATE}/Musinsa/ProductDetailData/{category3depth[0]}/{category4depth}/"
+                key = f"/bronze/{TODAY_DATE}/musinsa/product_detail_data/{category3depth[0]}/{category4depth}/"
                 t = threading.Thread(
                     target=et_product_detail,
                     args=(master_category, category4depth, product_list, key),

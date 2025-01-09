@@ -64,7 +64,7 @@ with DAG(
             category2depth_task >> category3depth_task >> wait_task
 
         wait_task >> raw_end
-    
+
     spark_submit_task = SparkApplicationOperator(
         name="musinsa_product_review_raw_data_spark_submit_task",
         main_application_file="musinsa\musinsa_produdctreview_silverdata_spark.py",

@@ -58,8 +58,8 @@ def main():
     category4depth_list = json.loads(args.category4depth_list)
 
     # product_id list 불러오기
-    silver_bucket = "project4-silver-data/"
-    file_key = f"{TODAY_DATE}/Musinsa/RankingData/{category3depth}/"
+    silver_bucket = "Team3-2"
+    file_key = f"/bronze/{TODAY_DATE}/musinsa/ranking_data/{category3depth}/"
 
     s3 = s3_module.connect_s3fs()
 
@@ -84,7 +84,7 @@ def main():
             product_ids += temp_ids
 
         for product_list in porductid_list_iterable(product_ids):
-            key = f"{TODAY_DATE}/Musinsa/ProductReviewData/{category3depth}/{category4depth}/"
+            key = f"/bronze/{TODAY_DATE}/musinsa/product_review_data/{category3depth}/{category4depth}/"
             t = threading.Thread(target=el_productreview, args=(product_list, key))
             t.start()
 
