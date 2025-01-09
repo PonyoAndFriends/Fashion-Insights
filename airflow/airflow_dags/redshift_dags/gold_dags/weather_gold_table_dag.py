@@ -1,7 +1,7 @@
 from airflow import DAG
 from datetime import datetime
-from custom_sql_operators.custom_refresh_table_operator import RefreshTableOperator
-from custom_sql_modules.query_dag_dependencies import (
+from gold_dags.custom_sql_operators.custom_refresh_table_operator import RefreshTableOperator
+from gold_dags.custom_sql_operators.custom_sql_modules.query_dag_dependencies import (
     SILVER_LOAD_DEFAULT_ARGS,
     DEFAULT_SILVER_SHCEMA,
     DEFAULT_GOLD_SHCEMA,

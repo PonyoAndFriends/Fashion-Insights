@@ -3,7 +3,7 @@ import json
 import requests
 import logging
 from datetime import datetime, timedelta
-from script_modules import s3_upload
+from otherapis.script_modules import s3_upload
 from zoneinfo import ZoneInfo
 
 WANT_RANK = 5  # 원하는 등수

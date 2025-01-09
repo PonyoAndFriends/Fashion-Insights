@@ -1,6 +1,6 @@
 from airflow.models import BaseOperator
-from custom_modules import s3_upload
-from custom_modules.otherapis_dependencies import FILE_EXT
+from custom_operators.custom_modules import s3_upload
+from custom_operators.custom_modules.otherapis_dependencies import FILE_EXT
 from zoneinfo import ZoneInfo
 
 import json

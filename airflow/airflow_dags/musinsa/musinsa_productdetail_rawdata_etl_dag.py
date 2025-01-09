@@ -3,11 +3,11 @@ from airflow.providers.cncf.kubernetes.operators.kubernetes_pod import (
     KubernetesPodOperator,
 )
 from airflow.operators.dummy import DummyOperator
-from custom_operators.k8s_spark_job_submit_operator import SparkApplicationOperator
-from custom_operators.k8s_custom_python_pod_operator import CustomKubernetesPodOperator
+from musinsa.custom_operators.k8s_spark_job_submit_operator import SparkApplicationOperator
+from musinsa.custom_operators.k8s_custom_python_pod_operator import CustomKubernetesPodOperator
 
-from modules.musinsa_mappingtable import SEXUAL_CATEGORY_DYNAMIC_PARAMS
-from modules.config import DEFAULT_DAG
+from musinsa.modules.musinsa_mappingtable import SEXUAL_CATEGORY_DYNAMIC_PARAMS
+from musinsa.modules.config import DEFAULT_DAG
 
 import json
 from datetime import datetime

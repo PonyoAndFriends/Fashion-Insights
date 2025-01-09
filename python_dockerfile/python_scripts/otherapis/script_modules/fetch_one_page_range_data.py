@@ -3,7 +3,7 @@ from zoneinfo import ZoneInfo
 import requests
 import json
 import logging
-import s3_upload
+from script_modules import s3_upload
 
 logger = logging.getLogger(__name__)
 

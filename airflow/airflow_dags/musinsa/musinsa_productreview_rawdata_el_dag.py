@@ -4,17 +4,17 @@ from airflow.providers.cncf.kubernetes.operators.kubernetes_pod import (
     KubernetesPodOperator,
 )
 from airflow.operators.dummy import DummyOperator
-from custom_operators.k8s_spark_job_submit_operator import SparkApplicationOperator
-from custom_operators.k8s_custom_python_pod_operator import CustomKubernetesPodOperator
+from musinsa.custom_operators.k8s_spark_job_submit_operator import SparkApplicationOperator
+from musinsa.custom_operators.k8s_custom_python_pod_operator import CustomKubernetesPodOperator
 import json
 from datetime import datetime
 
-from modules.musinsa_mappingtable import (
+from musinsa.modules.musinsa_mappingtable import (
     CATEGORY2DEPTH_MAPPING,
     mapping2depth_en,
     mapping3depth_en,
 )
-from modules.config import DEFAULT_DAG
+from musinsa.modules.config import DEFAULT_DAG
 
 # DAG 정의
 with DAG(

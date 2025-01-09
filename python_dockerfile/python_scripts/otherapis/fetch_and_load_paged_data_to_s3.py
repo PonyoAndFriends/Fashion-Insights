@@ -1,7 +1,7 @@
 import argparse
 import logging
 import json
-from script_modules import fetch_one_page_range_data, run_func_multi_thread
+from otherapis.script_modules import fetch_one_page_range_data, run_func_multi_thread
 
 logger = logging.getLogger(__name__)
 
