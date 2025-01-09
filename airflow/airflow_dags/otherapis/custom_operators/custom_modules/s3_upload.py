@@ -17,7 +17,6 @@ def load_data_to_s3(s3_dict):
     logger.info("Starting S3 data upload process.")
 
     try:
-        # S3 관련 내용은 Variable로 관리
         aws_access_key_id = Variable.get("aws_access_key_id")
         aws_secret_access_key = Variable.get("aws_secret_access_key")
         aws_region = Variable.get("aws_region")
@@ -25,7 +24,6 @@ def load_data_to_s3(s3_dict):
 
         logger.debug("AWS S3 bucket configurations successfully loaded.")
 
-        # s3_dict 이라는 딕셔너리로 필요한 인자를 받음
         data_file, file_path, content_type = [s3_dict.get(key, None) for key in s3_dict]
         logger.debug(
             f"Data file: {data_file}, File path: {file_path}, Content type: {content_type}"

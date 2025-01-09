@@ -1,12 +1,16 @@
 from airflow.models import Variable
 
+BRONZE_BUCKET = Variable('bronze_bucket') = "Team3-2/bronze"
+
+SILVER_BUCKET = Variable('silver_bucket') = "Team3-2/silver"
+
 DEFAULT_S3_DICT = {
     "aws_access_key_id": Variable.get("aws_access_key_id"),
     "aws_secret_access_key": Variable.get("aws_secret_access_key"),
     "aws_region": Variable.get("aws_region"),
     "s3_bucket_name": Variable.get("bronze_bucket"),
-    "data_file": None,  # 동작 과정에서 생성
-    "file_path": None,  # 동작 과정에서 생성
+    "data_file": None,
+    "file_path": None,
     "content_type": "application/json",
 }
 
