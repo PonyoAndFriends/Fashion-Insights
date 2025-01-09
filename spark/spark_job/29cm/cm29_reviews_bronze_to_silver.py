@@ -10,13 +10,14 @@ AWS_ACCESS_KEY = os.environ.get("AWS_ACCESS_KEY_ID")
 AWS_SECRET_KEY = os.environ.get("AWS_SECRET_ACCESS_KEY")
 
 # Spark 세션 생성
-spark = SparkSession.builder \
-    .appName("Review Data Transformation") \
-    .config("spark.hadoop.fs.s3a.access.key", AWS_ACCESS_KEY) \
-    .config("spark.hadoop.fs.s3a.secret.key", AWS_SECRET_KEY) \
-    .config("spark.hadoop.fs.s3a.endpoint", "s3.ap-northeast-2.amazonaws.com") \
-    .config("spark.sql.parquet.compression.codec", "snappy") \
+spark = (
+    SparkSession.builder.appName("Review Data Transformation")
+    .config("spark.hadoop.fs.s3a.access.key", AWS_ACCESS_KEY)
+    .config("spark.hadoop.fs.s3a.secret.key", AWS_SECRET_KEY)
+    .config("spark.hadoop.fs.s3a.endpoint", "s3.ap-northeast-2.amazonaws.com")
+    .config("spark.sql.parquet.compression.codec", "snappy")
     .getOrCreate()
+)
 
 today = datetime.now().strftime("%Y-%m-%d")
 
@@ -37,14 +38,22 @@ transformed_data = raw_data.select(
     col("contents").alias("review_content"),
     col("point").cast("int").alias("review_rating"),
     substring(col("insertTimestamp"), 1, 10).alias("review_date"),
-    regexp_replace(col("userSize").getItem(0), "cm", "").cast(FloatType()).alias("reviewer_height"),
-    regexp_replace(col("userSize").getItem(1), "kg", "").cast(FloatType()).alias("reviewer_weight"),
-    when(col("optionValue").isNotNull(), col("optionValue").getItem(0)).alias("selected_options"),
-    col("created_at").alias("created_at")  # created_at 유지
+    regexp_replace(col("userSize").getItem(0), "cm", "")
+    .cast(FloatType())
+    .alias("reviewer_height"),
+    regexp_replace(col("userSize").getItem(1), "kg", "")
+    .cast(FloatType())
+    .alias("reviewer_weight"),
+    when(col("optionValue").isNotNull(), col("optionValue").getItem(0)).alias(
+        "selected_options"
+    ),
+    col("created_at").alias("created_at"),  # created_at 유지
 )
 
 # 저장 경로
-output_path = f"s3a://pcy-test-rawdata-bucket/silver_layer/{today}/29cm/29cm_review_detail_tb/"
+output_path = (
+    f"s3a://pcy-test-rawdata-bucket/silver_layer/{today}/29cm/29cm_review_detail_tb/"
+)
 
 try:
     transformed_data.write.mode("overwrite").parquet(output_path)

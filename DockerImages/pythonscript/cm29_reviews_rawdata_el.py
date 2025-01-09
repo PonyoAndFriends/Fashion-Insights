@@ -34,8 +34,7 @@ HEADERS = {
 def list_files_in_s3(folder_path):
     """S3에서 소분류 카테고리 폴더 경로의 모든 JSON 파일 목록을 반환"""
     try:
-        response = s3_client.list_objects_v2(
-            Bucket=S3_BUCKET_NAME, Prefix=folder_path)
+        response = s3_client.list_objects_v2(Bucket=S3_BUCKET_NAME, Prefix=folder_path)
         if "Contents" in response:
             return [
                 obj["Key"]
@@ -70,7 +69,7 @@ def save_reviews_to_s3(folder_path, file_name, reviews):
             Bucket=S3_BUCKET_NAME,
             Key=s3_key,
             Body=json.dumps(reviews, ensure_ascii=False, indent=4),
-            ContentType="application/json"
+            ContentType="application/json",
         )
         logger.info(f"Reviews saved to S3: {s3_key}")
     except Exception as e:
@@ -89,13 +88,17 @@ def fetch_reviews_for_product(product_id, created_at):
 
         response = requests.get(url, headers=HEADERS)
         if response.status_code != 200:
-            logger.error(f"Failed to fetch reviews for product ID {product_id}, page {page}. Status code: {response.status_code}")
+            logger.error(
+                f"Failed to fetch reviews for product ID {product_id}, page {page}. Status code: {response.status_code}"
+            )
             break
 
         try:
             review_data = response.json()
             reviews = review_data.get("data", {}).get("results", [])
-            logger.info(f"{len(reviews)} reviews fetched for product ID {product_id}, page {page}.")
+            logger.info(
+                f"{len(reviews)} reviews fetched for product ID {product_id}, page {page}."
+            )
 
             if not reviews:
                 logger.info(f"No more reviews available for product ID {product_id}.")
@@ -113,7 +116,9 @@ def fetch_reviews_for_product(product_id, created_at):
             page += 1
 
         except ValueError:
-            logger.error(f"Invalid JSON response for product ID {product_id}, page {page}.")
+            logger.error(
+                f"Invalid JSON response for product ID {product_id}, page {page}."
+            )
             break
 
     return all_reviews[:max_reviews]  # 최대 리뷰 수 제한
@@ -138,4 +143,3 @@ def fetch_and_save_reviews_from_all_files(file_key):
         file_name = os.path.basename(file_key).replace("_ids.json", "_reviews")
         save_reviews_to_s3(category_path, file_name, category_reviews)
         logger.info(f"Reviews saved for file: {file_key}")
-        
