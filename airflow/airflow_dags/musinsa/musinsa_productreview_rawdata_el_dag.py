@@ -3,7 +3,7 @@ from airflow.providers.cncf.kubernetes.operators.kubernetes_pod import (
     KubernetesPodOperator,
 )
 from airflow.operators.dummy import DummyOperator
-
+from custom_operators.k8s_spark_job_submit_operator import SparkApplicationOperator
 import json
 from datetime import datetime
 
@@ -29,7 +29,10 @@ with DAG(
     start = DummyOperator(task_id="start")
 
     # raw_end task
-    end = DummyOperator(task_id="end")
+    raw_end = DummyOperator(task_id="raw_end")
+
+    # dag_end task
+    dag_end = DummyOperator(task_id="dag_end")
 
     for key in CATEGORY2DEPTH_MAPPING:
         category2depth = key
@@ -51,7 +54,7 @@ with DAG(
                 image="coffeeisnan/python_pod_image:latest",  # 수정 필요
                 cmds=[
                     "python",
-                    "./pythonscript/musinsa/musinsa_productreview_rawdata_el.py",
+                    "./python_scripts/musinsa/musinsa_productreview_rawdata_el.py",
                 ],
                 arguments=[category3depth[0], json.dumps(category3depth[1])],
                 is_delete_operator_pod=True,
@@ -60,4 +63,12 @@ with DAG(
 
             category2depth_task >> category3depth_task >> wait_task
 
-        wait_task >> end
+        wait_task >> raw_end
+    
+    spark_submit_task = SparkApplicationOperator(
+        name="musinsa_product_review_raw_data_spark_submit_task",
+        main_application_file="musinsa\musinsa_produdctreview_silverdata_spark.py",
+        task_id="musinsa_product_review_data_spark_task",
+    )
+
+    raw_end >> spark_submit_task >> dag_end

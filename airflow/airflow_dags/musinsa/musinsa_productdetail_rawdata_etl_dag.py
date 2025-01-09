@@ -32,8 +32,11 @@ with DAG(
     # start task
     start = DummyOperator(task_id="start")
 
-    # end task
-    end = DummyOperator(task_id="end")
+    # raw_end task
+    raw_end = DummyOperator(task_id="raw_end")
+
+    # dag_end task
+    dag_end = DummyOperator(task_id="dag_end")
 
     # SEXUAL_CATEGORY_DYNAMIC_PARAMS
     # dct_1 => 여성 dct / dct_2 => 남성 dct
@@ -55,7 +58,7 @@ with DAG(
                 image="ehdgml7755/project4-custom:latest",  # 수정 필요
                 cmds=[
                     "python",
-                    "./pythonscript/musinsa/musinsa_productdetail_rawdata_etl.py",
+                    "./python_scripts/musinsa/musinsa_productdetail_rawdata_etl.py",
                 ],
                 arguments=[json.dumps(sexual), json.dumps(category2depth)],
                 is_delete_operator_pod=True,
@@ -64,8 +67,12 @@ with DAG(
 
             sexual_task >> category_task >> wait_task
 
-        spark_submit_task = SparkApplicationOperator(
-            name="I_will_go_musinsa",
-            main_application_file="musinsa/musinsa_ranking",
-        )
-        wait_task >> end
+        wait_task >> raw_end
+
+    spark_submit_task = SparkApplicationOperator(
+        name="musinsa_product_detail_raw_data_spark_submit_task",
+        main_application_file="musinsa\musinsa_productdetail_silverdata_spark.py",
+        task_id="musinsa_product_detail_data_spark_task",
+    )
+
+    raw_end >> spark_submit_task >> dag_end

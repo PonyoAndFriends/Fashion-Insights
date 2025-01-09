@@ -32,7 +32,7 @@ with DAG(
     raw_end = DummyOperator(task_id="raw_end")
 
     # raw_end task
-    silver_end = DummyOperator(task_id="silver_end")
+    dag_end = DummyOperator(task_id="silver_end")
 
     # SEXUAL_CATEGORY_DYNAMIC_PARAMS
     # dct_1 => 여성 dct / dct_2 => 남성 dct
@@ -52,7 +52,7 @@ with DAG(
                 name=f"{sexual[0]}_{category2depth[0]}_task",
                 namespace="airflow",
                 image="coffeeisnan/python_pod_image:latest",  # 수정 필요
-                cmds=["python", "./pythonscript/musinsa/musinsa_ranking_rawdata_el.py"],
+                cmds=["python", "./python_scripts/musinsa/musinsa_ranking_rawdata_el.py"],
                 arguments=[json.dumps(sexual), json.dumps(category2depth)],
                 is_delete_operator_pod=True,
                 get_logs=True,
@@ -74,4 +74,4 @@ with DAG(
             trigger_dag_id=dag_id,
         )
 
-    raw_end >> spark_submit_task >> silver_end
+    raw_end >> spark_submit_task >> trigger_tasks >> dag_end

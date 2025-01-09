@@ -58,7 +58,7 @@ def main():
                 logging.info("response 200")
 
             bucket_name = "project4-raw-data"
-            file_name = f"{today_date}/Musinsa/RankingData/{category3depth[0]}/{sexual_data[1]}_{category2depth}_{category3depth[0]}_{category4name}.json"
+            file_name = f"{TODAY_DATE}/Musinsa/RankingData/{category3depth[0]}/{sexual_data[1]}_{category2depth}_{category3depth[0]}_{category4name}.json"
 
             validate_and_upload_s3_file(
                 connect_s3(), bucket_name, file_name, response_json
