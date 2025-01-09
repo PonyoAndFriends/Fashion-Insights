@@ -1,0 +1,1356 @@
+[33mcommit 43cf81e649bd1db2349ad4f1a3b4f880687f30b6[m[33m ([m[1;36mHEAD -> [m[1;32mfeat/29cm_dag[m[33m)[m
+Author: Chanyeong <pcy7805@naver.com>
+Date:   Thu Jan 9 21:27:30 2025 +0900
+
+    feat:29cm silver_layer spark code 추가
+
+[33mcommit 6f6144d7e48d737f76bfe22d49a6c2fee3881b3b[m[33m ([m[1;31morigin/feat/29cm_dag[m[33m)[m
+Author: github-actions[bot] <github-actions[bot]@users.noreply.github.com>
+Date:   Wed Jan 8 20:32:30 2025 +0000
+
+    chore: Apply formatting with Ruff and Black by Github Actions
+
+[33mcommit 6e7e19d6bf5a9c6abd5a647ad9262d5b7f6bd630[m
+Author: Chanyeong <pcy7805@naver.com>
+Date:   Thu Jan 9 05:31:56 2025 +0900
+
+    feat:29cm spark코드 추가+매핑테이블추가 + el파일수정
+
+[33mcommit 34943a3487685be2d46d0039ed5650a3760abd21[m
+Author: github-actions[bot] <github-actions[bot]@users.noreply.github.com>
+Date:   Tue Jan 7 18:27:02 2025 +0000
+
+    chore: Apply formatting with Ruff and Black by Github Actions
+
+[33mcommit 418871c24eaff5e2401df579c80ba74ca7ac0e3d[m[33m ([m[1;32mchore/share_branch[m[33m)[m
+Merge: c96339c ef60220
+Author: Chanyeong <pcy7805@naver.com>
+Date:   Wed Jan 8 03:26:33 2025 +0900
+
+    Merge branch 'feat/29cm_dag' of https://github.com/PonyoAndFriends/Fashion-Insights into feat/29cm_dag
+
+[33mcommit c96339ce264416035ca0ede7143ef5a034a94ca1[m
+Author: Chanyeong <pcy7805@naver.com>
+Date:   Wed Jan 8 03:24:25 2025 +0900
+
+    fix:매핑테이블,dag 수정
+
+[33mcommit ef60220d83356f8469ba321e357b83eb802fc032[m
+Author: github-actions[bot] <github-actions[bot]@users.noreply.github.com>
+Date:   Tue Jan 7 03:30:20 2025 +0000
+
+    chore: Apply formatting with Ruff and Black by Github Actions
+
+[33mcommit f4a7c327f2248c395563373261e94cca0f1c70ed[m
+Merge: 3b54e87 45b42d1
+Author: Chanyeong <pcy7805@naver.com>
+Date:   Tue Jan 7 12:29:16 2025 +0900
+
+    Merge branch 'feat/29cm_dag' of https://github.com/PonyoAndFriends/Fashion-Insights into feat/29cm_dag
+
+[33mcommit 3b54e87aa6d870a23fcfa8115049170fe886a751[m
+Author: Chanyeong <pcy7805@naver.com>
+Date:   Tue Jan 7 12:25:46 2025 +0900
+
+    fix:s3폴더 디렉토리 구조 수정
+
+[33mcommit 45b42d11a129e53c3e70c92fc70bd7a27232ca51[m
+Author: github-actions[bot] <github-actions[bot]@users.noreply.github.com>
+Date:   Sun Jan 5 18:59:41 2025 +0000
+
+    chore: Apply formatting with Ruff and Black by Github Actions
+
+[33mcommit 49d3974c358f038d263589580ccac9e650fc49c2[m
+Merge: 3296f61 9f11350
+Author: Chanyeong <pcy7805@naver.com>
+Date:   Mon Jan 6 03:58:52 2025 +0900
+
+    Merge branch 'feat/29cm_dag' of https://github.com/PonyoAndFriends/Fashion-Insights into feat/29cm_dag
+
+[33mcommit 3296f61b3cb147087d656339158d375498c5df4b[m
+Author: Chanyeong <pcy7805@naver.com>
+Date:   Mon Jan 6 03:57:45 2025 +0900
+
+    fix:Bearer 토큰 수정;;
+
+[33mcommit 9f113508514fdba01d8d01010945559ffd826837[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Mon Jan 6 03:52:27 2025 +0900
+
+    chore: linting yaml 수정
+
+[33mcommit b708aabe0baba8a60c79c786f85fe9a6e013cb14[m
+Author: github-actions[bot] <github-actions[bot]@users.noreply.github.com>
+Date:   Sun Jan 5 17:43:23 2025 +0000
+
+    chore: Apply formatting with Ruff and Black by Github Actions
+
+[33mcommit deda482ab8474e2354bb8d351bbf90fe5976cba6[m
+Author: Chanyeong <pcy7805@naver.com>
+Date:   Mon Jan 6 02:42:05 2025 +0900
+
+    feat:29cm reviews, product dag, script 파일 추가
+
+[33mcommit 1fcdbbbf155852cad6509c08a25386bf8a800b6d[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mmain[m[33m)[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Sat Jan 4 14:17:28 2025 +0900
+
+    fix: update liting action
+
+[33mcommit 501b6e18e5159033641514021f3dcc530ae3afbc[m
+Author: github-actions[bot] <github-actions[bot]@users.noreply.github.com>
+Date:   Sat Jan 4 04:53:53 2025 +0000
+
+    chore: Apply formatting with Ruff and Black by Github Action
+
+[33mcommit 2c9290251dd39e30dfd6947fecb6afc995105c31[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Sat Jan 4 13:53:31 2025 +0900
+
+    fix: lint commit actions simplification
+
+[33mcommit 9c942ed3b5ccfbb7b4f9c20bb5d7e8267328b2d1[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Sat Jan 4 13:48:08 2025 +0900
+
+    fix: add auto PR by github actions for lint and code formatting
+
+[33mcommit 24e18ece8e70bccd9bdb341e88f46f6eef63ab75[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Sat Jan 4 13:44:17 2025 +0900
+
+    fix: github secrets for github actions access token to push linting commit to repo
+
+[33mcommit d048d6ab23f7c9ab571b16125c34688809439fe5[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Sat Jan 4 09:56:08 2025 +0900
+
+    chore: github actions update for lint and code formatting
+
+[33mcommit f87e43e277d95f9034db2fa3a075973f9f5aa768[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Sat Jan 4 09:48:28 2025 +0900
+
+    feat: Add some linting tools and formater in github actions
+
+[33mcommit b9ebeb0c7f17d79e0499db73653dfea2682f0513[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Sat Jan 4 02:29:17 2025 +0900
+
+    fix: add linting tool ruff
+
+[33mcommit c6d876b1c220d2f0cd1e8562fe90c7ae2b1216a7[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Fri Jan 3 22:28:28 2025 +0900
+
+    chore: add example dags and custom operator to load data from s3 to redshift
+
+[33mcommit d18e14531afd727721bd988f9f88402aa4441796[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Fri Jan 3 21:27:38 2025 +0900
+
+    chore: add example dags and customoperator for spark application submit to spark operator in EKS cluster
+
+[33mcommit f648c9c903610ce03920e85d47102babbe903b5e[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Fri Jan 3 17:41:07 2025 +0900
+
+    chore: add example dags for spark and pyspark codes
+
+[33mcommit d2637e71fd638bbcc0df0423508ccda9d21230c4[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Fri Jan 3 17:26:25 2025 +0900
+
+    chore: 날짜 수정
+
+[33mcommit 1148b7fa2e6d0049c6f0ab37db3a85d0d7212657[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Fri Jan 3 17:20:03 2025 +0900
+
+    fix: 오타 수정
+
+[33mcommit eac38463e299b5cb5eecf0776eadb42b1ebcedca[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Fri Jan 3 17:17:06 2025 +0900
+
+    chore: spark python file path
+
+[33mcommit 3094af5aa5c3d0f892f7ad0c402c9fc810c79f9d[m
+Merge: abe86e5 58bec80
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Fri Jan 3 17:14:50 2025 +0900
+
+    Merge branch 'main' of https://github.com/PonyoAndFriends/Fashion-Insights
+
+[33mcommit abe86e5b7d3c2dcd240576d5e0f673a0d7ad7875[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Fri Jan 3 17:14:22 2025 +0900
+
+    fix: pyspark jars path
+
+[33mcommit 58bec80c7201f2f6d34e58b186b52568eeeeb975[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Fri Jan 3 17:06:05 2025 +0900
+
+    chore: snake cases for filename
+
+[33mcommit 000cc11417e87a07e9a8dabbd6ba73e3c024ab7f[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Fri Jan 3 16:58:32 2025 +0900
+
+    chore: testing
+
+[33mcommit 6d7dead48edf5df63edcbaacde97b0e745bd1942[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Fri Jan 3 16:45:43 2025 +0900
+
+    chore: not delete pod for test
+
+[33mcommit 6782cffb7282f57cb31e269090c778f33e0c81e3[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Fri Jan 3 16:28:23 2025 +0900
+
+    chore: docker image repo fixed
+
+[33mcommit 0f54a059c821f7f6c73045fcb47edb2fffcd0b52[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Fri Jan 3 16:25:02 2025 +0900
+
+    chore: s3 bucket name fixed
+
+[33mcommit ff83a640d371abad91dfeccc46d920732616a166[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Fri Jan 3 16:00:36 2025 +0900
+
+    chore: commit for testing github actions
+
+[33mcommit 5f29b83c391c8b2bd95e244f0615a8f2a0cd2b93[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Fri Jan 3 15:40:37 2025 +0900
+
+    chore: spark test
+
+[33mcommit 1806bf85d4c6a55c3aa987402bd0aa5e0b2b3946[m
+Merge: af201de 5b84786
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Fri Jan 3 15:23:44 2025 +0900
+
+    Merge branch 'feat/Musinsa_Dag' of https://github.com/PonyoAndFriends/Fashion-Insights into feat/Musinsa_Dag
+
+[33mcommit af201de5504c25ea5beaef69e678b75e9aa72872[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Fri Jan 3 15:23:04 2025 +0900
+
+    chore: testing spark
+
+[33mcommit 5b847862f4f5bcbb0d7098d0f7703d397d3430db[m
+Merge: 71ca318 d03ec9c
+Author: DongHee Kim <54052704+donghee-kim775@users.noreply.github.com>
+Date:   Fri Jan 3 01:38:07 2025 +0900
+
+    Merge branch 'feat/Musinsa_Dag' of https://github.com/PonyoAndFriends/Fashion-Insights into feat/Musinsa_Dag
+
+[33mcommit 71ca318d9a0bed5b8d833636a1d3ed721cd938c2[m
+Author: DongHee Kim <54052704+donghee-kim775@users.noreply.github.com>
+Date:   Fri Jan 3 01:35:51 2025 +0900
+
+    fix : request params category 누락
+
+[33mcommit d03ec9c3af581fdf45659fd7769f5c0f22a71bde[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Fri Jan 3 01:18:20 2025 +0900
+
+    fix: delete flake8 linting
+
+[33mcommit cffb1a8cd072ce5b0ae16df72d3873c608f56245[m
+Merge: ad0c954 cb21ffc
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Fri Jan 3 01:17:31 2025 +0900
+
+    Merge pull request #18 from PonyoAndFriends/develop
+    
+    fix: delete flake8 linting
+
+[33mcommit cb21ffc2689eaababfec792ae7ea8840c842771b[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Fri Jan 3 01:16:58 2025 +0900
+
+    fix: delete flake8 linting
+
+[33mcommit 58e86f4c63f7bc4d0799a4524a0fd1aecf4b75f1[m
+Author: DongHee Kim <54052704+donghee-kim775@users.noreply.github.com>
+Date:   Fri Jan 3 01:09:33 2025 +0900
+
+    fix : PR 리뷰사항 반영
+
+[33mcommit 8252e7316e0b8c86f1e31f1bcf2607e9df8bbc0e[m
+Author: DongHee Kim <54052704+donghee-kim775@users.noreply.github.com>
+Date:   Thu Jan 2 16:09:05 2025 +0900
+
+    Feat : 무신사 RankingRawData 적재 및 python script 파일 작성
+
+[33mcommit ad0c9545c5d08d4e024435f841089ed2c3358926[m
+Merge: f63123a bff88c4
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Thu Jan 2 02:24:27 2025 +0900
+
+    Merge pull request #15 from PonyoAndFriends/develop
+    
+    fix: update docker push actions build context
+
+[33mcommit bff88c462317eceaee6f70e788bdc23ec85c72f3[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Thu Jan 2 02:23:31 2025 +0900
+
+    fix: update docker push actions build context
+
+[33mcommit f63123ad88022778b823e9399ef2a7934c787bf7[m
+Merge: 2811c05 a561546
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Thu Jan 2 02:18:19 2025 +0900
+
+    Merge pull request #14 from PonyoAndFriends/develop
+    
+    Develop
+
+[33mcommit a561546490dd09a1db1e9f444dbf9eceb7adafb6[m
+Merge: 31b81ab b5eb44c
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Thu Jan 2 02:17:49 2025 +0900
+
+    Merge pull request #13 from PonyoAndFriends/fix/github_clean
+    
+    Fix/GitHub clean
+
+[33mcommit b5eb44c709ab05a54c2c1e64c0e3afb19a0c89af[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Thu Jan 2 02:11:17 2025 +0900
+
+    fix: clean done
+
+[33mcommit 2811c05a9b6800ef16416ef1c583dad297708fcc[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Thu Jan 2 00:14:22 2025 +0900
+
+    Update spark_operator_dag.py
+
+[33mcommit db8e40d91c6ecdf964459761d6447e2d69b273a4[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Thu Jan 2 00:04:38 2025 +0900
+
+    Update spark_operator_dag.py
+
+[33mcommit 1ca2b3ff8ce26d790da77daea7a06e63a629b878[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Wed Jan 1 23:32:12 2025 +0900
+
+    Update spark_operator_dag.py
+
+[33mcommit 3cc2e79f2f18c92fcb0d24c55df87cef048e9609[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Wed Jan 1 23:29:39 2025 +0900
+
+    Update spark_operator_dag.py
+
+[33mcommit 490f1ef5f6d64c010a77a24a5e56ffec98d63b5b[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Wed Jan 1 23:05:39 2025 +0900
+
+    Update spark_operator_dag.py
+
+[33mcommit 807f2c5956a0dc9754bd4cdeb4d3d23cfea0e1cd[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Wed Jan 1 22:58:15 2025 +0900
+
+    Update spark_operator_dag.py
+
+[33mcommit 2cc095aa6d5f6c84e73925d94371a6c4261e5f68[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Wed Jan 1 22:54:31 2025 +0900
+
+    Update spark_operator_dag.py
+
+[33mcommit 56cd3d689580e5d39b044ecb6eaeed16f2df94dc[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Wed Jan 1 22:32:04 2025 +0900
+
+    Update spark_operator_dag.py
+
+[33mcommit 73caf51124c37d1326b4baea649b45bcdec323c4[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Wed Jan 1 22:29:05 2025 +0900
+
+    Create spark_operator_dag.py
+
+[33mcommit 7114b8bde0a37255bf5b5af18e05d99a763bbd6f[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Wed Jan 1 21:33:12 2025 +0900
+
+    Create last_spark_s3_job.py
+
+[33mcommit c187d55e1a3b0b4b0a680e0e073296a257a92c3d[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Wed Jan 1 20:53:52 2025 +0900
+
+    chore: pod 실행 순서 조정
+
+[33mcommit 6ffff58d53045b2010bd0f6d7e6c8ef6ee2c7105[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Wed Jan 1 20:42:59 2025 +0900
+
+    fix: EKSpodoperator can't be resolved
+
+[33mcommit 539a315398882865bf920bbf5e27c50bc8cccd16[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Wed Jan 1 20:26:25 2025 +0900
+
+    fix: 따옴표
+
+[33mcommit 9bae6ad73236756a7d647667f2bbc657f939839c[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Wed Jan 1 20:21:11 2025 +0900
+
+    fix: new clone
+
+[33mcommit fbd0666b497e76340382d877db2224fcd00b69ba[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Wed Jan 1 17:22:42 2025 +0900
+
+    fix: dksl..
+
+[33mcommit 53a79d00645e91485d81d071039dfe555b01c380[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Wed Jan 1 17:18:18 2025 +0900
+
+    fix: file path
+
+[33mcommit 5c92254a57d76325dbe8dbeadaa723c546fb7e79[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Wed Jan 1 17:16:05 2025 +0900
+
+    fix: add ivy2 path
+
+[33mcommit 857d8c2bf4cc74832f85f5b108e4f79523ad661e[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Wed Jan 1 17:13:59 2025 +0900
+
+    fix: glaemfek
+
+[33mcommit 7ac12bc8c2e17141407f18c2493b526c5350f8d1[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Wed Jan 1 17:03:19 2025 +0900
+
+    fix: for debug, pod delete option disabled
+
+[33mcommit 865b73724e0ae808821c9dc83743800ff67c099c[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Wed Jan 1 16:28:34 2025 +0900
+
+    fix: krb5 path and configuration path set
+
+[33mcommit 057a0a659a78d206a40fb1e5f9b95dcf7db4520d[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Wed Jan 1 16:23:52 2025 +0900
+
+    fix: volume obejct
+
+[33mcommit fbd829e61263adf3334d413001297f312ffbf119[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Wed Jan 1 16:17:40 2025 +0900
+
+    fix: file path and volumes for krb5
+
+[33mcommit bf3a8ce16dd81229e5f7869ad602533f0e995a9f[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Wed Jan 1 15:56:31 2025 +0900
+
+    fix: intermediate files upload fixed
+
+[33mcommit bebacc058cfa61544bab332311aaab77dd7ba7c4[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Wed Jan 1 15:50:39 2025 +0900
+
+    fix: version of container images to 9
+
+[33mcommit 4db8077b9026b180ec5eb373b880c28d076afe7f[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Wed Jan 1 15:48:27 2025 +0900
+
+    fix: removed env_vars
+
+[33mcommit 4cfa23d8347b6acc3c2b95764a7d8a3e9dd15b11[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Wed Jan 1 15:46:51 2025 +0900
+
+    fix: image version
+
+[33mcommit 7d68f41273e84e7e54caf8648cd57a2b0c0295e0[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Wed Jan 1 15:46:23 2025 +0900
+
+    fix: minor fix
+
+[33mcommit 27ddfee31315952035dcd78c14a858217f0ef02b[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Wed Jan 1 15:11:39 2025 +0900
+
+    feat: spark intermediate bucket added
+
+[33mcommit 3a6b87a4f39d52fab755198f34197177c87042d6[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Wed Jan 1 14:57:45 2025 +0900
+
+    fix: spark images configuration added
+
+[33mcommit 51d734341219d1bb6ba78b7a6ead36e80cc55358[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Wed Jan 1 14:53:17 2025 +0900
+
+    fix: versions of docker file
+
+[33mcommit 8ec5c081d22d5ee0778899d8a63a3b2adbb353e5[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Wed Jan 1 14:37:03 2025 +0900
+
+    fix: image versions and env
+
+[33mcommit 30f83042824da1880e0555526b52977f24790172[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Wed Jan 1 14:21:30 2025 +0900
+
+    fix: used os env in spark example code
+
+[33mcommit be5ca0aced74d00c1bb079f0d41dde50062bda98[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Wed Jan 1 14:20:09 2025 +0900
+
+    feat: test for spark to access s3
+
+[33mcommit 31b81ab2b05f63ea76024104c83c5471946ff3b6[m
+Merge: 9755331 3047070
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Wed Jan 1 11:26:40 2025 +0900
+
+    Merge pull request #12 from PonyoAndFriends/main
+    
+    브랜치 동기화
+
+[33mcommit 304707056615b077ef6c47e11750d0a6e815901c[m
+Merge: 1ec4731 0c53f1f
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Wed Jan 1 11:25:45 2025 +0900
+
+    Merge pull request #11 from PonyoAndFriends/fix/github_dir
+    
+    fix: github repo dir structure and added some example dag to trigger …
+
+[33mcommit 0c53f1f778d0f031b81a91545851dbd7064e4c35[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Wed Jan 1 11:24:39 2025 +0900
+
+    fix: github repo dir structure and added some example dag to trigger spark
+
+[33mcommit 1ec4731ff755b35b28ed7d50c0f6e1f4703f6527[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Wed Jan 1 10:13:58 2025 +0900
+
+    Update spark_on_k8s.py
+
+[33mcommit 983b22c2f5921e5c0eaf4c0bbc4045065faada28[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Wed Jan 1 10:05:26 2025 +0900
+
+    Update spark-pyspark.yaml
+
+[33mcommit 46561d6e402f5ced5b842b9eeedb1d26f3939a00[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Wed Jan 1 09:39:46 2025 +0900
+
+    Update spark_on_k8s.py
+
+[33mcommit 4fd13f64dfec2981bf9b5ecd03cdf71a5cf0be24[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Tue Dec 31 16:21:27 2024 +0900
+
+    Update spark_on_k8s.py
+
+[33mcommit 962a053f909928ddd048db6ac8200e3c1c462959[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Tue Dec 31 15:51:24 2024 +0900
+
+    Update spark_on_k8s.py
+
+[33mcommit 918ffee98c5b6da4a441f1a171ba3bfb4980fb83[m
+Merge: 7455350 26b583e
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Tue Dec 31 09:54:17 2024 +0900
+
+    Merge pull request #10 from PonyoAndFriends/chore/eks_cluster_gitsync_test
+    
+    chore: various test dags and pyspark files
+
+[33mcommit 26b583ed184f1e45a5c7f75de4d99082c388cb9d[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Tue Dec 31 09:53:38 2024 +0900
+
+    chore: various test dags and pyspark files
+
+[33mcommit 7455350c905626aceb8398bdcfd0d4cf99d97674[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Tue Dec 31 08:17:36 2024 +0900
+
+    Update spark_on_k8s.py
+
+[33mcommit 9c2569e4b23b90e263f24f7eed52a3800e8c4f24[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Tue Dec 31 08:16:37 2024 +0900
+
+    Update real_test.py
+
+[33mcommit 0a200656bd9206a4c56590ec80c4998aa8298c24[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Tue Dec 31 08:12:05 2024 +0900
+
+    Create spark-pyspark.yaml
+
+[33mcommit e5246a232e2a188d2a16daf30265d98a79d2afdb[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Tue Dec 31 08:10:07 2024 +0900
+
+    Create spark_on_k8s.py
+
+[33mcommit e37b1ce94aa448fb6967c8ae7b85a65418b24d66[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Tue Dec 31 07:53:27 2024 +0900
+
+    Update real_test.py
+
+[33mcommit bb5371e29a30ff946d445fc89746353b5c36eb87[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Tue Dec 31 07:26:29 2024 +0900
+
+    Create real_test.py
+
+[33mcommit 2ed289801161e434aaba3c1ffbceeb2e71585244[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Tue Dec 31 07:24:42 2024 +0900
+
+    Create example_job.py
+
+[33mcommit e7e8de1cabfd6038cd905bccf523a78e8a08bae7[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Tue Dec 31 01:23:03 2024 +0900
+
+    Update sample-spark-by-yaml.py
+
+[33mcommit 0430a7b9f77e9c2f9b5568662d5f5d9a8ab62e53[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Tue Dec 31 01:18:27 2024 +0900
+
+    Update sample-spark-by-yaml.py
+
+[33mcommit 9f78d7d7d3aff547d7f6726a651f4edb13ed8412[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Tue Dec 31 01:15:17 2024 +0900
+
+    Create test.py
+
+[33mcommit c8ead16a4cc2b8598e4b26e58c4c4116fe133517[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Tue Dec 31 01:14:42 2024 +0900
+
+    Update spark-operator.py
+
+[33mcommit 0cb7eec446684445523e87692287700b50fe004d[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Tue Dec 31 01:13:31 2024 +0900
+
+    Update sample-spark-by-yaml.py
+
+[33mcommit 91f3c71d61578a9a757c478d854245dc03cf4dc4[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Tue Dec 31 01:12:19 2024 +0900
+
+    Update spark_application.yaml
+
+[33mcommit 04fdbddbfdebdb0d5d693e2ccdc390c6f64dd9d3[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Tue Dec 31 00:54:42 2024 +0900
+
+    Create spark-operator.py
+
+[33mcommit f859152f1d0afa5ae426b391e25231febf69dde6[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Tue Dec 31 00:54:15 2024 +0900
+
+    Delete airflow/ airflow_dags directory
+
+[33mcommit b17b6088dd10cc1a62a699cd938deb7ddb5ec4d3[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Tue Dec 31 00:53:42 2024 +0900
+
+    Create spark_application.yaml
+
+[33mcommit 3a978787764386bb302b5867e83a61f1f6d57a25[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Tue Dec 31 00:53:13 2024 +0900
+
+    Create sample-spark-by-yaml.py
+
+[33mcommit 0c9d9f145b67c9b421c43a7d71e16b28caf15593[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Tue Dec 31 00:45:54 2024 +0900
+
+    Create spark_submit_operator.py
+
+[33mcommit c92634b212367a8d2dcf07daceedc3bc8dcc7fd9[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Tue Dec 31 00:44:52 2024 +0900
+
+    Create spark_sleep.py
+
+[33mcommit 53b8d4ba2ffc71342971c0fb80dd9471088221e1[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Tue Dec 31 00:34:40 2024 +0900
+
+    Create sample_eks_dag.py
+
+[33mcommit 973345cddf4b11b8971e1d1d8413645f4066930a[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Tue Dec 31 00:23:51 2024 +0900
+
+    Create sample_dag_parallel.py
+
+[33mcommit dab7d841d8e062af7dcf6dff70f22fd18d339061[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Mon Dec 30 23:00:13 2024 +0900
+
+    Update sample-dags.py
+
+[33mcommit ef12fc319106b08a7085c9cf003128374e1eb91b[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Mon Dec 30 22:59:55 2024 +0900
+
+    Create sample_dag_k8s.py
+
+[33mcommit 9b3ed42b823de72067616306274b402ab77ccd5f[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Mon Dec 30 22:59:05 2024 +0900
+
+    Update sample-dags.py
+
+[33mcommit d688f5560846de0ae64d8d9b0a638fb940c887f9[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Mon Dec 30 19:11:22 2024 +0900
+
+    chore: flake8 linting modified
+
+[33mcommit 10be7807f79e2a02aa8dd4859a664132cecb5d50[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Fri Dec 27 23:00:12 2024 +0900
+
+    chore: 29cm dir
+
+[33mcommit 7301e6f8745a3accde9962d5337e176b190b52cf[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Fri Dec 27 22:59:40 2024 +0900
+
+    chore: musinsa dir
+
+[33mcommit 5c6e0622a110e48e7075ddac3402feaf5630c7a1[m
+Merge: fa4e7d0 78297cd
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Thu Dec 26 08:55:11 2024 +0900
+
+    Merge pull request #8 from PonyoAndFriends/chore/github-clear
+    
+    chore: github dir and files cleaned
+
+[33mcommit 78297cda221fb4c53d5081fec53a39c0b0d07942[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Thu Dec 26 08:51:24 2024 +0900
+
+    chore: github dir and files cleaned
+
+[33mcommit fa4e7d095a1fd44d87cac01941e9fda24c072d91[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Wed Dec 25 21:18:04 2024 +0900
+
+    chore: 코드 정리
+
+[33mcommit 55f05f6369e93a29cede3445f3ec751ddd7d60e1[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Wed Dec 25 21:14:00 2024 +0900
+
+    chore: commute aws-auth and kubeconfig
+
+[33mcommit 225a49805f5df39045df5db87be5b467b392c122[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Wed Dec 25 20:40:14 2024 +0900
+
+    chore: os env for ARN
+
+[33mcommit 4433a9fa1c66f7ae742cd28e112f88bf186269a4[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Wed Dec 25 20:38:50 2024 +0900
+
+    fix: os env for ARN
+
+[33mcommit 4c313e897803af68a376aff87b74c025cd41a752[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Wed Dec 25 20:34:25 2024 +0900
+
+    chore: hard coding test
+
+[33mcommit 9d620f3ce123bb67ad4adb896fbd4da88cd31d08[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Wed Dec 25 20:32:12 2024 +0900
+
+    chore: debugging
+
+[33mcommit acdc52c07a89a3128b70f0a6a9ef80acf1f19f60[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Wed Dec 25 20:27:46 2024 +0900
+
+    fix: env for ARN
+
+[33mcommit 521d30121863bf2923ce26ac4d1be6e3ea18f7c6[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Wed Dec 25 19:51:19 2024 +0900
+
+    Update create-eks-cluster.yml
+
+[33mcommit e86d71eee1d7d5550e0b86770ebfb7c95264f44d[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Wed Dec 25 19:49:37 2024 +0900
+
+    fix: logging
+
+[33mcommit 2a85ad37c48860436e6a221d8bc3a923886bb20d[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Wed Dec 25 19:44:27 2024 +0900
+
+    chore: logging
+
+[33mcommit 1fd5bd6d8c0330d7366965abb7c2c8f3a2332e50[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Wed Dec 25 19:42:57 2024 +0900
+
+    chore: typo
+
+[33mcommit caa137b1d093d28e9b845b4eaed7e5d295117dd6[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Wed Dec 25 19:37:55 2024 +0900
+
+    fix: ARN 노출
+
+[33mcommit 4572ea052e1a2315a15ed8aeabddf9ea5f5e51de[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Wed Dec 25 19:32:37 2024 +0900
+
+    chore: context option full name
+
+[33mcommit 9789541cff21969cea5e7a73f0d5a78c19f100e0[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Wed Dec 25 19:29:49 2024 +0900
+
+    chore: add arn as env vars
+
+[33mcommit 0317accef3aab4ac0046d00962c630b3786ead59[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Wed Dec 25 19:27:10 2024 +0900
+
+    fix: typo
+
+[33mcommit 888a3b6ba89093f69cc8b2c16c5388004beabf8e[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Wed Dec 25 19:25:10 2024 +0900
+
+    chore: add env vars
+
+[33mcommit f5a1eac33c98b810e671c5501a15ec5b4c2376b6[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Wed Dec 25 19:17:05 2024 +0900
+
+    chore: typos
+
+[33mcommit 12ba0096b3187eabbf0b90b4c83b8d91b9d9af4d[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Wed Dec 25 19:13:31 2024 +0900
+
+    chore: typos
+
+[33mcommit b6705f5ae2cd234a7435bab72d66f32a0aa9f5cc[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Wed Dec 25 18:19:12 2024 +0900
+
+    chore: add aws_cdk
+
+[33mcommit e8b9b7475f756a9026e7edbfdc51c00835f7e285[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Wed Dec 25 18:17:24 2024 +0900
+
+    chore: add cdk installation
+
+[33mcommit 16e7ba74bc3ad8fefa1b4c6fb512f85560ecd645[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Wed Dec 25 18:15:01 2024 +0900
+
+    chore: fix typos
+
+[33mcommit cf4aaa8ac4518eb4cc5613e399bafcc6665df7e1[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Wed Dec 25 18:13:12 2024 +0900
+
+    fix: add aws user for cluster admin
+
+[33mcommit 386bda91f19797fee5fcb6805fdbb784acacf0e4[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Wed Dec 25 18:10:38 2024 +0900
+
+    fix: use aws user for cluster admin using ARN and configmap
+
+[33mcommit a04b96a77bd7f8d3dbc30c56229d6b240bbd9486[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Wed Dec 25 17:13:15 2024 +0900
+
+    chore: commute aws-auth and kubeconfig
+
+[33mcommit a240b842de2620cd3476b8488e22b08e957edc2f[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Wed Dec 25 17:10:25 2024 +0900
+
+    chore: logging
+
+[33mcommit 68457d93818f55d138fb07e85b487eb4d0cf1b7b[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Wed Dec 25 17:01:57 2024 +0900
+
+    chore: logging
+
+[33mcommit 3be15e8feaf928b7cbcb3bc7eadc819d69ff3b09[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Wed Dec 25 16:53:54 2024 +0900
+
+    chore: wpqkf
+
+[33mcommit 6cac73e33335e34cff89b62229ccfc4f93712220[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Wed Dec 25 16:48:57 2024 +0900
+
+    chore: Hoksshi?
+
+[33mcommit 6b699d819effd9a844b60a62e4a5ce3d319d807b[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Wed Dec 25 16:44:42 2024 +0900
+
+    chore: MichigeTTA
+
+[33mcommit 00f6e5779ee4397f990b56373ae755bd23ef0d76[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Wed Dec 25 16:42:20 2024 +0900
+
+    Update deploy-airflow-spark.yml
+
+[33mcommit d77052ea4af952f781dbc0ec346b08572be9cc50[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Wed Dec 25 16:38:42 2024 +0900
+
+    chore: 띠용
+
+[33mcommit 00446bfab5952e0c6529a46a1d0c547b8c9c6322[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Wed Dec 25 16:33:51 2024 +0900
+
+    chore: logging for debug
+
+[33mcommit 3208d3b683421a5ab92ab2f6f1383974b966f8a3[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Wed Dec 25 16:30:45 2024 +0900
+
+    chore: for debug
+
+[33mcommit c545ed52e8758900709f705c2167653294de54c6[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Wed Dec 25 16:24:04 2024 +0900
+
+    chore: kubectl version to 1.30
+
+[33mcommit 1b94a30ce49c92b9c658d2a3fdf44b528d215f82[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Wed Dec 25 15:56:15 2024 +0900
+
+    chore: Update deploy-airflow-spark.yml for debug
+
+[33mcommit 91f3ae06587e9ddcb2500305e2b2146929b24465[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Wed Dec 25 15:52:09 2024 +0900
+
+    chore: Update aws-auth-template.yaml
+
+[33mcommit fbd42c73a979c590fdb45315158d1f1138cfcaab[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Wed Dec 25 15:50:00 2024 +0900
+
+    chore: Update deploy-airflow-spark.yml
+
+[33mcommit 8a44516422960227f2babf96d7c189edc0ac8f5e[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Wed Dec 25 15:46:51 2024 +0900
+
+    chore: Create aws-auth-template.yaml for kubectl configmap
+
+[33mcommit 8c3cecdf801492bf48fd353199519cb33e69ce90[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Wed Dec 25 15:43:48 2024 +0900
+
+    chore: add step for configmap to use kubectl in EKS
+
+[33mcommit 5378f414bcf6f1ecade9037d5f197b055f99e0b8[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Wed Dec 25 15:32:07 2024 +0900
+
+    chore: kubectl version fixed
+
+[33mcommit f384605bffd5ae955ddbb8d897d087d10f2f110a[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Wed Dec 25 15:14:07 2024 +0900
+
+    chore: fix typos
+
+[33mcommit 9065d64de6456228087062fe3b1ddcb073b112b8[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Wed Dec 25 15:11:08 2024 +0900
+
+    chore: Create deploy-airflow-spark.yml for easy test
+
+[33mcommit 8c4c3be085c6e218597ab2e6b596fce30d78e605[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Wed Dec 25 14:34:06 2024 +0900
+
+    chore: Update delete-eks-cluster.yml
+
+[33mcommit ca33930c37e23a3f84ca551a8d0bd097a5672acc[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Wed Dec 25 13:47:58 2024 +0900
+
+    chore: Update create-eks-cluster.yml
+
+[33mcommit 89e520cf4e2794b7086e36928b1190444b3f71cf[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Wed Dec 25 12:28:29 2024 +0900
+
+    chore: delete unused dependencies in app.py
+
+[33mcommit 401b01fb61ec64880e3fcba46b11b0effad4eb82[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Wed Dec 25 12:24:25 2024 +0900
+
+    chore: Update create-eks-cluster.yml for kubectl ver 1.30
+
+[33mcommit 019f2e99e7e2ad557ff97147961a092e457daec0[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Wed Dec 25 12:22:55 2024 +0900
+
+    chore: Update app.py for k8s version 1_30
+
+[33mcommit 2c74ffe7a937749d25e0142ecbc3182a4e1f159b[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Wed Dec 25 12:11:38 2024 +0900
+
+    chore: Add AWS_ACCOUNT_ID secrets
+
+[33mcommit 1abadf2ff995ec856d42c9565066aeede13cf596[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Wed Dec 25 12:06:28 2024 +0900
+
+    chore: Create cdk.json for cdk run
+
+[33mcommit 52f2cf1cb223b9b517053677721ab561adfbc78a[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Wed Dec 25 12:02:15 2024 +0900
+
+    chore: Update create-eks-cluster.yml for cdk bootstrapping
+
+[33mcommit a4be96226665168c7d5740a446b6990306bb5454[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Wed Dec 25 11:57:10 2024 +0900
+
+    chore: Update app.py for k8s v1_21
+
+[33mcommit bf395e3179a9bc9321b07841c223f11661caf736[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Wed Dec 25 11:54:32 2024 +0900
+
+    chore: Update app.py k8s version 1-29
+
+[33mcommit 18ede5930f5de999a9e202aa5a8b435a06bfe2f6[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Wed Dec 25 11:49:47 2024 +0900
+
+    chore: Update app.py to delete unused dependencies
+
+[33mcommit 735cb58ce28b40f80f74576356858b37ed26cd8a[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Wed Dec 25 11:47:34 2024 +0900
+
+    chore: Update app.py to solve k8s and kubctl version conflict
+
+[33mcommit 74c175a31f31cda574e6fc6bf62bff44bbf98428[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Wed Dec 25 11:36:05 2024 +0900
+
+    chore: Update app.py for kubectl version
+
+[33mcommit 52ef6cc4d195ba55e0faf4e3b60f7c41484defce[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Wed Dec 25 11:25:39 2024 +0900
+
+    chore: Update app.py for k8s version in EKS cluster
+
+[33mcommit 2e7bb71f75ded2de4af9bc696a91cbc5c64b5ad2[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Wed Dec 25 11:20:18 2024 +0900
+
+    chore: Update app.py for CDK v2 code
+
+[33mcommit fd9b0cd94d3d8d20a1c85a03a96ff7ae91cc5567[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Wed Dec 25 11:09:20 2024 +0900
+
+    chore: Update create-eks-cluster.yml
+
+[33mcommit 02f2200536f6ac2fae76c59e533b3690462e40cb[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Wed Dec 25 11:06:15 2024 +0900
+
+    chore: Updatee github actions - for nodejs version
+
+[33mcommit d111a667df10fceb26b3bc30e4882c8c2af134e2[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Wed Dec 25 11:03:16 2024 +0900
+
+    chore: Update create-eks-cluster.yml
+
+[33mcommit a6dd4ebaabfc0d94647fcbfc3c25f00535aa4f7a[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Wed Dec 25 10:57:44 2024 +0900
+
+    chore: update yml for github actions
+
+[33mcommit c7114b7369f88f9b17cccfce497a5bbea8810355[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Wed Dec 25 10:54:56 2024 +0900
+
+    chore: Updatee github actions - for aws cli
+
+[33mcommit 3310cb58859fbcb01eb1b8e9e7f685f3f02e2dc5[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Wed Dec 25 10:26:13 2024 +0900
+
+    chore: indentation problem solved in create-eks-cluster.yml
+
+[33mcommit 2f60d2a2b35b27bb1aeb36a43b412271e8833feb[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Wed Dec 25 10:17:31 2024 +0900
+
+    chore: linting code
+
+[33mcommit 1e7b173f4f7a6aedd5a3321670954576aaee8040[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Wed Dec 25 10:08:53 2024 +0900
+
+    feat: AWS CDK와 github actions를 사용한 EKS, airflow, spark 클러스터 생성 자동화
+
+[33mcommit 2990cad09d35e609cdce56b7669eb1be891517bb[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Wed Dec 25 02:09:40 2024 +0900
+
+    chore: linting done
+
+[33mcommit 0721a14b61d6ae387da1831524e789cffcaf1f1a[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Wed Dec 25 02:02:08 2024 +0900
+
+    feat: github - eks on off actions (will add some features, especially for volumes of containers)
+
+[33mcommit 97553315b81d8e6fee335dbdad1b9e0a6bfa0cbe[m
+Merge: 1311460 d4eca91
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Tue Dec 24 17:47:43 2024 +0900
+
+    Merge pull request #5 from PonyoAndFriends/github-dir-structure
+    
+    chore: For linting test
+
+[33mcommit d4eca91ba17c322d083130efeed219ac5d91f848[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Tue Dec 24 17:45:13 2024 +0900
+
+    chore: For linting test
+
+[33mcommit 13114609deb28940a99ef93b9cf09c8d21482c3d[m
+Merge: 410a93a 88342f3
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Tue Dec 24 17:27:35 2024 +0900
+
+    Merge pull request #3 from PonyoAndFriends/github-dir-structure
+    
+    GitHub dir structure
+
+[33mcommit 88342f34dbf559aeeec1068e1fe0d5c0248cfc77[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Tue Dec 24 13:57:59 2024 +0900
+
+    chore: modified project detail and directory structure
+
+[33mcommit d5e6f39d13efe8eddeb9918a698dad6ad2b0d4f0[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Tue Dec 24 12:59:09 2024 +0900
+
+    chore: airflow dags folder created
+
+[33mcommit 0a6b04de4bba8caba1b67a60589d0a09b35cc7d3[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Tue Dec 24 12:58:09 2024 +0900
+
+    chore: airflow directory created
+
+[33mcommit 410a93a6f2b3a91da64d07d52a5e647f6bb50115[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Wed Dec 18 12:30:39 2024 +0900
+
+    chore: lint test done
+
+[33mcommit 70b67569533e036038185fb0eb688258504e45a7[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Wed Dec 18 12:30:06 2024 +0900
+
+    chore: lint test done
+
+[33mcommit c1b82b5f1bcdd3ac939216968f1aaf499161ed58[m
+Merge: d475289 905481d
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Sat Dec 14 05:14:25 2024 +0900
+
+    Merge pull request #2 from PonyoAndFriends/develop
+    
+    깃허브 레포 초기 세팅
+
+[33mcommit 905481da61ec732f31d9d318996606cfbcf42b12[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Sat Dec 14 05:13:27 2024 +0900
+
+    chore: fixing PR format files
+
+[33mcommit b6a740d6b8f7ecf9ada1ce29dd50174fbe1a6336[m
+Merge: 993e991 3729ae8
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Sat Dec 14 05:06:17 2024 +0900
+
+    chore: PR format files renamed
+    
+    Test/pr test
+
+[33mcommit 3729ae8b4e91140fab1dca56d7b08cfe5d1fe9c2[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Sat Dec 14 05:00:06 2024 +0900
+
+    chore: Rename the pull requests format file
+
+[33mcommit 993e99113cb8339b9faa84a153e1a5cbf5ea503f[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Sat Dec 14 04:58:26 2024 +0900
+
+    chore: Rename the PR format file
+
+[33mcommit f6645129299f2e846227d34f5504da10c6eed81b[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Sat Dec 14 04:56:36 2024 +0900
+
+    test: PR format
+
+[33mcommit 38f97ecccbe8d1dc87f514b5d1ed94ed0a410ea2[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Sat Dec 14 04:35:04 2024 +0900
+
+    chore: linting test 5
+
+[33mcommit 1b35add797f82d9db7fdd6a8664bd10392241db1[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Sat Dec 14 04:32:07 2024 +0900
+
+    chore: linting test 4
+
+[33mcommit 3106752a573ef56922a9cfa51e935e820ea55e86[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Sat Dec 14 04:30:31 2024 +0900
+
+    chore: linting test 3
+
+[33mcommit 4e31fbed6a4d667ca19d52a6269a5cc639177a07[m
+Merge: f8db1c1 b9d8917
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Sat Dec 14 04:19:38 2024 +0900
+
+    chore: Merge branch 'develop' of https://github.com/PonyoAndFriends/will-be-our-project into develop
+
+[33mcommit b9d8917df2c161fa74d23e7848ba93c6b709d204[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Sat Dec 14 04:19:17 2024 +0900
+
+    chore: Update flake8.yml
+
+[33mcommit f8db1c14c8b1a917ec2de730cc36888a799010e7[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Sat Dec 14 04:18:10 2024 +0900
+
+    chore: ling testing 2
+
+[33mcommit 156e71ed369f6a239764377dafeca0a95f546370[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Sat Dec 14 04:13:38 2024 +0900
+
+    test: Commit for lint testing
+
+[33mcommit 4698c07979f4699ea8d13abbf4fa5daf684ee405[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Sat Dec 14 04:10:53 2024 +0900
+
+    chore: Add git ignore file
+
+[33mcommit 07018c4c0def00fa20d29dbd2554ddeda36cb28f[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Sat Dec 14 03:48:32 2024 +0900
+
+    chore: Update flake8.yml
+
+[33mcommit eb61089381d8d61f734e2a6a2a8b8b2eefa15b96[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Sat Dec 14 03:46:50 2024 +0900
+
+    chore: Add requirements.txt
+
+[33mcommit b3e05da5d4c22d2de4a2163373d871dd4054ccf6[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Sat Dec 14 03:45:43 2024 +0900
+
+    chore: Add linting Github Actions
+
+[33mcommit 17bf7dfdb15096e304837f9c0f9631f8d1dee603[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Sat Dec 14 03:35:51 2024 +0900
+
+    chore: add PR template
+
+[33mcommit d4752891e96afbdbe9a933ec5ed6da689580a834[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Sat Dec 14 03:10:55 2024 +0900
+
+    chore: fix README
+
+[33mcommit 419f85b59bdb7fe37cd31d0ca9b352510eaa2691[m
+Author: CoffeeIsNak <tjdqnzo@naver.com>
+Date:   Sat Dec 14 03:10:02 2024 +0900
+
+    Initial commit

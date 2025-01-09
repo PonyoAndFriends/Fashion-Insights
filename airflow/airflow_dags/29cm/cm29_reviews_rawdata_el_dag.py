@@ -37,7 +37,7 @@ with DAG(
     genders = ["Woman", "Man"]
     for gender in genders:
         for medium_folder in ["Pants", "Tops", "Shoes", "Outerwear", "Knitwear"]:
-            folder_path = f"{today}/{PLATFORM_FOLDER_PATH}/{REVIEW_FOLDER_PATH}/{gender}/{medium_folder}"
+            folder_path = f"bronze_layer/{today}/{PLATFORM_FOLDER_PATH}/{REVIEW_FOLDER_PATH}/{gender}/{medium_folder}"
             json_files = list_files_in_s3(folder_path)
 
             with TaskGroup(group_id=f"{gender}_{medium_folder}_group") as medium_group:
