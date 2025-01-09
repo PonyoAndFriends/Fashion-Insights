@@ -163,8 +163,8 @@ def et_product_detail(master_category, depth4category, product_id_list, key):
 def main():
     # argment parsing
     parser = argparse.ArgumentParser(description="sexual/category param")
-    parser.add_argument("sexual", type=str, help="sexual")
-    parser.add_argument("category_data", type=str, help="category")
+    parser.add_argument("sexual_dict", type=str, help="sexual")
+    parser.add_argument("category_2_depth", type=str, help="category")
 
     args = parser.parse_args()
 

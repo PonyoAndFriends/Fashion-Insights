@@ -85,8 +85,8 @@ with DAG(
             name=f"youtube_category_videos_{task['gender']}_from_bronze_to_silver_data",
             main_application_file=r"otherapis\bronze_to_silver/youtube_data_to_silver.py",
             application_args=[
-                make_s3_url(Variable.get("bronze_bucket"), bronze_file_path),
-                make_s3_url(Variable.get("silver_bucket"), silver_file_path),
+                make_s3_url(Variable.get("s3_bucket"), bronze_file_path),
+                make_s3_url(Variable.get("s3_bucket"), silver_file_path),
                 task["gender"],
             ],
         )

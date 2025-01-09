@@ -1,6 +1,14 @@
 # 베이스 이미지를 Python 3.11 슬림으로 설정
 FROM python:3.11-slim
 
+# AWS 환경 변수 선언
+ARG AWS_ACCESS_KEY_ID
+ARG AWS_SECRET_ACCESS_KEY
+
+# AWS 환경 변수 빌드에 넣기
+ENV AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
+ENV AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
+
 # 작업 디렉토리를 설정
 WORKDIR /app
 

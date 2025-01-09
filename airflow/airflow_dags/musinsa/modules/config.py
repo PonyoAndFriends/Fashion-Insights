@@ -1,4 +1,5 @@
 import os
+from airflow.models import Variable
 from datetime import timedelta
 import pendulum
 
@@ -25,8 +26,8 @@ class DEFAULT_SPARK:
     }
 
     SPARK_CONF = {
-        "spark.hadoop.fs.s3a.access.key": os.getenv("aws_access_key_id"),
-        "spark.hadoop.fs.s3a.secret.key": os.getenv("aws_secret_access_key"),
+        "spark.hadoop.fs.s3a.access.key": Variable.get("aws_access_key_id"),
+        "spark.hadoop.fs.s3a.secret.key": Variable.get("aws_secret_access_key"),
         "spark.hadoop.fs.s3a.endpoint": "s3.amazonaws.com",
         "spark.kubernetes.driver.deleteOnTermination": "true",
         "spark.kubernetes.executor.deleteOnTermination": "true",

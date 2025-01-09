@@ -49,13 +49,13 @@ def el_productreview(product_id_list, key):
 def main():
     # argument
     parser = argparse.ArgumentParser(description="category2depth/category3depth")
-    parser.add_argument("category3depth", type=str, help="sexual")
-    parser.add_argument("category4depth_list", type=str, help="category")
+    parser.add_argument("category_3_depth", type=str, help="sexual")
+    parser.add_argument("category_4_depth_list", type=str, help="category")
 
     args = parser.parse_args()
 
-    category3depth = args.category3depth
-    category4depth_list = json.loads(args.category4depth_list)
+    category3depth = args.category_3_depth
+    category4depth_list = json.loads(args.category_4_depth_list)
 
     # product_id list 불러오기
     silver_bucket = "Team3-2"

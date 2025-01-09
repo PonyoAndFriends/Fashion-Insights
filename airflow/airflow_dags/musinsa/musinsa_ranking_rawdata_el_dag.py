@@ -1,10 +1,12 @@
 from airflow import DAG
+from airflow.models import Variable
 from airflow.providers.cncf.kubernetes.operators.kubernetes_pod import (
     KubernetesPodOperator,
 )
 from airflow.operators.dummy import DummyOperator
 from airflow.operators.trigger_dagrun import TriggerDagRunOperator
 from custom_operators.k8s_spark_job_submit_operator import SparkApplicationOperator
+from custom_operators.k8s_custom_python_pod_operator import CustomKubernetesPodOperator
 
 from datetime import datetime
 
@@ -47,16 +49,18 @@ with DAG(
         for categories in dct["CATEGORIES"]:
             category2depth = list(categories.items())[0]
 
-            category_task = KubernetesPodOperator(
+            category_task = CustomKubernetesPodOperator(
                 task_id=f"{sexual[0]}_{category2depth[0]}_task",
-                name=f"{sexual[0]}_{category2depth[0]}_task",
                 namespace="airflow",
-                image="coffeeisnan/python_pod_image:latest",  # 수정 필요
-                cmds=[
-                    "python",
-                    "./python_scripts/musinsa/musinsa_ranking_rawdata_el.py",
-                ],
-                arguments=[json.dumps(sexual), json.dumps(category2depth)],
+                script_path="./python_scripts/musinsa/musinsa_ranking_rawdata_el.py",
+                arguments={
+                    "sexual": json.dumps(sexual), 
+                    "category_data": json.dumps(category2depth)
+                    },
+                cpu_limit="1000m",
+                memory_limit="1Gi",
+                cpu_request="500m",
+                memory_request="512Mi",
                 is_delete_operator_pod=True,
                 get_logs=True,
             )

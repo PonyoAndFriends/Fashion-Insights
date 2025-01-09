@@ -12,6 +12,10 @@ jobs:
   build-and-push:
     runs-on: ubuntu-latest
 
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
     steps:
       # 체크아웃 레포지토리
       - name: Checkout repository
@@ -34,6 +38,9 @@ jobs:
           push: true
           tags: |
             coffeeisnan/pod_image:latest
+          build-args: | # ARG 값 전달
+            AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}
+            AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
       # 빌드 및 푸시 Docker 이미지 (push 이벤트일 경우)
       - name: Build and Push Docker Image
@@ -45,3 +52,6 @@ jobs:
           push: true
           tags: |
             coffeeisnan/python_pod_image:latest
+          build-args: | # ARG 값 전달
+            AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}
+            AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}

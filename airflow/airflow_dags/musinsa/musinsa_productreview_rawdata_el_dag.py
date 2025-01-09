@@ -1,9 +1,11 @@
 from airflow import DAG
+from airflow.models import Variable
 from airflow.providers.cncf.kubernetes.operators.kubernetes_pod import (
     KubernetesPodOperator,
 )
 from airflow.operators.dummy import DummyOperator
 from custom_operators.k8s_spark_job_submit_operator import SparkApplicationOperator
+from custom_operators.k8s_custom_python_pod_operator import CustomKubernetesPodOperator
 import json
 from datetime import datetime
 
@@ -47,16 +49,18 @@ with DAG(
         start >> category2depth_task
 
         for category3depth in category3depth_list:
-            category3depth_task = KubernetesPodOperator(
+            category3depth_task = CustomKubernetesPodOperator(
                 task_id=f"review_{mapping3depth_en(category3depth[0])}_task",
-                name=f"review_{mapping3depth_en(category3depth[0])}_task",
                 namespace="airflow",
-                image="coffeeisnan/python_pod_image:latest",  # 수정 필요
-                cmds=[
-                    "python",
-                    "./python_scripts/musinsa/musinsa_productreview_rawdata_el.py",
-                ],
-                arguments=[category3depth[0], json.dumps(category3depth[1])],
+                script_path="./python_scripts/musinsa/musinsa_productreview_rawdata_el.py",
+                required_args={
+                    "category_3_depth": category3depth[0], 
+                    "category_4_depth_list": json.dumps(category3depth[1])
+                    },
+                cpu_limit="1000m",
+                memory_limit="1Gi",
+                cpu_request="500m",
+                memory_request="512Mi",
                 is_delete_operator_pod=True,
                 get_logs=True,
             )
@@ -67,7 +71,7 @@ with DAG(
 
     spark_submit_task = SparkApplicationOperator(
         name="musinsa_product_review_raw_data_spark_submit_task",
-        main_application_file="musinsa\musinsa_produdctreview_silverdata_spark.py",
+        main_application_file="musinsa/musinsa_produdctreview_silverdata_spark.py",
         task_id="musinsa_product_review_data_spark_task",
     )
 

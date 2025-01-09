@@ -4,6 +4,7 @@ from airflow.providers.cncf.kubernetes.operators.kubernetes_pod import (
 )
 from airflow.operators.dummy import DummyOperator
 from custom_operators.k8s_spark_job_submit_operator import SparkApplicationOperator
+from custom_operators.k8s_custom_python_pod_operator import CustomKubernetesPodOperator
 
 from modules.musinsa_mappingtable import SEXUAL_CATEGORY_DYNAMIC_PARAMS
 from modules.config import DEFAULT_DAG
@@ -51,16 +52,18 @@ with DAG(
         for categories in dct["CATEGORIES"]:
             category2depth = list(categories.items())[0]
 
-            category_task = KubernetesPodOperator(
+            category_task = CustomKubernetesPodOperator(
                 task_id=f"product_detail_{sexual[0]}_{category2depth[0]}_task",
-                name=f"product_detail_{sexual[0]}_{category2depth[0]}_task",
                 namespace="airflow",
-                image="coffeeisnan/project4-custom:latest",  # 수정 필요
-                cmds=[
-                    "python",
-                    "./python_scripts/musinsa/musinsa_productdetail_rawdata_etl.py",
-                ],
-                arguments=[json.dumps(sexual), json.dumps(category2depth)],
+                script_path="./python_scripts/musinsa/musinsa_productdetail_rawdata_etl.py",
+                required_args={
+                    "sexual_dict": json.dumps(sexual), 
+                    "category_2_depth": json.dumps(category2depth)
+                },
+                cpu_limit="1000m",
+                memory_limit="1Gi",
+                cpu_request="500m",
+                memory_request="512Mi",
                 is_delete_operator_pod=True,
                 get_logs=True,
             )
@@ -71,7 +74,7 @@ with DAG(
 
     spark_submit_task = SparkApplicationOperator(
         name="musinsa_product_detail_raw_data_spark_submit_task",
-        main_application_file="musinsa\musinsa_productdetail_silverdata_spark.py",
+        main_application_file="musinsa/musinsa_productdetail_silverdata_spark.py",
         task_id="musinsa_product_detail_data_spark_task",
     )
 

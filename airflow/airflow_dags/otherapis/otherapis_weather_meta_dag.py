@@ -43,8 +43,8 @@ with DAG(
         name="weekly_weather_data_from_bronze_to_silver_task",
         main_application_file=r"otherapis\bronze_to_silver\weekly_weather_data_to_silver.py",
         application_args=[
-            make_s3_url(Variable.get("bronze_bucket"), BRONZE_FILE_PATH),
-            make_s3_url(Variable.get("silver_bucket"), SILVER_FILE_PATH),
+            make_s3_url(Variable.get("s3_bucket"), BRONZE_FILE_PATH),
+            make_s3_url(Variable.get("s3_bucket"), SILVER_FILE_PATH),
         ],
     )
 

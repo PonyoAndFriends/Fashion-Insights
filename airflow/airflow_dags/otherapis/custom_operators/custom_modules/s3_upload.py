@@ -20,7 +20,7 @@ def load_data_to_s3(s3_dict):
         aws_access_key_id = Variable.get("aws_access_key_id")
         aws_secret_access_key = Variable.get("aws_secret_access_key")
         aws_region = Variable.get("aws_region")
-        s3_bucket_name = Variable.get("bronze_bucket")
+        s3_bucket_name = Variable.get("s3_bucket")
 
         logger.debug("AWS S3 bucket configurations successfully loaded.")
 
