@@ -113,10 +113,10 @@ def main():
     )
     parser.add_argument("--url", required=True, help="API endpoint URL")
     parser.add_argument("--headers", required=True, help="API headers as JSON string")
+    parser.add_argument("--all_keywords", required=True, help="List of all keywords")
     parser.add_argument(
         "--gender", required=True, help="Gender of current category list"
     )
-    parser.add_argument("--all_keywords", required=True, help="List of all keywords")
     parser.add_argument("--s3_dict", required=True, help="S3 client config as JSON")
 
     try:

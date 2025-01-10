@@ -1,6 +1,7 @@
 from airflow import DAG
 from airflow.models import Variable
 from datetime import datetime, timedelta
+import json
 from otherapis.custom_operators.custom_modules.otherapis_categories import (
     MALE_CATEGORY_LIST,
     FEMALE_CATEGORY_LIST,
