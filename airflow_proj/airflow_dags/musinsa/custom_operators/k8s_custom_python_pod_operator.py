@@ -44,6 +44,11 @@ class CustomKubernetesPodOperator(KubernetesPodOperator):
         # arguments 구성하기
         arguments = self._generate_arguments()
 
+        # kwargs에서 arguments 제거
+        if "arguments" in kwargs:
+            self.log.warning("Removing duplicate 'arguments' from kwargs.")
+            del kwargs["arguments"]
+
         super().__init__(
             cmds=["python", self.script_path],
             arguments=arguments,

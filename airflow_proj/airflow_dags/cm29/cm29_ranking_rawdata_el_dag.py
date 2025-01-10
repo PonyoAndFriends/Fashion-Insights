@@ -3,7 +3,7 @@ from airflow import DAG
 from airflow.operators.python import PythonOperator
 from airflow.utils.task_group import TaskGroup
 from airflow.utils.dates import days_ago
-from cm29.cm29_ranking_rawdata_el_dag import fetch_and_save_data_to_s3
+from cm29.cm29_ranking_rawdata_el import fetch_and_save_data_to_s3
 from cm29.cm29_mapping_table import CATEGORY_TREE
 
 # DAG 기본 설정
