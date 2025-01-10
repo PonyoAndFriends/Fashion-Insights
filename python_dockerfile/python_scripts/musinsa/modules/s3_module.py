@@ -7,7 +7,7 @@ import logging
 import pyarrow.parquet as pq
 import pyarrow.fs as fs
 
-from config import AWS_Config
+from modules.config import AWS_Config
 
 
 # connection to s3
