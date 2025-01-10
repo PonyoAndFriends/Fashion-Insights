@@ -36,7 +36,10 @@ def sort_by_weekly_ratio(url, headers, keywords, gender):
         "gender": "f" if gender == "여성" else "m",
     }
 
-    response = requests.post(url, headers=headers, json=body)
+    logger.info(f"url: {url}")
+    logger.info(f"headers: {headers}")
+    logger.info(f"body: {body}")
+    response = requests.post(url, headers=headers, json=json.dumps(body))
     response.raise_for_status()
 
     data = response.json()
