@@ -59,7 +59,7 @@ with DAG(
                 task_id=f"{sexual[0]}_{category2depth[0]}_task",
                 namespace="airflow",
                 script_path="/python_scripts/musinsa/musinsa_ranking_rawdata_el.py",
-                arguments={
+                required_args={
                     "sexual": json.dumps(sexual),
                     "category_data": json.dumps(category2depth),
                 },
