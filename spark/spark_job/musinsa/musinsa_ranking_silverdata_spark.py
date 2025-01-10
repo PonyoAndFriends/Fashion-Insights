@@ -9,7 +9,7 @@ import pendulum
 
 from modules.musinsa_mappingtable import (
     SEXUAL_CATEGORY_DYNAMIC_PARAMS,
-    mapping_2depth_kor,
+    mapping_2depth_en,
 )
 
 # 오늘 날짜 - 날짜 path
@@ -68,7 +68,7 @@ def main():
         # category2depth 추출
         for categorydepth in category:
             categories = list(categorydepth.items())[0]
-            category2depth = mapping_2depth_kor(categories[0])
+            category2depth = mapping_2depth_en(categories[0])
 
             # category3depth 추출
             for detailcategories in categories[1]:
