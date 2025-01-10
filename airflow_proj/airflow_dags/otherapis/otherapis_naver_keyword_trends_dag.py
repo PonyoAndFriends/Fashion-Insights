@@ -69,10 +69,10 @@ with DAG(
                 "url": url,
                 "headers": headers,
                 "all_keywords": "{{ task_instance.xcom_pull(task_ids='making_"
-                + f"{task['gender']}"
+                + f"{task['task_gender']}"
                 + "_keywords_list_task') | tojson }}",
-                "s3_dict": DEFAULT_S3_DICT,
                 "gender": task["gender"],
+                "s3_dict": DEFAULT_S3_DICT,
             },
             cpu_limit="1000m",
             memory_limit="1Gi",
@@ -81,10 +81,10 @@ with DAG(
 
         now_string = (datetime.now() + timedelta(hours=9)).strftime("%Y-%m-%d")
         bronze_file_path = (
-            f"bronze/{now_string}/otherapis/{task['task_gender']}_keyword_trends/"
+            f"bronze/{now_string}/otherapis/{task['gender']}_keyword_trends/"
         )
         silver_file_path = (
-            f"silver/{now_string}/otherapis/{task['task_gender']}_keyword_trends/"
+            f"silver/{now_string}/otherapis/{task['gender']}_keyword_trends/"
         )
         spark_job_submit_task = SparkApplicationOperator(
             task_id=f"naver_keywords_trend_{task['task_gender']}_submit_spark_job_task",
@@ -93,7 +93,7 @@ with DAG(
             application_args=[
                 make_s3_url(Variable.get("s3_bucket"), bronze_file_path),
                 make_s3_url(Variable.get("s3_bucket"), silver_file_path),
-                task["task_gender"],
+                task["gender"],
             ],
         )
         spark_submit_tasks.append(spark_job_submit_task)
