@@ -1,5 +1,6 @@
 import argparse
-import json, time
+import json
+import time
 import requests
 import logging
 from datetime import datetime, timedelta
@@ -30,7 +31,10 @@ def sort_by_weekly_ratio(url, headers, keywords, gender):
         "timeUnit": "date",
         "category": "50000000",
         "keyword": [
-            {"name": f"{'female' if gender == '여성' else 'male'}_{keyword}_trend", "param": [keyword]}
+            {
+                "name": f"{'female' if gender == '여성' else 'male'}_{keyword}_trend",
+                "param": [keyword],
+            }
             for keyword in keywords
         ],
         "gender": "f" if gender == "여성" else "m",

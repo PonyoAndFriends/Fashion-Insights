@@ -1,4 +1,3 @@
-import os
 from airflow.models import Variable
 import json
 import requests

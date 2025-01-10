@@ -54,8 +54,8 @@ class CustomKubernetesPodOperator(KubernetesPodOperator):
             arguments=arguments,
             image=image,
             namespace=self.namespace,
-            is_delete_operator_pod = self.is_delete_operator_pod,
-            get_logs = self.get_logs,
+            is_delete_operator_pod=self.is_delete_operator_pod,
+            get_logs=self.get_logs,
             *args,
             **kwargs,
         )

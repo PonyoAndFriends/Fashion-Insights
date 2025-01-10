@@ -1,5 +1,3 @@
-from pyspark.conf import SparkConf
-
 from pyspark.sql import SparkSession
 from pyspark.sql.types import (
     StructType,
@@ -13,7 +11,6 @@ from pyspark.sql.functions import col, from_json
 
 from modules.musinsa_mappingtable import CATEGORY2DEPTH_MAPPING
 
-import os
 import pendulum
 
 LOCAL_TZ = pendulum.timezone("Asia/Seoul")

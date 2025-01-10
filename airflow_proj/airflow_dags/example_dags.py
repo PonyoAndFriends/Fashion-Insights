@@ -6,9 +6,12 @@ from airflow.models import Variable
 
 
 spark_args = [
-        "--input-path", "s3a://your-bucket/input/",
-        "--output-path", "s3a://your-bucket/output/",
-    ]
+    "--input-path",
+    "s3a://your-bucket/input/",
+    "--output-path",
+    "s3a://your-bucket/output/",
+]
+
 
 def submit_spark_application(spark_app_name, pyspark_py_path, spark_args=None):
     # Kubernetes 클라이언트 설정

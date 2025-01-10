@@ -1,7 +1,6 @@
 from airflow import DAG
 from airflow.models import Variable
 from datetime import datetime, timedelta
-import json
 from otherapis.custom_operators.custom_modules.otherapis_categories import (
     MALE_CATEGORY_LIST,
     FEMALE_CATEGORY_LIST,
@@ -47,7 +46,11 @@ with DAG(
 ) as dag:
 
     tasks_config = [
-        {"gender": "여성", "category_list": FEMALE_CATEGORY_LIST, "task_gender": "female"},
+        {
+            "gender": "여성",
+            "category_list": FEMALE_CATEGORY_LIST,
+            "task_gender": "female",
+        },
         {"gender": "남성", "category_list": MALE_CATEGORY_LIST, "task_gender": "male"},
     ]
 

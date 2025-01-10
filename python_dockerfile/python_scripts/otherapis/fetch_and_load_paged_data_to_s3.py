@@ -23,17 +23,18 @@ def process_page_ranges(
     logger.debug(f"S3 configuration: {s3_dict}")
 
     args_list = [
-            (
-                url,
-                start_page,
-                end_page,
-                file_topic,
-                s3_dict,
-                pagination_keyword,
-                params,
-                headers,
-            )
-        for start_page, end_page in page_ranges]
+        (
+            url,
+            start_page,
+            end_page,
+            file_topic,
+            s3_dict,
+            pagination_keyword,
+            params,
+            headers,
+        )
+        for start_page, end_page in page_ranges
+    ]
 
     try:
         run_func_multi_thread.execute_in_threads(
