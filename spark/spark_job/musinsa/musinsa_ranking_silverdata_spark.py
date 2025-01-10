@@ -63,7 +63,7 @@ def main():
         # category2depth 추출
         for categorydepth in category:
             categories = list(categorydepth.items())[0]
-            category2depth = mapping_2depth_en(categories[0])
+            category2depth = mapping2depth_en(categories[0])
 
             # category3depth 추출
             for detailcategories in categories[1]:
