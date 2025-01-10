@@ -53,7 +53,7 @@ SPARK_DEFAULT_CONF = {
     "spark.eventLog.enabled": "true",
     "spark.eventLog.dir": "s3a://spark-log-bucket-hs/spark-logs/",
     "spark.history.fs.logDirectory": "s3a://spark-log-bucket-hs/spark-logs/",
-    "spark.hadoop.mapreduce.fileoutputcommitter.algorithm.version": 2,
+    "spark.hadoop.mapreduce.fileoutputcommitter.algorithm.version": "2",
     "spark.hadoop.fs.s3a.committer.magic.enabled": "true",
     "fs.s3a.committer.name": "magic",
     "spark.hadoop.fs.s3a.impl": "org.apache.hadoop.fs.s3a.S3AFileSystem",
