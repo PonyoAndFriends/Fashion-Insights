@@ -28,7 +28,7 @@ class SparkApplicationOperator(BaseOperator):
         spark_version="3.5.4",
         image="coffeeisnan/spark-job:latest",
         namespace="defaults",
-        deps=SPARK_DEFULAT_DEPS,
+        spark_deps=SPARK_DEFULAT_DEPS,
         spark_conf=SPARK_DEFAULT_CONF,
         *args,
         **kwargs,
@@ -42,7 +42,7 @@ class SparkApplicationOperator(BaseOperator):
         self.spark_version = spark_version
         self.driver_config = driver_config
         self.executor_config = executor_config
-        self.deps = deps
+        self.spark_deps = spark_deps
         self.spark_conf = spark_conf
 
     def execute(self, context):
@@ -85,7 +85,7 @@ class SparkApplicationOperator(BaseOperator):
                 "restartPolicy": {"type": "Never"},
                 "driver": self.driver_config,
                 "executor": self.executor_config,
-                "deps": self.deps,
+                "deps": self.spark_deps,
                 "sparkConf": self.spark_conf,
                 "arguments": self.application_args,
             },
