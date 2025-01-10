@@ -6,7 +6,7 @@ DEFAULT_S3_DICT = {
     "aws_access_key_id": Variable.get("aws_access_key_id"),
     "aws_secret_access_key": Variable.get("aws_secret_access_key"),
     "aws_region": Variable.get("aws_region"),
-    "s3_bucket_name": Variable("s3_bucket"),
+    "s3_bucket_name": Variable.get("s3_bucket"),
     "data_file": None,
     "file_path": None,
     "content_type": "application/json",
