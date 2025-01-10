@@ -1,8 +1,9 @@
 from airflow import DAG
-from airflow.providers.cncf.kubernetes.operators.kubernetes_pod import KubernetesPodOperator
+from airflow.providers.cncf.kubernetes.operators.kubernetes_pod import (
+    KubernetesPodOperator,
+)
 from airflow.utils.dates import days_ago
-import json
-import time
+
 
 def create_dag():
     # DAG 기본 설정
@@ -95,5 +96,6 @@ def create_dag():
     )
 
     return dag
+
 
 dag = create_dag()
