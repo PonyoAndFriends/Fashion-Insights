@@ -116,7 +116,7 @@ def et_product2_detail(product_id):
 # product detail parsing => DataFrame Record
 def et_product_detail(master_category, depth4category, product_id_list, key):
     for product_id in product_id_list:
-        bronze_bucket = "Team3-2"
+        bronze_bucket = "Team3-2-s3"
         s3_key = key + f"{product_id}.json"
         time.sleep(0.8)
 
@@ -177,7 +177,7 @@ def main():
         category3depth = list(category_info.items())[0]
 
         for category4depth in category3depth[1].values():
-            silver_bucket = "Team3-2"
+            silver_bucket = "Team3-2-s3"
             read_file_path = f"bronze/{TODAY_DATE}/musinsa/ranking_data/{category3depth[0]}/{sexual_data[1]}_{category2depth}_{category3depth[0]}_{category4depth}.parquet"
             file_path = f"{silver_bucket}/{read_file_path}"
             product_lists = s3_module.get_product_ids(file_path)

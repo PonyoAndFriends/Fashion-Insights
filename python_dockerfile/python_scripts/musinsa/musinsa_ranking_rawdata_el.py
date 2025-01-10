@@ -57,7 +57,7 @@ def main():
                 response_json = response.json()
                 logging.info("response 200")
 
-            bucket_name = "Team3-2"
+            bucket_name = "Team3-2-s3"
             file_name = f"bronze/{TODAY_DATE}/musinsa/ranking_data/{category3depth[0]}/{sexual_data[1]}_{category2depth}_{category3depth[0]}_{category4name}.json"
 
             validate_and_upload_s3_file(
