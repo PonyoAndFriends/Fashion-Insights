@@ -64,9 +64,10 @@ with DAG(
     """
 
     full_refresh_task = RefreshTableOperator(
-        drop_sql,
-        create_sql,
         task_id="total_product_gold_table_task",
+        drop_sql=drop_sql,
+        create_sql=create_sql,
+        redshift_conn_id="redshift_default",
     )
 
     full_refresh_task

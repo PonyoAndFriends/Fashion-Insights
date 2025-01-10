@@ -76,8 +76,6 @@ with DAG(
             memory_limit="1Gi",
             cpu_request="500m",
             memory_request="512Mi",
-            delete_operator_pod=True,
-            get_logs=True,
         )
         fetch_keyword_data_tasks.append(gender_fetch_youtube_data_task)
 
