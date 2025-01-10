@@ -61,7 +61,7 @@ def main():
             file_name = f"bronze/{TODAY_DATE}/musinsa/ranking_data/{category3depth[0]}/{sexual_data[1]}_{category2depth}_{category3depth[0]}_{category4name}.json"
 
             validate_and_upload_s3_file(
-                connect_s3(), bucket_name, file_name, response_json
+                bucket_name, file_name, response_json
             )
 
 
