@@ -84,8 +84,9 @@ with DAG(
         "Musinsa_ProductDetail_RawData_EL_DAG",
     ]
     trigger_tasks = []
-    for dag_id in trigger_dag_ids:
+    for i, dag_id in enumerate(trigger_dag_ids):
         trigger_task = TriggerDagRunOperator(
+            task_id=f"triggers_other_dags_{i}",
             trigger_dag_id=dag_id,
         )
         trigger_tasks.append(trigger_task)
