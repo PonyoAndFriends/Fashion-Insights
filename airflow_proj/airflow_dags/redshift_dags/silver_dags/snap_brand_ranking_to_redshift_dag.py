@@ -45,8 +45,8 @@ with DAG(
     );
     """
     refresh_task = RefreshTableOperator(
-        drop_sql,
-        create_sql,
+        drop_sql=drop_sql,
+        create_sql=create_sql,
         task_id="snap_brand_ranking_table_refresh_task",
     )
 

@@ -93,8 +93,6 @@ with DAG(
                 },
                 cpu_limit="1000m",
                 memory_limit="1Gi",
-                cpu_request="500m",
-                memory_request="512Mi",
             )
             fetch_snap_ranking_story_data_tasks.append(
                 fetch_snap_ranking_story_data_task

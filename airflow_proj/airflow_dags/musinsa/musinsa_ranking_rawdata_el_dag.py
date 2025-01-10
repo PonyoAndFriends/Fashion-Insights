@@ -28,7 +28,7 @@ with DAG(
     default_args=DEFAULT_DAG.DEFAULT_ARGS,  # path 수정에 따라 좀 필수
     description="musinsa ranking raw data extraction and loading to s3",
     schedule_interval="0 0 * * *",  # 수정 필요
-    start_date=datetime(2025, 1, 1, tzinfo=DEFAULT_DAG.local_tz),
+    start_date=datetime(2025, 1, 1, tzinfo=DEFAULT_DAG.LOCAL_TZ),
     catchup=False,
     tags=["MUSINSA", "RANKING_RAWDATA", "EXTRACT", "LOAD", "S3", "K8S"],
 ) as dag:

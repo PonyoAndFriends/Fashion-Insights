@@ -75,8 +75,6 @@ with DAG(
             },
             cpu_limit="1000m",
             memory_limit="1Gi",
-            cpu_request="500m",
-            memory_request="512Mi",
         )
         fetch_keyword_data_tasks.append(gender_fetch_keyword_data_task)
 

@@ -29,8 +29,6 @@ class CustomKubernetesPodOperator(KubernetesPodOperator):
         optional_args=None,
         cpu_limit="500m",
         memory_limit="512Mi",
-        cpu_request="500m",
-        memory_request="512Mi",
         image="coffeeisnan/python_pod_image:latest",
         namespace="airflow",
         *args,
@@ -51,8 +49,8 @@ class CustomKubernetesPodOperator(KubernetesPodOperator):
             arguments=arguments,
             image=image,
             resources={
-                "requests": {"cpu": cpu_request, "memory": memory_request},
-                "limits": {"cpu": cpu_limit, "memory": memory_limit},
+                "cpu": cpu_limit, 
+                "memory": memory_limit
             },
             namespace=self.namespace,
             *args,

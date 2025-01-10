@@ -28,7 +28,7 @@ class SparkApplicationOperator(BaseOperator):
         spark_version="3.5.4",
         image="coffeeisnan/spark-job:latest",
         namespace="defaults",
-        deps=SPARK_DEFULAT_DEPS,
+        deps=SPARK_DEFULAT_DEPS["jars"],
         spark_conf=SPARK_DEFAULT_CONF,
         *args,
         **kwargs,
