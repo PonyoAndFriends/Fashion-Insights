@@ -4,8 +4,12 @@ from airflow.providers.cncf.kubernetes.operators.kubernetes_pod import (
     KubernetesPodOperator,
 )
 from airflow.operators.dummy import DummyOperator
-from airflow_proj.airflow_dags.musinsa.custom_operators.k8s_spark_job_submit_operator import SparkApplicationOperator
-from airflow_proj.airflow_dags.musinsa.custom_operators.k8s_custom_python_pod_operator import CustomKubernetesPodOperator
+from airflow_proj.airflow_dags.musinsa.custom_operators.k8s_spark_job_submit_operator import (
+    SparkApplicationOperator,
+)
+from airflow_proj.airflow_dags.musinsa.custom_operators.k8s_custom_python_pod_operator import (
+    CustomKubernetesPodOperator,
+)
 import json
 from datetime import datetime
 

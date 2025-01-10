@@ -1,9 +1,15 @@
 from airflow import DAG
 from airflow.models import Variable
 from datetime import datetime
-from airflow_proj.airflow_dags.otherapis.custom_operators.k8s_spark_job_submit_operator import SparkApplicationOperator
-from airflow_proj.airflow_dags.otherapis.custom_operators.k8s_custom_python_pod_operator import CustomKubernetesPodOperator
-from airflow_proj.airflow_dags.otherapis.custom_operators.calculate_page_range_operator import CalculatePageRangeOperator
+from airflow_proj.airflow_dags.otherapis.custom_operators.k8s_spark_job_submit_operator import (
+    SparkApplicationOperator,
+)
+from airflow_proj.airflow_dags.otherapis.custom_operators.k8s_custom_python_pod_operator import (
+    CustomKubernetesPodOperator,
+)
+from airflow_proj.airflow_dags.otherapis.custom_operators.calculate_page_range_operator import (
+    CalculatePageRangeOperator,
+)
 from airflow_proj.airflow_dags.otherapis.custom_operators.custom_modules.otherapis_dependencies import (
     MUSINSA_HEADERS,
     OTHERAPI_DEFAULT_ARGS,
@@ -11,7 +17,9 @@ from airflow_proj.airflow_dags.otherapis.custom_operators.custom_modules.otherap
     OTHERAPI_DEFAULT_PYTHON_SCRIPT_PATH,
 )
 from zoneinfo import ZoneInfo
-from airflow_proj.airflow_dags.otherapis.custom_operators.custom_modules.s3_upload import make_s3_url
+from airflow_proj.airflow_dags.otherapis.custom_operators.custom_modules.s3_upload import (
+    make_s3_url,
+)
 
 import math
 
