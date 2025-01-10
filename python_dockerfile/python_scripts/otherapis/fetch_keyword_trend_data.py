@@ -30,7 +30,7 @@ def sort_by_weekly_ratio(url, headers, keywords, gender):
         "timeUnit": "date",
         "category": "50000000",
         "keyword": [
-            {"name": f"{gender}_{keyword}_trend", "param": [keyword]}
+            {"name": f"{gender}_{keyword}_trend", "param": keyword}
             for keyword in keywords
         ],
         "gender": "f" if gender == "여성" else "m",
@@ -39,7 +39,7 @@ def sort_by_weekly_ratio(url, headers, keywords, gender):
     logger.info(f"url: {url}")
     logger.info(f"headers: {headers}")
     logger.info(f"body: {body}")
-    response = requests.post(url, headers=headers, json=json.dumps(body))
+    response = requests.post(url, headers=headers, json=body)
     response.raise_for_status()
 
     data = response.json()
