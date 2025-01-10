@@ -157,7 +157,7 @@ class SparkApplicationOperator(BaseOperator):
                 elif app_state == "SUBMITTED":
                     self.log.info(f"SparkApplication {self.name} is still running...")
 
-                time.sleep(5)
+                time.sleep(10)
 
             except Exception as e:
                 self.log.error(

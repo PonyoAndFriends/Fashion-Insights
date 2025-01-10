@@ -9,7 +9,7 @@ SPARK_DRIVER_DEFAULT_CONFIG = {
 
 SPARK_EXECUTOR_DEFAULT_CONFIG = {
     "cores": 1,
-    "instances": "2",
+    "instances": 2,
     "memory": "1g",
 }
 
