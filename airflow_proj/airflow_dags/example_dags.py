@@ -4,7 +4,13 @@ from kubernetes import client, config
 from datetime import datetime
 from airflow.models import Variable
 
-def submit_spark_application():
+
+spark_args = [
+        "--input-path", "s3a://your-bucket/input/",
+        "--output-path", "s3a://your-bucket/output/",
+    ]
+
+def submit_spark_application(spark_app_name, pyspark_py_path, spark_args=None):
     # Kubernetes 클라이언트 설정
     config.load_incluster_config()  # EKS 내부에서 실행 중인 경우
     api_instance = client.CustomObjectsApi()
@@ -37,7 +43,7 @@ def submit_spark_application():
             "mode": "cluster",
             "image": "coffeeisnan/spark-job:latest",
             "imagePullPolicy": "Always",
-            "mainApplicationFile": "local:///opt/spark/jobs/weather_station_to_silver.py",
+            "mainApplicationFile": f"local:///opt/spark/jobs/{pyspark_py_path}",
             "sparkVersion": "3.5.4",
             "restartPolicy": {
                 "type": "Never",
@@ -51,7 +57,7 @@ def submit_spark_application():
             "executor": {
                 "cores": 1,
                 "instances": 2,
-                "memory": "1g",
+                "memory": "2g",
             },
             "deps": {
                 "jars": [
@@ -69,6 +75,10 @@ def submit_spark_application():
         },
     }
 
+    # 아규먼트를 조건부로 추가
+    if spark_args:
+        spark_application["spec"]["arguments"] = spark_args
+
     # SparkApplication 생성
     api_instance.create_namespaced_custom_object(
         group="sparkoperator.k8s.io",
@@ -77,6 +87,7 @@ def submit_spark_application():
         plural="sparkapplications",
         body=spark_application,
     )
+
 
 default_args = {
     "owner": "airflow",

@@ -1,12 +1,10 @@
 from airflow import DAG
 from airflow.models import Variable
-from airflow.providers.cncf.kubernetes.operators.kubernetes_pod import (
-    KubernetesPodOperator,
-)
+from airflow.operators.python import PythonOperator
 from airflow.operators.dummy import DummyOperator
 from airflow.operators.trigger_dagrun import TriggerDagRunOperator
 from musinsa.custom_operators.k8s_spark_job_submit_operator import (
-    SparkApplicationOperator,
+    submit_spark_application
 )
 from musinsa.custom_operators.k8s_custom_python_pod_operator import (
     CustomKubernetesPodOperator,
@@ -73,17 +71,18 @@ with DAG(
 
         wait_task >> raw_end
 
-    spark_submit_task = SparkApplicationOperator(
-        name="musinsa_ranking_data_spark_application",
-        main_application_file="musinsa/musinsa_ranking_silverdata_spark.py",
-        task_id="musinsa_ranking_data_spark_task",
+    spark_application_task = PythonOperator(
+        task_id = "musinsa_raking_rawdata_el_spark",
+        python_callable = submit_spark_application("musinsa-ranking-rawdata-el-spark", "musinsa/musinsa_ranking_rawdata_el.py")
     )
-
+    
     trigger_dag_ids = [
         "Musinsa_ProductReview_RawData_EL_DAG",
         "Musinsa_ProductDetail_RawData_EL_DAG",
     ]
+
     trigger_tasks = []
+
     for i, dag_id in enumerate(trigger_dag_ids):
         trigger_task = TriggerDagRunOperator(
             task_id=f"triggers_other_dags_{i}",
@@ -91,4 +90,4 @@ with DAG(
         )
         trigger_tasks.append(trigger_task)
 
-    raw_end >> spark_submit_task >> trigger_tasks >> dag_end
+    raw_end >> spark_application_task >> trigger_tasks >> dag_end
