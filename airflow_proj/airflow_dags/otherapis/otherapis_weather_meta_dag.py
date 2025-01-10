@@ -48,7 +48,7 @@ with DAG(
 
     spark_job_submit_task = SparkApplicationOperator(
         task_id="weekly_weather_submit_spark_job_task",
-        name="weekly_weather_data_from_bronze_to_silver_task",
+        name="weekly-weather-data-from-bronze-to-silver-task",
         main_application_file=r"otherapis/bronze_to_silver/weekly_weather_data_to_silver.py",
         application_args=[
             make_s3_url(Variable.get("s3_bucket"), BRONZE_FILE_PATH),
