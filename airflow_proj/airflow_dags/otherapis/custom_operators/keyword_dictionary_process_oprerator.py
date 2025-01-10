@@ -48,5 +48,6 @@ class CategoryDictionaryMergeAndExplodeOperator(BaseOperator):
         self.log.info("Extracting tuples...")
         extracted_tuples = self.extract_tuples(merged_dict)
         self.log.info(f"Extracted Tuples: {extracted_tuples}")
+        self.log.info(f"four depths: {[keywords[-1] for keywords in extracted_tuples]}")
 
         return extracted_tuples
