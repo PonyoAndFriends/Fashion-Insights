@@ -61,7 +61,7 @@ with DAG(
             category_task = CustomKubernetesPodOperator(
                 task_id=f"product_detail_{sexual[0]}_{category2depth[0]}_task",
                 namespace="airflow",
-                script_path="./python_scripts/musinsa/musinsa_productdetail_rawdata_etl.py",
+                script_path="/python_scripts/musinsa/musinsa_productdetail_rawdata_etl.py",
                 required_args={
                     "sexual_dict": json.dumps(sexual),
                     "category_2_depth": json.dumps(category2depth),

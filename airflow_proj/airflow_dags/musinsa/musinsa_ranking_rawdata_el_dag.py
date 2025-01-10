@@ -58,7 +58,7 @@ with DAG(
             category_task = CustomKubernetesPodOperator(
                 task_id=f"{sexual[0]}_{category2depth[0]}_task",
                 namespace="airflow",
-                script_path="./python_scripts/musinsa/musinsa_ranking_rawdata_el.py",
+                script_path="/python_scripts/musinsa/musinsa_ranking_rawdata_el.py",
                 arguments={
                     "sexual": json.dumps(sexual),
                     "category_data": json.dumps(category2depth),
