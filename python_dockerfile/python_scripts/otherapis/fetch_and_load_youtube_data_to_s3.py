@@ -4,8 +4,8 @@ import re
 import logging
 import argparse
 
-from otherapis.script_modules import s3_upload
-from otherapis.script_modules import run_func_multi_thread
+from script_modules import s3_upload
+from script_modules import run_func_multi_thread
 from datetime import datetime
 from zoneinfo import ZoneInfo
 from collections import defaultdict
