@@ -1,8 +1,10 @@
 from airflow import DAG
-from airflow.providers.cncf.kubernetes.operators.kubernetes_pod import KubernetesPodOperator
-from airflow.utils.dates import days_ago
+from airflow.providers.cncf.kubernetes.operators.kubernetes_pod import (
+    KubernetesPodOperator,
+)
 from datetime import datetime
-from ably_modules.ably_dependencies import ABLYAPI_DEFAULT_ARGS, ABLY_HEADER, DEFAULT_S3_DICT
+from ably_modules.ably_dependencies import ABLYAPI_DEFAULT_ARGS, DEFAULT_S3_DICT
+
 
 def create_dag():
     dag = DAG(
@@ -43,7 +45,7 @@ def create_dag():
                 json.dump({"folders": folders}, f)
             """.format(
                 bucket_name=DEFAULT_S3_DICT["bucket_name"],
-                base_path=f"{datetime.now().strftime('%Y-%m-%d')}/ReviewData/"
+                base_path=f"{datetime.now().strftime('%Y-%m-%d')}/ReviewData/",
             ),
         ],
         is_delete_operator_pod=True,
@@ -86,7 +88,7 @@ def create_dag():
                 json.dump(product_ids_map, f)
             """.format(
                 bucket_name=DEFAULT_S3_DICT["bucket_name"],
-                folders="{{ task_instance.xcom_pull(task_ids='list_folders_task')['folders'] }}"
+                folders="{{ task_instance.xcom_pull(task_ids='list_folders_task')['folders'] }}",
             ),
         ],
         is_delete_operator_pod=True,
@@ -153,7 +155,7 @@ def create_dag():
                         save_reviews(s3_client, bucket_name, folder, category_key, product_id, reviews)
             """.format(
                 product_ids_map="{{ task_instance.xcom_pull(task_ids='extract_product_ids_task') }}",
-                bucket_name=DEFAULT_S3_DICT["bucket_name"]
+                bucket_name=DEFAULT_S3_DICT["bucket_name"],
             ),
         ],
         is_delete_operator_pod=True,
