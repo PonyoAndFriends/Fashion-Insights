@@ -7,9 +7,9 @@ import threading
 import requests
 import pyarrow.fs as fs
 
-from musinsa.modules.config import Musinsa_Config
+from modules.config import Musinsa_Config
 
-import musinsa.modules.s3_module as s3_module
+import modules.s3_module as s3_module
 
 LIST_SIZE = 10
 

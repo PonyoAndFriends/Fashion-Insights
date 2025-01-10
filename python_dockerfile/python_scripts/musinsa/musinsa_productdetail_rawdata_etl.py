@@ -7,8 +7,8 @@ import threading
 
 from bs4 import BeautifulSoup
 
-from musinsa.modules.config import Musinsa_Config
-import musinsa.modules.s3_module as s3_module
+from modules.config import Musinsa_Config
+import modules.s3_module as s3_module
 
 TODAY_DATE = Musinsa_Config.TODAY_DATE
 
