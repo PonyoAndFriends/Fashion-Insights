@@ -1,6 +1,6 @@
 from airflow.models import BaseOperator
 from kubernetes import client, config
-from airflow_proj.airflow_dags.musinsa.custom_operators.custom_modules.spark_dependencies import *
+from musinsa.custom_operators.custom_modules.spark_dependencies import *
 import time
 
 

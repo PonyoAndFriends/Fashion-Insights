@@ -1,17 +1,17 @@
 from airflow import DAG
 from airflow.models import Variable
-from airflow_proj.airflow_dags.otherapis.custom_operators.fetch_non_paged_data_operator import (
+from otherapis.custom_operators.fetch_non_paged_data_operator import (
     FetchNonPagedDataOperator,
 )
-from airflow_proj.airflow_dags.otherapis.custom_operators.custom_modules.otherapis_dependencies import (
+from otherapis.custom_operators.custom_modules.otherapis_dependencies import (
     OTHERAPI_DEFAULT_ARGS,
 )
 from datetime import datetime
 from zoneinfo import ZoneInfo
-from airflow_proj.airflow_dags.otherapis.custom_operators.k8s_spark_job_submit_operator import (
+from otherapis.custom_operators.k8s_spark_job_submit_operator import (
     SparkApplicationOperator,
 )
-from airflow_proj.airflow_dags.otherapis.custom_operators.custom_modules.s3_upload import (
+from otherapis.custom_operators.custom_modules.s3_upload import (
     make_s3_url,
 )
 

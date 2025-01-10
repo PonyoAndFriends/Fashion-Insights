@@ -1,25 +1,25 @@
 from airflow import DAG
 from airflow.models import Variable
 from datetime import datetime
-from airflow_proj.airflow_dags.otherapis.custom_operators.custom_modules.otherapis_categories import (
+from otherapis.custom_operators.custom_modules.otherapis_categories import (
     MALE_CATEGORY_LIST,
     FEMALE_CATEGORY_LIST,
 )
-from airflow_proj.airflow_dags.otherapis.custom_operators.custom_modules.otherapis_dependencies import (
+from otherapis.custom_operators.custom_modules.otherapis_dependencies import (
     OTHERAPI_DEFAULT_ARGS,
     OTHERAPI_DEFAULT_PYTHON_SCRIPT_PATH,
     DEFAULT_S3_DICT,
 )
-from airflow_proj.airflow_dags.otherapis.custom_operators.k8s_spark_job_submit_operator import (
+from otherapis.custom_operators.k8s_spark_job_submit_operator import (
     SparkApplicationOperator,
 )
-from airflow_proj.airflow_dags.otherapis.custom_operators.k8s_custom_python_pod_operator import (
+from otherapis.custom_operators.k8s_custom_python_pod_operator import (
     CustomKubernetesPodOperator,
 )
-from airflow_proj.airflow_dags.otherapis.custom_operators.keyword_dictionary_process_oprerator import (
+from otherapis.custom_operators.keyword_dictionary_process_oprerator import (
     CategoryDictionaryMergeAndExplodeOperator,
 )
-from airflow_proj.airflow_dags.otherapis.custom_operators.custom_modules.s3_upload import (
+from otherapis.custom_operators.custom_modules.s3_upload import (
     make_s3_url,
 )
 from zoneinfo import ZoneInfo
