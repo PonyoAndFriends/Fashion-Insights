@@ -23,7 +23,7 @@ from musinsa.modules.config import DEFAULT_DAG
 # DAG 정의
 with DAG(
     dag_id="Musinsa_ProductReview_RawData_EL_DAG",
-    default_args=DEFAULT_DAG.default_args,
+    default_args=DEFAULT_DAG.DEFAULT_ARGS,
     description="musinsa ranking raw data extraction and loading to s3",
     schedule_interval="0 0 * * *",  # 수정 필요
     start_date=datetime(2025, 1, 1, tzinfo=DEFAULT_DAG.local_tz),
