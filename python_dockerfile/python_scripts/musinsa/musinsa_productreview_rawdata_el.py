@@ -34,7 +34,7 @@ def porductid_list_iterable(iterable):
 
 
 def el_productreview(product_id_list, key):
-    bronze_bucket = "Team3-2-s3"
+    bronze_bucket = "team3-2-s3"
     for sort_method in SORT:
         PARAMS["sort"] = sort_method
         for product_id in product_id_list:
@@ -58,7 +58,7 @@ def main():
     category4depth_list = json.loads(args.category_4_depth_list)
 
     # product_id list 불러오기
-    silver_bucket = "Team3-2-s3"
+    silver_bucket = "team3-2-s3"
     file_key = f"silver/{TODAY_DATE}/musinsa/ranking_data/{category3depth}/"
 
     s3 = s3_module.connect_s3fs()
