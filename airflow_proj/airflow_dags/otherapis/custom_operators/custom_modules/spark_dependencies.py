@@ -1,15 +1,15 @@
 from airflow.models import Variable
 
 SPARK_DRIVER_DEFAULT_CONFIG = {
-    "cores": 1,
+    "cores": "1",
     "coreLimit": "1200m",
     "memory": "1g",
     "serviceAccount": "spark-driver-sa",
 }
 
 SPARK_EXECUTOR_DEFAULT_CONFIG = {
-    "cores": 1,
-    "instances": 2,
+    "cores": "1",
+    "instances": "2",
     "memory": "1g",
 }
 
