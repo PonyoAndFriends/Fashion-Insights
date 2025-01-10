@@ -101,6 +101,7 @@ class SparkApplicationOperator(BaseOperator):
         )
         self.log.info(f"SparkApplication {self.name} created successfully.")
 
+        time.sleep(60)
         # SparkApplication 상태 모니터링 및 Driver Pod 로그 출력
         self.log.info(f"Monitoring SparkApplication {self.name} status.")
         driver_pod_name = None
