@@ -65,8 +65,6 @@ with DAG(
                 },
                 cpu_limit="1000m",
                 memory_limit="1Gi",
-                cpu_request="500m",
-                memory_request="512Mi",
                 is_delete_operator_pod=True,
                 get_logs=True,
             )

@@ -23,12 +23,12 @@ class CustomKubernetesPodOperator(KubernetesPodOperator):
     def __init__(
         self,
         script_path,
+        delete_operator_pod=True,
+        get_logs=True,
         required_args=None,
         optional_args=None,
         cpu_limit="500m",
         memory_limit="512Mi",
-        cpu_request="500m",
-        memory_request="512Mi",
         image="coffeeisnan/python_pod_image:latest",
         namespace="airflow",
         *args,
@@ -38,6 +38,8 @@ class CustomKubernetesPodOperator(KubernetesPodOperator):
         self.required_args = required_args or {}
         self.optional_args = optional_args or {}
         self.namespace = namespace
+        self.delete_operator_pod = delete_operator_pod
+        self.get_logs = get_logs
 
         # arguments 구성하기
         arguments = self._generate_arguments()
@@ -46,10 +48,6 @@ class CustomKubernetesPodOperator(KubernetesPodOperator):
             cmds=["python", self.script_path],
             arguments=arguments,
             image=image,
-            resources={
-                "requests": {"cpu": cpu_request, "memory": memory_request},
-                "limits": {"cpu": cpu_limit, "memory": memory_limit},
-            },
             namespace=self.namespace,
             *args,
             **kwargs,
