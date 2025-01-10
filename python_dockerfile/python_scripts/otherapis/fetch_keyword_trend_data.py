@@ -47,11 +47,11 @@ def sort_by_weekly_ratio(url, headers, keywords, gender):
     # 오늘의 ratio 값 추출
     for result in data["results"]:
         keyword = result["keyword"][0]
-        ratios = result["data"][-1]
 
-        if len(ratios) == 0:
+        if len(result["data"]) == 0:
             today_ratio = 0
         else:
+            ratios = result["data"][-1]["ratio"]
             today_ratio = ratios["ratio"]  # 마지막 날짜의 ratio 값
         ratios.append((keyword, float(today_ratio)))
 
