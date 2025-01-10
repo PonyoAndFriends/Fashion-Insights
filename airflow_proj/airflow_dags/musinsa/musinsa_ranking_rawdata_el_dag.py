@@ -79,13 +79,15 @@ with DAG(
         task_id="musinsa_ranking_data_spark_task",
     )
 
-    trigger_tasks = [
+    trigger_dag_ids = [
         "Musinsa_ProductReview_RawData_EL_DAG",
         "Musinsa_ProductDetail_RawData_EL_DAG",
     ]
-    for dag_id in []:
-        trriger_task = TriggerDagRunOperator(
+    trigger_tasks = []
+    for dag_id in trigger_dag_ids:
+        trigger_task = TriggerDagRunOperator(
             trigger_dag_id=dag_id,
         )
+        trigger_tasks.append(trigger_task)
 
     raw_end >> spark_submit_task >> trigger_tasks >> dag_end
