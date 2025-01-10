@@ -67,7 +67,7 @@ with DAG(
     for i, query in enumerate(copy_queries):
         copy_task = RedshiftQueryOperator(
             task_id=f"{platforms[i]}_product_ranking_copy_task",
-            op_args=[query],
+            sql=query,
         )
         copy_tasks.append(copy_task)
 

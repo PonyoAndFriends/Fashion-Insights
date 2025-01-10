@@ -33,7 +33,7 @@ with DAG(
     redshift_iam_role = Variable.get("redshift_iam_role")
 
     drop_sql = f"""
-    DROP TABLE IF EXIST {DEFAULT_SILVER_SHCEMA}.{table};
+    DROP TABLE IF EXISTS {DEFAULT_SILVER_SHCEMA}.{table};
     """
     create_sql = f"""
     CREATE TABLE {DEFAULT_SILVER_SHCEMA}.{table} (
@@ -41,7 +41,12 @@ with DAG(
         STN_KO VARCHAR(100) NOT NULL -- 지역명
     );
     """
-    refresh_task = RefreshTableOperator(drop_sql, create_sql)
+    refresh_task = RefreshTableOperator(
+        task_id="refresh_table_task",
+        drop_sql=drop_sql,
+        create_sql=create_sql,
+        redshift_conn_id="redshift_default",
+    )
 
     copy_query = f"""
     COPY INTO {DEFAULT_SILVER_SHCEMA}.{table}
@@ -52,7 +57,7 @@ with DAG(
 
     copy_task = RedshiftQueryOperator(
         task_id="copy_weather_station_data_task",
-        op_args=[copy_query],
+        sql=copy_query,
     )
 
     refresh_task >> copy_task

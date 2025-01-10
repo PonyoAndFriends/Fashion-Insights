@@ -60,9 +60,10 @@ with DAG(
         );
         """
         refresh_task = RefreshTableOperator(
-            drop_sql,
-            create_sql,
-            task_id=f"{platform}_review_detail_table_refresh_task",
+            task_id="refresh_table_task",
+            drop_sql=drop_sql,
+            create_sql=create_sql,
+            redshift_conn_id="redshift_default",
         )
 
         copy_query = f"""
@@ -74,7 +75,7 @@ with DAG(
 
         copy_task = RedshiftQueryOperator(
             task_id=f"{platform}_review_detail_copy_task",
-            op_args=[copy_query],
+            sql=copy_query,
         )
 
         refresh_task >> copy_task

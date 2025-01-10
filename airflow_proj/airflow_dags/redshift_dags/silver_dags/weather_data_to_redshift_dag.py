@@ -55,7 +55,12 @@ with DAG(
         PRIMARY KEY (STN, TM)
     );
     """
-    refresh_task = RefreshTableOperator(drop_sql, create_sql)
+    refresh_task = RefreshTableOperator(
+        task_id="refresh_table_task",
+        drop_sql=drop_sql,
+        create_sql=create_sql,
+        redshift_conn_id="redshift_default",
+    )
 
     copy_query = f"""
     COPY INTO {DEFAULT_SILVER_SHCEMA}.{table}
@@ -66,7 +71,7 @@ with DAG(
 
     copy_task = RedshiftQueryOperator(
         task_id="weekly_weather_data_copy_task",
-        op_args=[copy_query],
+        sql=copy_query,
     )
 
     refresh_task >> copy_task

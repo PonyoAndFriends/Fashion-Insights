@@ -59,7 +59,7 @@ with DAG(
 
     copy_task = RedshiftQueryOperator(
         task_id="snap_brand_ranking_copy_task",
-        op_args=[copy_query],
+        sql=copy_query,
     )
 
     # 태스크 실행 순서 - COPY의 특성 상 순서대로 실행

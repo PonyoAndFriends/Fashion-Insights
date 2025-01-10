@@ -57,9 +57,10 @@ with DAG(
     );
     """
     refresh_task = RefreshTableOperator(
-        drop_sql,
-        create_sql,
-        task_id="product_detail_table_refresh_task",
+        task_id="refresh_table_task",
+        drop_sql=drop_sql,
+        create_sql=create_sql,
+        redshift_conn_id="redshift_default",
     )
 
     copy_queries = [
@@ -77,7 +78,7 @@ with DAG(
     for i, query in enumerate(copy_queries):
         copy_task = RedshiftQueryOperator(
             task_id=f"{platforms[i]}_product_detail_copy_task",
-            op_args=query,
+            sql=query,
         )
         copy_tasks.append(copy_task)
 
