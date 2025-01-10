@@ -3,6 +3,7 @@ import json
 import requests
 import logging
 import boto3
+from airflow.models import Variable
 from datetime import datetime
 
 # 로그 설정
@@ -12,9 +13,9 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 # S3 설정
-S3_BUCKET_NAME = "pcy-test-rawdata-bucket"
-AWS_ACCESS_KEY = os.getenv("AWS_ACCESS_KEY")
-AWS_SECRET_KEY = os.getenv("AWS_SECRET_KEY")
+S3_BUCKET_NAME = Variable.get("s3_bucket")
+AWS_ACCESS_KEY = Variable.get("aws_access_key_id")
+AWS_SECRET_KEY = Variable.get("aws_secret_access_key")
 
 s3_client = boto3.client(
     "s3",

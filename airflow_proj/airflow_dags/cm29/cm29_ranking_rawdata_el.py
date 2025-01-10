@@ -1,10 +1,11 @@
 import os
+from airflow.models import Variable
 import json
 import requests
 import logging
-from datetime import datetime
+from datetime import datetime, timedelta
 import boto3
-from cm29_mapping_table import SHOES_CATEGORIES, CATEGORY_TREE
+from cm29.cm29_mapping_table import SHOES_CATEGORIES, CATEGORY_TREE
 
 # 로그 설정
 logging.basicConfig(
@@ -20,11 +21,11 @@ HEADERS = {
 }
 
 # AWS 자격 증명 설정
-AWS_ACCESS_KEY = os.getenv("AWS_ACCESS_KEY")
-AWS_SECRET_KEY = os.getenv("AWS_SECRET_KEY")
+AWS_ACCESS_KEY = Variable.get("aws_access_key_id")
+AWS_SECRET_KEY = Variable.get("aws_secret_access_key")
 
 # S3 설정
-S3_BUCKET_NAME = "pcy-test-rawdata-bucket"
+S3_BUCKET_NAME = Variable.get("s3_bucket")
 PLATFORM_FOLDER_PATH = "29cm"
 PRODUCT_FOLDER_PATH = "29cm_product"
 REVIEW_FOLDER_PATH = "29cm_reviews"
@@ -78,7 +79,7 @@ def extract_product_data(product, rank):
             ]
         )
     )
-    created_at = datetime.now().strftime("%Y-%m-%d")
+    created_at = (datetime.now() - timedelta(hours=9)).strftime("%Y-%m-%d")
     collection_platform = "29CM"
 
     img_url = "https://img.29cm.co.kr" + product["imageUrl"]
@@ -143,7 +144,7 @@ def fetch_and_save_data_to_s3(large_id, medium_id, small_id, s3_path, gender_fol
         ]
 
         # 오늘 날짜 폴더 경로 추가
-        today = datetime.now().strftime("%Y-%m-%d")
+        today = (datetime.now() - timedelta(hours=9)).strftime("%Y-%m-%d")
 
         # 상품 데이터 저장 경로
         if any(category in s3_path for category in SHOES_CATEGORIES):
