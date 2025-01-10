@@ -68,14 +68,14 @@ def get_top_five_keyword(url, headers, all_keywords, gender):
 
     for new_keyword in remainders:
         sorted_keywords_with_new_keyword = sort_by_weekly_ratio(
-            url, headers, all_keywords[:4] + [new_keyword], gender
+            url, headers, current_top_5[:4] + [new_keyword], gender
         )
 
         if sorted_keywords_with_new_keyword[-1] == new_keyword:
             current_fifth = current_top_5[-1]
             current_top_5[-1] = sort_by_weekly_ratio(
                 url, headers, [current_fifth, new_keyword], gender
-            )
+            )[0]
         else:
             current_top_5 = sorted_keywords_with_new_keyword
 
