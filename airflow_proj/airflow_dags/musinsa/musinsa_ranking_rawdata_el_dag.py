@@ -73,7 +73,12 @@ with DAG(
 
     spark_application_task = PythonOperator(
         task_id = "musinsa_raking_rawdata_el_spark",
-        python_callable = submit_spark_application("musinsa-ranking-rawdata-el-spark", "musinsa/musinsa_ranking_rawdata_el.py")
+        python_callable = submit_spark_application,
+        op_args=[
+            "musinsa-ranking-rawdata-el-spark",
+            "musinsa/musinsa_ranking_rawdata_el.py",
+            None
+        ],
     )
     
     trigger_dag_ids = [
