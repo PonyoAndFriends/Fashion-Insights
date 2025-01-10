@@ -14,4 +14,7 @@ RUN chmod -R 755 /opt/spark/user-jars/hadoop-aws-3.3.1.jar && chmod -R 755 /opt/
 # PySpark 애플리케이션 복사
 COPY ./spark_job/ /opt/spark/jobs/
 
+# pip 종속성
+RUN pip install -r /opt/spark/jobs/requirements.txt
+
 CMD ["/bin/bash"]
