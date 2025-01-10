@@ -113,7 +113,7 @@ def get_videos_with_details(
 
         logger.info(f"Collected {len(videos)} videos for category: {category}")
 
-        s3_dict["data_file"] = videos
+        s3_dict["data_file"] = json.dumps(videos)
         s3_dict["file_path"] = (
             f"bronze/{now_string}/otherapis/{gender}_{file_topic}_raw_data/{gender}_{first_depth}_{second_depth}_{category}_data.json"
         )
@@ -134,7 +134,7 @@ if __name__ == "__main__":
         "--category_list", required=True, help="JSON string of keywords"
     )
     parser.add_argument(
-        "--max_threads", type=int, default=15, help="Maximum number of threads"
+        "--max_threads", type=int, default=8, help="Maximum number of threads"
     )
     parser.add_argument("--s3_dict", required=True, help="S3 client config as JSON")
 
