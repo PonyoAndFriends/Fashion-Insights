@@ -1,6 +1,6 @@
 from airflow import DAG
 from airflow.models import Variable
-from datetime import datetime
+from datetime import datetime, timedelta
 from otherapis.custom_operators.custom_modules.otherapis_categories import (
     MALE_CATEGORY_LIST,
     FEMALE_CATEGORY_LIST,
@@ -22,7 +22,6 @@ from otherapis.custom_operators.keyword_dictionary_process_oprerator import (
 from otherapis.custom_operators.custom_modules.s3_upload import (
     make_s3_url,
 )
-from zoneinfo import ZoneInfo
 
 # Pod내에서 실행할 스레드의 최대 개수
 MAX_THREAD = 10
@@ -39,7 +38,7 @@ with DAG(
     default_args=default_args,
     description="Fetch and save Youtube videos and data from youtube api",
     schedule_interval="@daily",
-    start_date=datetime(2024, 1, 1).astimezone(ZoneInfo("Asia/Seoul")),
+    start_date=datetime(2024, 1, 1) + timedelta(hours=9),
     tags=["otherapi", "youtube", "category", "daily"],
     catchup=False,
 ) as dag:
@@ -84,7 +83,7 @@ with DAG(
 
         file_topic = "youtoube_videos_by_categories"
         now_string = (
-            datetime.now().astimezone(ZoneInfo("Asia/Seoul")).strftime("%Y-%m-%d")
+            (datetime.now() + timedelta(hours=9)).strftime("%Y-%m-%d")
         )
         bronze_file_path = (
             f"bronze/{now_string}/otherapis/{task['gender']}_{file_topic}_raw_data/"

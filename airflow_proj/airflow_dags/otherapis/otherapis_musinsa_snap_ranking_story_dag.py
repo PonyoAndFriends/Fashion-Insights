@@ -1,6 +1,6 @@
 from airflow import DAG
 from airflow.models import Variable
-from datetime import datetime
+from datetime import datetime, timedelta
 from otherapis.custom_operators.k8s_custom_python_pod_operator import (
     CustomKubernetesPodOperator,
 )
@@ -13,7 +13,6 @@ from otherapis.custom_operators.custom_modules.otherapis_dependencies import (
     DEFAULT_S3_DICT,
     OTHERAPI_DEFAULT_PYTHON_SCRIPT_PATH,
 )
-from zoneinfo import ZoneInfo
 from otherapis.custom_operators.k8s_spark_job_submit_operator import (
     SparkApplicationOperator,
 )
@@ -49,7 +48,7 @@ with DAG(
     default_args=default_args,
     description="Fetch snap ranking story data from Musinsa SNAP API using KubernetesPodOperator",
     schedule_interval="@daily",
-    start_date=datetime(2024, 1, 1).astimezone(ZoneInfo("Asia/Seoul")),
+    start_date=datetime(2024, 1, 1) + timedelta(hours=9),
     tags=["otherapi", "musinsa", "SNAP", "Daily"],
     catchup=False,
 ) as dag:
@@ -104,7 +103,7 @@ with DAG(
     fetch_snap_ranking_story_data_spark_submit_tasks = []
     for gender in ["MEN", "WOMEN"]:
         file_topic = f"musinsa_{gender}_ranking_story_group"
-        file_path = f"{datetime.now().astimezone(ZoneInfo('Asia/Seoul')).strftime('%Y-%m-%d')}/otherapis/{file_topic}_raw_data/"
+        file_path = f"{(datetime.now() +  + timedelta(hours=9)).strftime('%Y-%m-%d')}/otherapis/{file_topic}_raw_data/"
         spark_job_submit_task = SparkApplicationOperator(
             task_id=f"musinsa_snap_ranking_story_{gender}_submit_spark_job_task",
             name=f"musinsa_snap_ranking_stroy_{gender}_from_bronze_to_silver_data",

@@ -1,6 +1,6 @@
 from airflow import DAG
 from airflow.models import Variable
-from datetime import datetime
+from datetime import datetime, timedelta
 from otherapis.custom_operators.k8s_spark_job_submit_operator import (
     SparkApplicationOperator,
 )
@@ -16,7 +16,6 @@ from otherapis.custom_operators.custom_modules.otherapis_dependencies import (
     DEFAULT_S3_DICT,
     OTHERAPI_DEFAULT_PYTHON_SCRIPT_PATH,
 )
-from zoneinfo import ZoneInfo
 from otherapis.custom_operators.custom_modules.s3_upload import (
     make_s3_url,
 )
@@ -35,8 +34,8 @@ PAGE_SIZE = math.ceil(TOTAL_DATA_COUNT // (PARALLEL_POD_NUM * PARALLEL_THREAD_NU
 
 # 파일 경로 설정
 FILE_TOPIC = "musinsa_snap_brand_ranking"
-BRONZE_FILE_PATH = f"bronze/{datetime.now().astimezone(ZoneInfo('Asia/Seoul')).strftime('%Y-%m-%d')}/otherapis/{FILE_TOPIC}_raw_data/"
-SILVER_FILE_PATH = f"silver/{datetime.now().astimezone(ZoneInfo('Asia/Seoul')).strftime('%Y-%m-%d')}/otherapis/{FILE_TOPIC}_raw_data/"
+BRONZE_FILE_PATH = f"bronze/{(datetime.now() + timedelta(hours=9)).strftime('%Y-%m-%d')}/otherapis/{FILE_TOPIC}_raw_data/"
+SILVER_FILE_PATH = f"silver/{(datetime.now() + timedelta(hours=9)).strftime('%Y-%m-%d')}/otherapis/{FILE_TOPIC}_raw_data/"
 
 # DAG의 기본 args 정의
 default_args = OTHERAPI_DEFAULT_ARGS
@@ -46,7 +45,7 @@ with DAG(
     default_args=default_args,
     description="Fetch snap brand ranking data from Musinsa SNAP API and save to S3",
     schedule_interval="@daily",
-    start_date=datetime(2024, 1, 1).astimezone(ZoneInfo("Asia/Seoul")),
+    start_date=datetime(2024, 1, 1) + timedelta(hours=9),
     tags=["otherapi", "musinsa", "SNAP", "Daily"],
     catchup=False,
 ) as dag:

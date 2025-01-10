@@ -6,8 +6,7 @@ from otherapis.custom_operators.fetch_non_paged_data_operator import (
 from otherapis.custom_operators.custom_modules.otherapis_dependencies import (
     OTHERAPI_DEFAULT_ARGS,
 )
-from datetime import datetime
-from zoneinfo import ZoneInfo
+from datetime import datetime, timedelta
 from otherapis.custom_operators.k8s_spark_job_submit_operator import (
     SparkApplicationOperator,
 )
@@ -18,7 +17,8 @@ from otherapis.custom_operators.custom_modules.s3_upload import (
 default_args = OTHERAPI_DEFAULT_ARGS
 
 FILE_TOPIC = "weather_station_data"
-now_string = datetime.now().astimezone(ZoneInfo("Asia/Seoul")).strftime("%Y-%m-%d")
+now = datetime.now()  + timedelta(hours=9)
+now_string = now.strftime("%Y-%m-%d")
 BRONZE_FILE_PATH = f"bronze/{now_string}/otherapis/{FILE_TOPIC}_raw_data/"
 SILVER_FILE_PATH = f"silver/{now_string}/otherapis/{FILE_TOPIC}_raw_data/"
 
@@ -28,7 +28,7 @@ with DAG(
     default_args=default_args,
     description="Fetch korean weather station metadata from open api and load to s3 bucket",
     schedule_interval="@once",
-    start_date=datetime(2024, 1, 1).astimezone(ZoneInfo("Asia/Seoul")),
+    start_date=datetime(2024, 1, 1) + timedelta(hours=9),
     tags=["otherapi", "weather", "station", "openAPI", "Daily"],
     catchup=False,
 ) as dag:

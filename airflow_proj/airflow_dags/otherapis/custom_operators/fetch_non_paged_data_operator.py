@@ -5,10 +5,9 @@ from otherapis.custom_operators.custom_modules import (
 from otherapis.custom_operators.custom_modules.otherapis_dependencies import (
     FILE_EXT,
 )
-from zoneinfo import ZoneInfo
 
 import json
-from datetime import datetime
+from datetime import datetime, timedelta
 import requests
 
 
@@ -44,7 +43,7 @@ class FetchNonPagedDataOperator(BaseOperator):
             self.log.info("Data fetch success")
 
             # 현재 날짜 생성
-            now = datetime.now().astimezone(ZoneInfo("Asia/Seoul"))
+            now = datetime.now() + timedelta(hours=9)
             now_string = now.strftime("%Y-%m-%d")
 
             # 데이터 처리 및 파일 경로 생성

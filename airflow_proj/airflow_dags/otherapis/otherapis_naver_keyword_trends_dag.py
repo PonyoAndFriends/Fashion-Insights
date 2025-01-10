@@ -1,7 +1,6 @@
 from airflow import DAG
 from airflow.models import Variable
-from datetime import datetime
-from zoneinfo import ZoneInfo
+from datetime import datetime, timedelta
 from otherapis.custom_operators.custom_modules.otherapis_categories import (
     MALE_CATEGORY_LIST,
     FEMALE_CATEGORY_LIST,
@@ -41,7 +40,7 @@ with DAG(
     default_args=default_args,
     description="Fetch and save keywords trend data from naver api",
     schedule_interval="@daily",
-    start_date=datetime(2024, 1, 1).astimezone(ZoneInfo("Asia/Seoul")),
+    start_date=datetime(2024, 1, 1) + timedelta(hours=9),
     tags=["otherapi", "keyword", "trends", "daily"],
     catchup=False,
 ) as dag:
@@ -84,7 +83,7 @@ with DAG(
         fetch_keyword_data_tasks.append(gender_fetch_keyword_data_task)
 
         now_string = (
-            datetime.now().astimezone(ZoneInfo("Asia/Seoul")).strftime("%Y-%m-%d")
+            (datetime.now() + timedelta(hours=9)).strftime("%Y-%m-%d")
         )
         bronze_file_path = (
             f"bronze/{now_string}/otherapis/{task['gender']}_keyword_trends/"

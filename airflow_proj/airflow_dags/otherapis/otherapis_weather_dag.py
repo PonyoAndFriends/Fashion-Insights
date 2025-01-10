@@ -1,6 +1,5 @@
 from airflow import DAG
 from airflow.models import Variable
-from zoneinfo import ZoneInfo
 from otherapis.custom_operators.fetch_non_paged_data_operator import (
     FetchNonPagedDataOperator,
 )
@@ -28,7 +27,7 @@ with DAG(
     default_args=default_args,
     description="Fetch weekly weather data from open api and load to s3 bucket",
     schedule_interval="@daily",
-    start_date=datetime(2024, 1, 1).astimezone(ZoneInfo("Asia/Seoul")),
+    start_date=datetime(2024, 1, 1) + timedelta(hours=9),
     tags=["otherapi", "weather", "openAPI", "Daily"],
     catchup=False,
 ) as dag:
@@ -37,7 +36,7 @@ with DAG(
     weather_api_key = Variable.get("weather_api_key")
     url = r"https://apihub.kma.go.kr/api/typ01/url/kma_sfcdd.php"
 
-    now = datetime.now().astimezone(ZoneInfo("Asia/Seoul"))
+    now = datetime.now() + timedelta(hours=9)
     one_day = timedelta(days=1)
 
     # 일별 최저 기온, 최대 기온, 날씨 개황(흐림, 맑음 등)을 포함한 날씨 데이터를 오늘로부터 과거 1주일 날짜만큼 적재
