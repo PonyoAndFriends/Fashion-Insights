@@ -23,7 +23,7 @@ class CustomKubernetesPodOperator(KubernetesPodOperator):
     def __init__(
         self,
         script_path,
-        delete_operator_pod=True,
+        is_delete_operator_pod=True,
         get_logs=True,
         required_args=None,
         optional_args=None,
@@ -38,7 +38,7 @@ class CustomKubernetesPodOperator(KubernetesPodOperator):
         self.required_args = required_args or {}
         self.optional_args = optional_args or {}
         self.namespace = namespace
-        self.delete_operator_pod = delete_operator_pod
+        self.is_delete_operator_pod = is_delete_operator_pod
         self.get_logs = get_logs
 
         # arguments 구성하기
