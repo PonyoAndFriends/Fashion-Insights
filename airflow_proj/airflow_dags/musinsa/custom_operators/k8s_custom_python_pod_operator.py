@@ -66,7 +66,7 @@ class CustomKubernetesPodOperator(KubernetesPodOperator):
 
         # 필수 아규먼트 추가
         for key, value in self.required_args.items():
-            args.append(f"--{key}")
+            # args.append(f"--{key}")
             args.append(
                 json.dumps(value) if isinstance(value, (dict, list)) else str(value)
             )
@@ -74,7 +74,7 @@ class CustomKubernetesPodOperator(KubernetesPodOperator):
         # 선택적 아규먼트 추가
         for key, value in self.optional_args.items():
             if value is not None:
-                args.append(f"--{key}")
+                # args.append(f"--{key}")
                 args.append(
                     json.dumps(value) if isinstance(value, (dict, list)) else str(value)
                 )
