@@ -46,8 +46,8 @@ with DAG(
 ) as dag:
 
     tasks_config = [
-        {"gender": "여성", "category_list": FEMALE_CATEGORY_LIST},
-        {"gender": "남성", "category_list": MALE_CATEGORY_LIST},
+        {"gender": "여성", "category_list": FEMALE_CATEGORY_LIST, "task_gender": "female"},
+        {"gender": "남성", "category_list": MALE_CATEGORY_LIST, "task_gender": "male"},
     ]
 
     keyword_list_tasks = []
@@ -56,14 +56,14 @@ with DAG(
 
     for task in tasks_config:
         gender_keywords_list_task = CategoryDictionaryMergeAndExplodeOperator(
-            task_id=f"making_{task['gender']}_keywords_list_task",
+            task_id=f"making_{task['task_gender']}_keywords_list_task",
             dict_list=task["category_list"],
         )
         keyword_list_tasks.append(gender_keywords_list_task)
 
         gender_fetch_keyword_data_task = CustomKubernetesPodOperator(
-            task_id=f"fetch_{task['gender']}_keyword_data_task",
-            name=f"{task['gender']}_keyword_data_task",
+            task_id=f"fetch_{task['task_gender']}_keyword_data_task",
+            name=f"{task['task_gender']}_keyword_data_task",
             script_path=f"{OTHERAPI_DEFAULT_PYTHON_SCRIPT_PATH}/fetch_keyword_trend_data.py",
             required_args={
                 "url": url,
@@ -80,19 +80,19 @@ with DAG(
 
         now_string = (datetime.now() + timedelta(hours=9)).strftime("%Y-%m-%d")
         bronze_file_path = (
-            f"bronze/{now_string}/otherapis/{task['gender']}_keyword_trends/"
+            f"bronze/{now_string}/otherapis/{task['task_gender']}_keyword_trends/"
         )
         silver_file_path = (
-            f"silver/{now_string}/otherapis/{task['gender']}_keyword_trends/"
+            f"silver/{now_string}/otherapis/{task['task_gender']}_keyword_trends/"
         )
         spark_job_submit_task = SparkApplicationOperator(
-            task_id=f"naver_keywords_trend_{task['gender']}_submit_spark_job_task",
-            name=f"naveer_keywords_trend_{task['gender']}_from_bronze_to_silver_data",
+            task_id=f"naver_keywords_trend_{task['task_gender']}_submit_spark_job_task",
+            name=f"naveer_keywords_trend_{task['task_gender']}_from_bronze_to_silver_data",
             main_application_file=r"otherapis/bronze_to_silver/naver_keyword_trend_to_silver.py",
             application_args=[
                 make_s3_url(Variable.get("s3_bucket"), bronze_file_path),
                 make_s3_url(Variable.get("s3_bucket"), silver_file_path),
-                task["gender"],
+                task["task_gender"],
             ],
         )
         spark_submit_tasks.append(spark_job_submit_task)

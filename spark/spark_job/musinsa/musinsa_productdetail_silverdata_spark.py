@@ -87,8 +87,8 @@ def main():
         for category3depth, category4depths in category3depths.items():
             for category4depth in category4depths:
                 print(category3depth, category4depth)
-                source_path = f"s3a://Team3-2/bronze/{TODAY_DATE}/musinsa/product_detail_data/{category3depth}/{category4depth}/*.json"
-                load_path = f"s3a://Team3-2/silver/{TODAY_DATE}/musinsa/product_detail_data/{category3depth}/{category4depth}.parquet"
+                source_path = f"s3a://team3-2-s3/bronze/{TODAY_DATE}/musinsa/product_detail_data/{category3depth}/{category4depth}/*.json"
+                load_path = f"s3a://team3-2-s3/silver/{TODAY_DATE}/musinsa/product_detail_data/{category3depth}/{category4depth}.parquet"
                 etl_productdetail(spark, source_path, load_path)
 
 

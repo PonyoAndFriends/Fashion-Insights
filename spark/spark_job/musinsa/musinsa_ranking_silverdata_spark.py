@@ -83,10 +83,10 @@ def main():
                     file_name = f"{category3depth}/{sexual}_{category2depth}_{category3depth}_{category4depth}"
 
                     # input - filepath 조합
-                    input_path = f"s3a://Team3-2/bronze/{TODAY_DATE}/musinsa/ranking_data/{file_name}.json"
+                    input_path = f"s3a://team3-2-s3/bronze/{TODAY_DATE}/musinsa/ranking_data/{file_name}.json"
 
                     # output - filepath 조합
-                    table_output_path = f"s3a://Team3-2/silver/{TODAY_DATE}/musinsa/ranking_data/{file_name}.parquet"
+                    table_output_path = f"s3a://team3-2-s3/silver/{TODAY_DATE}/musinsa/ranking_data/{file_name}.parquet"
 
                     master_category_code = f"{sexual}-{category2depth}-{category3depth}"
                     print(f"Processing {master_category_code}-{category4depth}")

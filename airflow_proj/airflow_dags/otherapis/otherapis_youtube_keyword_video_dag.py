@@ -44,8 +44,8 @@ with DAG(
 ) as dag:
 
     tasks_config = [
-        {"gender": "여성", "category_list": FEMALE_CATEGORY_LIST},
-        {"gender": "남성", "category_list": MALE_CATEGORY_LIST},
+        {"gender": "여성", "category_list": FEMALE_CATEGORY_LIST, "task_gender": "female"},
+        {"gender": "남성", "category_list": MALE_CATEGORY_LIST, "task_gender": "male"},
     ]
 
     category_list_tasks = []
@@ -54,19 +54,19 @@ with DAG(
 
     for task in tasks_config:
         gender_category_list_task = CategoryDictionaryMergeAndExplodeOperator(
-            task_id=f"making_{task['gender']}_category_list_task",
+            task_id=f"making_{task['task_gender']}_category_list_task",
             dict_list=task["category_list"],
         )
         category_list_tasks.append(gender_category_list_task)
 
         gender_fetch_youtube_data_task = CustomKubernetesPodOperator(
-            task_id=f"fetch_{task['gender']}_yotubue_data_task",
-            name=f"pod_for_{task['gender']}_category_yotubue_data_task",
+            task_id=f"fetch_{task['task_gender']}_yotubue_data_task",
+            name=f"pod_for_{task['task_gender']}_category_yotubue_data_task",
             script_path=f"{OTHERAPI_DEFAULT_PYTHON_SCRIPT_PATH}/fetch_and_load_youtube_data_to_s3.py",
             required_args={
                 "youtube_api_key": youtube_api_key,
                 "category_list": "{{ task_instance.xcom_pull(task_ids='making_"
-                + task["gender"]
+                + task["task_gender"]
                 + "_category_list_task') | tojson }}",
                 "max_threads": MAX_THREAD,
                 "s3_dict": DEFAULT_S3_DICT,
@@ -80,19 +80,19 @@ with DAG(
         file_topic = "youtoube_videos_by_categories"
         now_string = (datetime.now() + timedelta(hours=9)).strftime("%Y-%m-%d")
         bronze_file_path = (
-            f"bronze/{now_string}/otherapis/{task['gender']}_{file_topic}_raw_data/"
+            f"bronze/{now_string}/otherapis/{task['task_gender']}_{file_topic}_raw_data/"
         )
         silver_file_path = (
-            f"silver/{now_string}/otherapis/{task['gender']}_{file_topic}_raw_data/"
+            f"silver/{now_string}/otherapis/{task['task_gender']}_{file_topic}_raw_data/"
         )
         spark_job_submit_task = SparkApplicationOperator(
-            task_id=f"youtube_category_videos_{task['gender']}_submit_spark_job_task",
-            name=f"youtube_category_videos_{task['gender']}_from_bronze_to_silver_data",
+            task_id=f"youtube_category_videos_{task['task_gender']}_submit_spark_job_task",
+            name=f"youtube_category_videos_{task['task_gender']}_from_bronze_to_silver_data",
             main_application_file=r"otherapis\bronze_to_silver/youtube_data_to_silver.py",
             application_args=[
                 make_s3_url(Variable.get("s3_bucket"), bronze_file_path),
                 make_s3_url(Variable.get("s3_bucket"), silver_file_path),
-                task["gender"],
+                task["task_gender"],
             ],
         )
         spark_submit_tasks.append(spark_job_submit_task)
