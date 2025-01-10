@@ -4,13 +4,14 @@ SPARK_DRIVER_DEFAULT_CONFIG = {
     "cores": 1,
     "coreLimit": "1200m",
     "memory": "1g",
-    "serviceAccount": "spark-driver-sa",
+    "serviceAccount": "spark-service-account",
 }
 
 SPARK_EXECUTOR_DEFAULT_CONFIG = {
     "cores": 1,
     "instances": 2,
     "memory": "1g",
+    "serviceAccount": "spark-service-account",
 }
 
 SPARK_DEFULAT_CONFIG_DICT_FORMAT = {
