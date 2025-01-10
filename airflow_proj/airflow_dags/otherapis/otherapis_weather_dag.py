@@ -16,7 +16,8 @@ from otherapis.custom_operators.custom_modules.s3_upload import (
 
 default_args = OTHERAPI_DEFAULT_ARGS
 
-now_string = datetime.now().strftime("%Y-%m-%d")
+now = datetime.now() + timedelta(hours=9)
+now_string = now.strftime("%Y-%m-%d")
 FILE_TOPIC = f"weekly_weather_data"
 BRONZE_FILE_PATH = f"bronze/{now_string}/otherapis/{FILE_TOPIC}_raw_data/"
 SILVER_FILE_PATH = f"silver/{now_string}/otherapis/{FILE_TOPIC}_raw_data/"
