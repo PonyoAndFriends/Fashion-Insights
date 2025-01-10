@@ -51,8 +51,7 @@ def sort_by_weekly_ratio(url, headers, keywords, gender):
         if len(result["data"]) == 0:
             today_ratio = 0
         else:
-            ratios = result["data"][-1]["ratio"]
-            today_ratio = ratios["ratio"]  # 마지막 날짜의 ratio 값
+            today_ratio = result["data"][-1]["ratio"]
         ratios.append((keyword, float(today_ratio)))
 
     ratios.sort(key=lambda x: x[1], reverse=True)
