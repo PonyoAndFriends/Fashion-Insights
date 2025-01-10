@@ -133,8 +133,8 @@ def main():
 
         logger.info("Parsed arguments and started processing.")
 
-        all_keywords = [four_depth_category for _, _, _, four_depth_category in all_keywords]
-        top_five_keywords = get_top_five_keyword(url, headers, all_keywords, gender)
+        four_keywords = [keywords[-1] for keywords in all_keywords]
+        top_five_keywords = get_top_five_keyword(url, headers, four_keywords, gender)
         fetch_final_data(url, headers, s3_dict, top_five_keywords, gender)
 
         logger.info("Script completed successfully.")
