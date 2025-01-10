@@ -34,7 +34,7 @@ class CustomKubernetesPodOperator(KubernetesPodOperator):
         *args,
         **kwargs,
     ):
-        self.script_path = script_path
+        self.script_path = "/app" + script_path
         self.required_args = required_args or {}
         self.optional_args = optional_args or {}
         self.namespace = namespace
