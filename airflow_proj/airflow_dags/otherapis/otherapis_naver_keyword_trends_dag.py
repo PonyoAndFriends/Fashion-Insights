@@ -78,9 +78,7 @@ with DAG(
         )
         fetch_keyword_data_tasks.append(gender_fetch_keyword_data_task)
 
-        now_string = (
-            (datetime.now() + timedelta(hours=9)).strftime("%Y-%m-%d")
-        )
+        now_string = (datetime.now() + timedelta(hours=9)).strftime("%Y-%m-%d")
         bronze_file_path = (
             f"bronze/{now_string}/otherapis/{task['gender']}_keyword_trends/"
         )

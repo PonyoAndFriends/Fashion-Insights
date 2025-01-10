@@ -78,9 +78,7 @@ with DAG(
         fetch_keyword_data_tasks.append(gender_fetch_youtube_data_task)
 
         file_topic = "youtoube_videos_by_categories"
-        now_string = (
-            (datetime.now() + timedelta(hours=9)).strftime("%Y-%m-%d")
-        )
+        now_string = (datetime.now() + timedelta(hours=9)).strftime("%Y-%m-%d")
         bronze_file_path = (
             f"bronze/{now_string}/otherapis/{task['gender']}_{file_topic}_raw_data/"
         )
