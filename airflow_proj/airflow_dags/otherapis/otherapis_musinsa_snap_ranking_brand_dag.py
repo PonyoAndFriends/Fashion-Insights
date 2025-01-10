@@ -69,7 +69,7 @@ with DAG(
             script_path=f"{OTHERAPI_DEFAULT_PYTHON_SCRIPT_PATH}/fetch_and_load_paged_data_to_s3.py",
             required_args={
                 "url": url,
-                "page_ranges": "{{ task_instance.xcom_pull(task_ids='calculate_page_ranges_for_snap_brand_ranking')[%d:%d] }}"
+                "page_ranges": "{{ task_instance.xcom_pull(task_ids='calculate_page_ranges_for_snap_brand_ranking')[%d:%d] | tojson }}"
                 % (
                     i,
                     min(
