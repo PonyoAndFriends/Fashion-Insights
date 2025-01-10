@@ -49,9 +49,7 @@ class CustomKubernetesPodOperator(KubernetesPodOperator):
             arguments=arguments,
             image=image,
             k8s_resources={
-                "limits": {"cpu": cpu_limit, "memory": memory_limit},
-                "requests": {"cpu": cpu_limit, "memory": memory_limit},
-            },
+                "cpu": cpu_limit, "memory": memory_limit},
             namespace=self.namespace,
             *args,
             **kwargs,
