@@ -76,7 +76,7 @@ with DAG(
         python_callable = submit_spark_application,
         op_args=[
             "musinsa-ranking-rawdata-el-spark",
-            "musinsa_ranking_silverdata_spark.py",
+            "musinsa/musinsa_ranking_silverdata_spark.py",
             None
         ],
     )
