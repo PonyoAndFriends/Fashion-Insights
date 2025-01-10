@@ -51,6 +51,7 @@ SPARK_DEFAULT_CONF = {
     "spark.hadoop.fs.s3a.aws.credentials.provider": "com.amazonaws.auth.DefaultAWSCredentialsProviderChain",
     "spark.kubernetes.driver.deleteOnTermination": "true",
     "spark.kubernetes.executor.deleteOnTermination": "true",
+    "spark.kubernetes.file.upload.path": "s3a://intermediate-bucket-hs/",
     "spark.eventLog.enabled": "true",
     "spark.eventLog.dir": "s3a://spark-log-bucket-hs/spark-logs/",
     "spark.history.fs.logDirectory": "s3a://spark-log-bucket-hs/spark-logs/",
