@@ -9,8 +9,6 @@ def submit_spark_application(spark_app_name, pyspark_py_path, spark_args=None):
     config.load_incluster_config()  # EKS 내부에서 실행 중인 경우
     api_instance = client.CustomObjectsApi()
 
-    spark_app_name = "s3-processing-job"
-
     # 기존 SparkApplication 삭제
     try:
         api_instance.delete_namespaced_custom_object(
