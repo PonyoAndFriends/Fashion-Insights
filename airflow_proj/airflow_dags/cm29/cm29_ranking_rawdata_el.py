@@ -148,15 +148,15 @@ def fetch_and_save_data_to_s3(large_id, medium_id, small_id, s3_path, gender_fol
 
         # 상품 데이터 저장 경로
         if any(category in s3_path for category in SHOES_CATEGORIES):
-            product_data_key = f"bronze_layer/{today}/{PLATFORM_FOLDER_PATH}/{PRODUCT_FOLDER_PATH}/{gender_folder}/Shoes/{s3_path.split('/')[-1]}.json"
+            product_data_key = f"bronze/{today}/{PLATFORM_FOLDER_PATH}/{PRODUCT_FOLDER_PATH}/{gender_folder}/Shoes/{s3_path.split('/')[-1]}.json"
         else:
-            product_data_key = f"bronze_layer/{today}/{PLATFORM_FOLDER_PATH}/{PRODUCT_FOLDER_PATH}/{gender_folder}/{s3_path}.json"
+            product_data_key = f"bronze/{today}/{PLATFORM_FOLDER_PATH}/{PRODUCT_FOLDER_PATH}/{gender_folder}/{s3_path}.json"
 
         # 상품 ID 저장 경로
         if any(category in s3_path for category in SHOES_CATEGORIES):
-            product_id_key = f"bronze_layer/{today}/{PLATFORM_FOLDER_PATH}/{REVIEW_FOLDER_PATH}/{gender_folder}/Shoes/{s3_path.split('/')[-1]}_ids.json"
+            product_id_key = f"bronze/{today}/{PLATFORM_FOLDER_PATH}/{REVIEW_FOLDER_PATH}/{gender_folder}/Shoes/{s3_path.split('/')[-1]}_ids.json"
         else:
-            product_id_key = f"bronze_layer/{today}/{PLATFORM_FOLDER_PATH}/{REVIEW_FOLDER_PATH}/{gender_folder}/{s3_path}_ids.json"
+            product_id_key = f"bronze/{today}/{PLATFORM_FOLDER_PATH}/{REVIEW_FOLDER_PATH}/{gender_folder}/{s3_path}_ids.json"
 
         # S3에 상품 데이터 저장
         s3_client.put_object(

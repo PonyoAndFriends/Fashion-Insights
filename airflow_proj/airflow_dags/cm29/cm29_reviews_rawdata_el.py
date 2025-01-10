@@ -80,9 +80,9 @@ def save_reviews_to_s3(folder_path, file_name, reviews):
 def fetch_reviews_for_product(product_id, created_at):
     """특정 상품 ID의 최대 50개의 리뷰 데이터 가져오기"""
     all_reviews = []
-    page_size = 10
+    page_size = 20
     page = 0
-    max_reviews = 10  # 최대 가져올 리뷰 수
+    max_reviews = 20  # 최대 가져올 리뷰 수
 
     while len(all_reviews) < max_reviews:
         url = f"{REVIEW_API_URL}?itemId={product_id}&page={page}&size={page_size}&sort=RECENT"

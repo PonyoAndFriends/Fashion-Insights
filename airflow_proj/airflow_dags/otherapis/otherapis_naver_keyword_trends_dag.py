@@ -70,7 +70,7 @@ with DAG(
                 "headers": headers,
                 "all_keywords": "{{ task_instance.xcom_pull(task_ids='making_"
                 + f"{task['gender']}"
-                + "_keywords_list_task') }}",
+                + "_keywords_list_task') | tojson }}",
                 "s3_dict": DEFAULT_S3_DICT,
             },
             cpu_limit="1000m",

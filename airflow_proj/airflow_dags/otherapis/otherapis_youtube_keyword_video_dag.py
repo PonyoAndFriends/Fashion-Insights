@@ -67,7 +67,7 @@ with DAG(
                 "youtube_api_key": youtube_api_key,
                 "category_list": "{{ task_instance.xcom_pull(task_ids='making_"
                 + task["gender"]
-                + "_category_list_task') }}",
+                + "_category_list_task') | tojson }}",
                 "max_threads": MAX_THREAD,
                 "s3_dict": DEFAULT_S3_DICT,
                 "file_topic": "youtoube_videos_by_categories",
