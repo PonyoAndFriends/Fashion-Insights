@@ -27,7 +27,7 @@ class SparkApplicationOperator(BaseOperator):
         executor_config=SPARK_EXECUTOR_DEFAULT_CONFIG,
         spark_version="3.5.4",
         image="coffeeisnan/spark-job:latest",
-        namespace="defaults",
+        namespace="default",
         spark_deps=SPARK_DEFULAT_DEPS,
         spark_conf=SPARK_DEFAULT_CONF,
         *args,
