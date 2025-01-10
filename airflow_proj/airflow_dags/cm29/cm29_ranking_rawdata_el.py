@@ -121,7 +121,7 @@ def fetch_and_save_data_to_s3(large_id, medium_id, small_id, s3_path, gender_fol
             ],
             "sortFacetInput": {"type": "RECOMMEND", "order": "DESC"},
         },
-        "pagination": {"page": 0, "size": 10},
+        "pagination": {"page": 0, "size": 50},
     }
 
     try:
