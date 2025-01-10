@@ -72,6 +72,7 @@ with DAG(
                 + f"{task['gender']}"
                 + "_keywords_list_task') | tojson }}",
                 "s3_dict": DEFAULT_S3_DICT,
+                "gender": task["gender"],
             },
             cpu_limit="1000m",
             memory_limit="1Gi",
