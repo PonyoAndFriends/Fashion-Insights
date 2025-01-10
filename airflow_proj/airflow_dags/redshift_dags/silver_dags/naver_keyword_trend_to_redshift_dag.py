@@ -1,9 +1,9 @@
 from airflow import DAG
 from airflow.models import Variable
 from datetime import datetime
-from otherapis.redshift_dags.custom_sql_operators.custom_query_operator import RedshiftQueryOperator
-from otherapis.redshift_dags.custom_sql_operators.custom_refresh_table_operator import RefreshTableOperator
-from otherapis.redshift_dags.custom_sql_modules.query_dag_dependencies import (
+from airflow_proj.airflow_dags.redshift_dags.custom_sql_operators.custom_query_operator import RedshiftQueryOperator
+from airflow_proj.airflow_dags.redshift_dags.custom_sql_operators.custom_refresh_table_operator import RefreshTableOperator
+from airflow_proj.airflow_dags.redshift_dags.custom_sql_modules.query_dag_dependencies import (
     SILVER_LOAD_DEFAULT_ARGS,
     DEFAULT_SILVER_SHCEMA,
     NOW_STRING,

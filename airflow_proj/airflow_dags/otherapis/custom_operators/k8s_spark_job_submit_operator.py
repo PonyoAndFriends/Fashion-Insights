@@ -1,6 +1,6 @@
 from airflow.models import BaseOperator
 from kubernetes import client, config
-from otherapis.custom_operators.custom_modules.spark_dependencies import *
+from airflow_proj.airflow_dags.otherapis.custom_operators.custom_modules.spark_dependencies import *
 import time
 
 
