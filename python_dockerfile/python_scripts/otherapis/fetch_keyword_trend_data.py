@@ -106,7 +106,7 @@ def fetch_final_data(url, headers, s3_dict, top_5_keywords, gender):
     now_string = datetime.now().astimezone(ZoneInfo("Asia/Seoul")).strftime("%Y-%m-%d")
 
     # 최종 데이터 업로드
-    s3_dict["data_file"] = response.json()
+    s3_dict["data_file"] = json.dumps(response.json())
     s3_dict["file_path"] = (
         f"bronze/{now_string}/otherapis/{gender}_keyword_trends/final_top_5_keywords_data.json"
     )
