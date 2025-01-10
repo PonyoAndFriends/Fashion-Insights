@@ -51,7 +51,7 @@ with DAG(
     );
     """
     refresh_task = RefreshTableOperator(
-        task_id="refresh_table_task",
+        task_id="refresh_keywords_table_task",
         drop_sql=drop_sql,
         create_sql=create_sql,
         redshift_conn_id="redshift_default",
@@ -67,7 +67,7 @@ with DAG(
         """
 
         copy_task = RedshiftQueryOperator(
-            task_id="copy_naver_keyword_trend_task",
+            task_id=f"{gender}_copy_naver_keyword_trend_task",
             sql=copy_query,
         )
         copy_tasks.append(copy_task)

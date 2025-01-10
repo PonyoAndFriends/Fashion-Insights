@@ -60,7 +60,7 @@ with DAG(
         );
         """
         refresh_task = RefreshTableOperator(
-            task_id="refresh_table_task",
+            task_id=f"{platform}_review_detail_refresh_table_task",
             drop_sql=drop_sql,
             create_sql=create_sql,
             redshift_conn_id="redshift_default",

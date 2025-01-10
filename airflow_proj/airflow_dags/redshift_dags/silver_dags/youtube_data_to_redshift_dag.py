@@ -51,7 +51,7 @@ with DAG(
     );
     """
     refresh_task = RefreshTableOperator(
-        task_id="refresh_table_task",
+        task_id="youtube_data_refresh_table_task",
         drop_sql=drop_sql,
         create_sql=create_sql,
         redshift_conn_id="redshift_default",
@@ -68,9 +68,9 @@ with DAG(
     ]
 
     copy_tasks = []
-    for copy_query in copy_queries:
+    for i, copy_query in enumerate(copy_queries):
         copy_task = RedshiftQueryOperator(
-            task_id="youtube_data_copy_task",
+            task_id=f"youtube_data_copy_task_{i}",
             sql=copy_query,
         )
         copy_tasks.append(copy_task)
