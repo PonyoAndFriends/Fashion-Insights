@@ -1,9 +1,9 @@
 from airflow import DAG
 from datetime import datetime
-from airflow_proj.airflow_dags.redshift_dags.custom_sql_operators.custom_refresh_table_operator import (
+from redshift_dags.custom_sql_operators.custom_refresh_table_operator import (
     RefreshTableOperator,
 )
-from airflow_proj.airflow_dags.redshift_dags.custom_sql_modules.query_dag_dependencies import (
+from redshift_dags.custom_sql_modules.query_dag_dependencies import (
     SILVER_LOAD_DEFAULT_ARGS,
     DEFAULT_SILVER_SHCEMA,
     DEFAULT_GOLD_SHCEMA,
