@@ -1,8 +1,8 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from airflow.models import Variable
-from zoneinfo import ZoneInfo
 
-NOW_STRING = datetime.now().astimezone(ZoneInfo("Asia/Seoul")).strftime("%Y-%m-%d")
+NOW = datetime.now()
+NOW_STRING = (NOW + timedelta(hours=9)).strftime("%Y-%m-%d")
 
 SILVER_LOAD_DEFAULT_ARGS = {
     "owner": "gjstjd9509@gmail.com",
