@@ -88,7 +88,7 @@ with DAG(
         spark_job_submit_task = SparkApplicationOperator(
             task_id=f"youtube_category_videos_{task['task_gender']}_submit_spark_job_task",
             name=f"youtube_category_videos_{task['task_gender']}_from_bronze_to_silver_data",
-            main_application_file=r"otherapis\bronze_to_silver/youtube_data_to_silver.py",
+            main_application_file=r"otherapis/bronze_to_silver/youtube_data_to_silver.py",
             application_args=[
                 make_s3_url(Variable.get("s3_bucket"), bronze_file_path),
                 make_s3_url(Variable.get("s3_bucket"), silver_file_path),
