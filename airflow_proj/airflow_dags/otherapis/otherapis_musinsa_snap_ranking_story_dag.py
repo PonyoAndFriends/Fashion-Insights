@@ -80,7 +80,7 @@ with DAG(
                     ),
                     "file_topic": f"musinsa_{gender}_ranking_story_group",
                     "s3_dict": DEFAULT_S3_DICT,
-                    "pagenation_keyword": "page",
+                    "pagination_keyword": "page",
                 },
                 optional_args={
                     "headers": headers,
