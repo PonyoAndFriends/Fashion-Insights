@@ -97,7 +97,7 @@ with DAG(
                 task["gender"],
             ],
         )
-        spark_job_submit_task.append(spark_job_submit_task)
+        spark_submit_tasks.append(spark_job_submit_task)
 
     for list_task, fetch_task, spark_task in zip(
         keyword_list_tasks, fetch_keyword_data_tasks, spark_submit_tasks
