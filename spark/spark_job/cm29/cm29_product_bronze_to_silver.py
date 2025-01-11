@@ -145,7 +145,6 @@ logging.info(f"product_detail_tb 저장 완료: {product_detail_output_path}")
 ranking_df = raw_data.select(
     col("platform"),
     col("master_category_name"),
-    col("small_category_name"),  # 한글로 매핑된 small_category_name 포함
     col("product_id"),
     col("ranking"),
     col("created_at"),
