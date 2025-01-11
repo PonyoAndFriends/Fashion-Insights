@@ -7,7 +7,8 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from ably_modules.ably_mapping_table import CATEGORY_PARAMS
 
 # 오늘 날짜
-TODAY_DATE = datetime.now().strftime('%Y-%m-%d')
+TODAY_DATE = datetime.now().strftime("%Y-%m-%d")
+
 
 def create_spark_session():
     conf = SparkConf()
@@ -36,7 +37,10 @@ def create_spark_session():
     spark = SparkSession.builder.config(conf=conf).getOrCreate()
     return spark
 
-def transform_data_to_product_detail(spark, json_path, master_category_name, today_date):
+
+def transform_data_to_product_detail(
+    spark, json_path, master_category_name, today_date
+):
     df = spark.read.json(json_path)
 
     # 필요한 데이터 추출 및 매핑
@@ -51,21 +55,26 @@ def transform_data_to_product_detail(spark, json_path, master_category_name, tod
         col("item.logging.analytics.REVIEW_RATING").alias("review_avg_rating"),
         col("item.logging.analytics.LIKES_COUNT").alias("like_counting"),
         col("item.logging.analytics.CATEGORY_NAME").alias("small_category_name"),
-        col("item.logging.analytics.IMAGE_URL").alias("img_url")
+        col("item.logging.analytics.IMAGE_URL").alias("img_url"),
     )
 
     # 추가 컬럼 생성
-    final_df = extracted_df.withColumn("platform", lit("ably")) \
-                           .withColumn("master_category_name", lit(master_category_name)) \
-                           .withColumn("brand_name_en", lit(None)) \
-                           .withColumn("created_at", to_date(lit(today_date), "yyyy-MM-dd"))
+    final_df = (
+        extracted_df.withColumn("platform", lit("ably"))
+        .withColumn("master_category_name", lit(master_category_name))
+        .withColumn("brand_name_en", lit(None))
+        .withColumn("created_at", to_date(lit(today_date), "yyyy-MM-dd"))
+    )
 
     # Parquet 크기를 1개 파일로 병합
     final_df = final_df.coalesce(1)
 
     return final_df
 
-def process_product_details(spark, category3depth, gender, category2depth, category4depth):
+
+def process_product_details(
+    spark, category3depth, gender, category2depth, category4depth
+):
     try:
         # 공통 path
         file_name = f"{category3depth}/{gender}_{category2depth}_{category3depth}_{category4depth}"
@@ -77,7 +86,9 @@ def process_product_details(spark, category3depth, gender, category2depth, categ
         table_output_path = f"s3a://ablyrawdata/silver/{TODAY_DATE}/Ably/ProductDetails/{file_name}.parquet"
 
         master_category_name = f"{gender}-{category2depth}-{category3depth}"
-        print(f"Processing product detail table for: {master_category_name}-{category4depth}")
+        print(
+            f"Processing product detail table for: {master_category_name}-{category4depth}"
+        )
         cleaned_df = transform_data_to_product_detail(
             spark, input_path, master_category_name, TODAY_DATE
         )
@@ -86,6 +97,7 @@ def process_product_details(spark, category3depth, gender, category2depth, categ
 
     except Exception as e:
         print(f"Error processing product details for {category4depth}: {e}")
+
 
 def main():
     spark = create_spark_session()
@@ -110,7 +122,9 @@ def main():
                     # category4depth 추출
                     for category4 in category3["cat_4"]:
                         for cat_key, category4depth in category4.items():
-                            print(f"    Category4 Depth Key: {cat_key}, Name: {category4depth}")
+                            print(
+                                f"    Category4 Depth Key: {cat_key}, Name: {category4depth}"
+                            )
 
                             futures.append(
                                 executor.submit(
@@ -119,7 +133,7 @@ def main():
                                     category3depth,
                                     gender,
                                     category2depth,
-                                    category4depth
+                                    category4depth,
                                 )
                             )
 
@@ -128,6 +142,7 @@ def main():
                 future.result()  # 작업 완료 대기
             except Exception as e:
                 print(f"Error in thread execution: {e}")
+
 
 if __name__ == "__main__":
     main()
