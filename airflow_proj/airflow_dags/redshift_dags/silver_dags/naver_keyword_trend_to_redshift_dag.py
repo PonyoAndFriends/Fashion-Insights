@@ -60,9 +60,9 @@ with DAG(
     copy_tasks = []
     for gender in ["남성", "여성"]:
         copy_query = f"""
-        COPY INTO {DEFAULT_SILVER_SHCEMA}.{table}
+        COPY {DEFAULT_SILVER_SHCEMA}.{table}
         FROM '{silver_bucket_url}/{now_string}/otherapis/{gender}_keyword_trend_raw_data/'
-        IAM_ROLE {redshift_iam_role}
+        IAM_ROLE '{redshift_iam_role}'
         FORMAT AS PARQUET;
         """
 

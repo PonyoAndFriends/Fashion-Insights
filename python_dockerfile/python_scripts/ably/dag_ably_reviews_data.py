@@ -41,20 +41,6 @@ def get_product_ids(bucket_name, folder):
     return next(iter(data.items()))
 
 
-product_ids_map = {}
-for folder in folders:
-    category_key, product_ids = get_product_ids(bucket_name, folder)
-    product_ids_map[folder] = {"category_key": category_key, "product_ids": product_ids}
-
-with open("/airflow/xcom/return.json", "w") as f:
-    json.dump(product_ids_map, f)
-
-
-
-
-
-
-
 def fetch_reviews(api_url, headers, product_id, max_reviews=20, retries=3):
     reviews = []
     url = f"{api_url}/{product_id}/reviews/"
@@ -81,33 +67,36 @@ def save_reviews(s3_client, bucket_name, folder, category_key, product_id, revie
     )
     logging.info(f"Saved reviews for {product_id} to {key}")
 
-api_url = "https://api.a-bly.com/webview/goods"
-headers = ABLY_HEADER
-product_ids_map = {product_ids_map}
-
-s3_client = boto3.client("s3")
-bucket_name = "{bucket_name}"
-
-for folder, data in product_ids_map.items():
-    category_key = data["category_key"]
-    product_ids = data["product_ids"]
-    for product_id in product_ids:
-        reviews = fetch_reviews(api_url, headers, product_id)
-        if reviews:\n
-            save_reviews(s3_client, bucket_name, folder, category_key, product_id, reviews)
-.format(
-    product_ids_map="{{ task_instance.xcom_pull(task_ids='extract_product_ids_task') }}",
-    bucket_name=DEFAULT_S3_DICT["bucket_name"],
-)
-
 
 if __name__ == "__main__":
     bucket_name = DEFAULT_S3_DICT["bucket_name"]
     base_path = f"{(datetime.now() + timedelta(hours=9)).strftime('%Y-%m-%d')}/review_data/"
+    api_url = "https://api.a-bly.com/webview/goods"
+    headers = ABLY_HEADER
 
     folders = list_folders(bucket_name, base_path)
 
-    with open("/opt/app/folders.json", "w") as f:
+    with open("/app/python_scripts/folders.json", "w") as f:
         json.dump({"folders": folders}, f)
 
-    
+    product_ids_map = {}
+    for folder in folders:
+        category_key, product_ids = get_product_ids(bucket_name, folder)
+        product_ids_map[folder] = {"category_key": category_key, "product_ids": product_ids}    
+
+    with open("/app/python_scripts/product_ids.json", "w") as f:
+        json.dump(product_ids_map, f)
+
+    s3_client = boto3.client("s3")
+
+    for folder, data in product_ids_map.items():
+        category_key = data["category_key"]
+        product_ids = data["product_ids"]
+        for product_id in product_ids:
+            reviews = fetch_reviews(api_url, headers, product_id)
+            if reviews:\n
+                save_reviews(s3_client, bucket_name, folder, category_key, product_id, reviews)
+    .format(
+        product_ids_map="{{ task_instance.xcom_pull(task_ids='extract_product_ids_task') }}",
+        bucket_name=DEFAULT_S3_DICT["bucket_name"],
+    )

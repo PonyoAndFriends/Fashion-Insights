@@ -59,9 +59,9 @@ with DAG(
 
     copy_queries = [
         f"""
-        COPY INTO {DEFAULT_SILVER_SHCEMA}.{table}
+        COPY {DEFAULT_SILVER_SHCEMA}.{table}
         FROM '{silver_bucket_url}/{now_string}/otherapis/{gender}_youtoube_videos_by_categories_raw_data/'
-        IAM_ROLE {redshift_iam_role}
+        IAM_ROLE '{redshift_iam_role}'
         FORMAT AS PARQUET;
         """
         for gender in ["남성", "여성"]
