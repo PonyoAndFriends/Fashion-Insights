@@ -1,6 +1,7 @@
 import os
 from datetime import datetime, timedelta
 from airflow import DAG
+from airflow.models import Variable
 from airflow.operators.python import PythonOperator
 from airflow.utils.task_group import TaskGroup
 from airflow.utils.dates import days_ago
@@ -36,7 +37,8 @@ with DAG(
     tags=["29CM", "REVIEWS_RAWDATA", "EXTRACT", "LOAD", "S3"],
 ) as dag:
 
-    today = datetime.now().strftime("%Y-%m-%d")
+    now = datetime.now()
+    today = (now + timedelta(hours=9)).strftime("%Y-%m-%d")
 
     task_group_list = []
     genders = ["Woman", "Man"]
@@ -64,6 +66,6 @@ with DAG(
         op_args=[
             "cm29-reviews-silver-etl-spark",
             "cm29/cm29_reviews_bronze_to_silver.py",
-            None,
+            None
         ],
     )
