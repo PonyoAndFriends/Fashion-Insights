@@ -259,3 +259,5 @@ def mapping3depth_en(depth3category):
         return "pants"
     elif depth3category == "원피스":
         return "onepiece"
+    elif depth3category == "스커트":
+        return "skirt"

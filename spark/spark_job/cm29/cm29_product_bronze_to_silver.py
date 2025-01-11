@@ -18,9 +18,11 @@ logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
 )
 
+
+
 # AWS 자격 증명 설정
 args = sys.argv
-BUCKET_NAME = args[0]
+BUCKET_NAME = "team3-2-s3"
 AWS_ACCESS_KEY = args[1]
 AWS_SECRET_KEY = args[2]
 
@@ -37,9 +39,8 @@ spark = (
 today = (datetime.now() + timedelta(hours=9)).strftime("%Y-%m-%d")
 
 # S3 경로
-man_data_path = (
-    f"s3a://{BUCKET_NAME}/bronze/{today}/29cm/29cm_product/Man/*/*.json"
-)
+man_data_path = f"s3a://{BUCKET_NAME}/bronze/{today}/29cm/29cm_product/Man/*/*.json"
+
 woman_data_path = f"s3a://{BUCKET_NAME}/bronze/{today}/29cm/29cm_product/Woman/*/*.json"
 
 # 데이터 로드

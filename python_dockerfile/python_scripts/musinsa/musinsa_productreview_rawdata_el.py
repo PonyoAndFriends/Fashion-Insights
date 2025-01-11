@@ -40,7 +40,7 @@ def el_productreview(product_id_list, key):
         for product_id in product_id_list:
             s3_key = key + f"{product_id}_{sort_method}.json"
             PARAMS["goodsNo"] = product_id
-            time.sleep(0.8)
+            time.sleep(1.2)
             response = requests.get(URL, headers=Musinsa_Config.HEADERS, params=PARAMS)
             data = response.json()["data"]
             s3_module.upload_json_to_s3(bronze_bucket, s3_key, data)
@@ -61,11 +61,13 @@ def main():
     silver_bucket = "team3-2-s3"
     file_key = f"/silver/{TODAY_DATE}/musinsa/ranking_data/{category3depth}/"
 
-    s3 = s3_module.connect_s3fs()
+    try:
+        s3 = s3_module.connect_s3fs()
+        base_path = silver_bucket + file_key
+        files = s3.get_file_info(fs.FileSelector(base_dir=base_path, recursive=True))
 
-    base_path = silver_bucket + file_key
-
-    files = s3.get_file_info(fs.FileSelector(base_dir=base_path, recursive=True))
+    except:
+        raise Exception("S3 connection failed, causing container to crash.")
 
     # request
     for category4depth in category4depth_list:

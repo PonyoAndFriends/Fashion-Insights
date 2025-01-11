@@ -27,7 +27,7 @@ s3_client = boto3.client(
 # 리뷰 API 설정
 REVIEW_API_URL = "https://review-api.29cm.co.kr/api/v4/reviews"
 HEADERS = {
-    "Authorization": "Bearer ",  # Bearer 토큰 임시로 비워둠..
+    "Authorization": f"Bearer {Variable.get('29cm_token')}",  # Bearer 토큰 임시로 비워둠..
     "Content-Type": "application/json",
 }
 

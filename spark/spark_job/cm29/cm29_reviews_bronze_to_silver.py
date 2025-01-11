@@ -6,7 +6,7 @@ import logging
 import os, sys
 
 args = sys.argv
-BUCKET_NAME = args[0]
+BUCKET_NAME = "team3-2-s3"
 AWS_ACCESS_KEY = args[1]
 AWS_SECRET_KEY = args[2]
 
@@ -52,9 +52,7 @@ transformed_data = raw_data.select(
 )
 
 # 저장 경로
-output_path = (
-    f"s3a://{BUCKET_NAME}/silver/{today}/29cm/29cm_review_detail_tb/"
-)
+output_path = f"s3a://{BUCKET_NAME}/silver/{today}/29cm/29cm_review_detail_tb/"
 
 try:
     transformed_data.write.mode("overwrite").parquet(output_path)

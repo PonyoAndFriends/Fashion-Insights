@@ -118,7 +118,7 @@ def et_product_detail(master_category, depth4category, product_id_list, key):
     for product_id in product_id_list:
         bronze_bucket = "team3-2-s3"
         s3_key = key + f"{product_id}.json"
-        time.sleep(0.8)
+        time.sleep(1.2)
 
         print(f"product_id : {product_id}")
 
@@ -168,8 +168,8 @@ def main():
 
     args = parser.parse_args()
 
-    sexual_data = json.loads(args.sexual)
-    category_data = json.loads(args.category_data)
+    sexual_data = json.loads(args.sexual_dict)
+    category_data = json.loads(args.args.category_2_depth)
 
     category2depth = mapping_2depth_kor(category_data[0])
 

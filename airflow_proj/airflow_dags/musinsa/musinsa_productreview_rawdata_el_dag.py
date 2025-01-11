@@ -26,6 +26,8 @@ with DAG(
     start_date=datetime(2025, 1, 1, tzinfo=DEFAULT_DAG.LOCAL_TZ),
     catchup=False,
     tags=["MUSINSA", "REVIEW_RAWDATA", "EXTRACT", "LOAD", "S3", "K8S"],
+    concurrency=5,
+    max_active_runs=1
 ) as dag:
 
     # start task

@@ -32,6 +32,8 @@ with DAG(
         "S3",
         "K8S",
     ],
+    concurrency=5,
+    max_active_runs=1
 ) as dag:
 
     # start task
