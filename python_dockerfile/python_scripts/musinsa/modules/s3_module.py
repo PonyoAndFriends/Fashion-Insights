@@ -32,7 +32,7 @@ def connect_s3fs():
 
 
 # check if file exists in s3
-def check_file_exists(bucket_name, s3_key, s3_client):
+def check_file_exists(s3_client, bucket_name, s3_key,):
     try:
         s3_client.head_object(Bucket=bucket_name, Key=s3_key)
         return True
@@ -45,7 +45,7 @@ def check_file_exists(bucket_name, s3_key, s3_client):
 
 
 # upload json to s3
-def upload_json_to_s3(bucket_name, s3_key, json_data, s3_client):
+def upload_json_to_s3(s3_client, bucket_name, s3_key, json_data,):
     try:
         json_string = json.dumps(json_data)
         s3_client.put_object(Bucket=bucket_name, Key=s3_key, Body=json_string)
