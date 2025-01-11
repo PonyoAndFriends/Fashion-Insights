@@ -37,7 +37,8 @@ raking_goods_data_task = CustomKubernetesPodOperator(
 )
 
 trigger_task = TriggerDagRunOperator(
-    task_id=""
+    task_id="trigger_ably_reviews_dags",
+    trigger_dag_id="fetch_and_save_ably_product_reviews_split",
 )
 
-raking_goods_data_task
+raking_goods_data_task >> trigger_task

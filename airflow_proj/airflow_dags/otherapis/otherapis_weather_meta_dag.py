@@ -63,4 +63,4 @@ with DAG(
         ],
     )
 
-    fetch_weather_station_data_task
+    fetch_weather_station_data_task >> spark_job_submit_task

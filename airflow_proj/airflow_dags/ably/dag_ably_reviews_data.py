@@ -1,7 +1,16 @@
 from airflow import DAG
+from airflow.operators.python import PythonOperator
 from ably.ably_modules.k8s_custom_python_pod_operator import CustomKubernetesPodOperator
+from ably.ably_modules.k8s_spark_job_submit_operator import submit_spark_application
 from datetime import datetime
+import time
 from ably.ably_modules.ably_dependencies import ABLYAPI_DEFAULT_ARGS
+
+
+def sleep_time():
+    time.sleep(60 * 15)
+    return "kiki"
+
 
 dag = DAG(
     dag_id="fetch_and_save_ably_product_reviews_split",
@@ -13,6 +22,7 @@ dag = DAG(
 
 raking_goods_data_task = CustomKubernetesPodOperator(
     task_id=f"alby_reviews_data_task",
+    dag=dag,
     namespace="airflow",
     script_path="/python_scripts/ably/ably_review_data.py",
     cpu_limit="1000m",
@@ -21,4 +31,57 @@ raking_goods_data_task = CustomKubernetesPodOperator(
     get_logs=True,
 )
 
-raking_goods_data_task
+sleep_task_1 = PythonOperator(
+    task_id="sleep_task_1",
+    python_callable=sleep_time,
+    dag=dag,
+)
+
+sleep_task_2 = PythonOperator(
+    task_id="sleep_task_2",
+    python_callable=sleep_time,
+    dag=dag,
+)
+
+# 디테일 -> 랭킹 -> 리뷰
+detail_spark_submit_task = PythonOperator(
+    task_id="ably_product_detail_data_spark_task",
+    python_callable=submit_spark_application,
+    dag=dag,
+    op_args=[
+        "ably-product-detail-raw-data-spark-submit-task",
+        "ably/ably_productdetail_silverdata_spark.py",
+        None,
+    ],
+)
+
+ranking_spark_submit_task = PythonOperator(
+    task_id="ably_product_ranking_data_spark_task",
+    python_callable=submit_spark_application,
+    dag=dag,
+    op_args=[
+        "ably-product-ranking-raw-data-spark-submit-task",
+        "ably/ably_ranking_silverdata_spark.py",
+        None,
+    ],
+)
+
+review_spark_submit_task = PythonOperator(
+    task_id="ably_product_review_data_spark_task",
+    python_callable=submit_spark_application,
+    dag=dag,
+    op_args=[
+        "ably-product-review-raw-data-spark-submit-task",
+        "ably/ably_review_silverdata_spark.py",
+        None,
+    ],
+)
+
+(
+    raking_goods_data_task
+    >> detail_spark_submit_task
+    >> sleep_task_1
+    >> ranking_spark_submit_task
+    >> sleep_task_2
+    >> review_spark_submit_task
+)
