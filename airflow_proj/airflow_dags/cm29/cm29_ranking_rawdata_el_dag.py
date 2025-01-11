@@ -30,7 +30,8 @@ with DAG(
     catchup=False,
 ) as dag:
 
-    task_group_list = []
+    past_task = None
+    curr_task = None
     for large_category, category_info in CATEGORY_TREE.items():
         large_id = category_info["large_id"]
         gender_folder = "Woman" if "Woman" in large_category else "Man"
@@ -68,7 +69,13 @@ with DAG(
                         python_callable=fetch_and_save_data_to_s3,
                         op_args=[large_id, medium_info, None, s3_path, gender_folder],
                     )
-        task_group_list.append(task_group)
+        curr_task = task_group
+
+        if past_task:
+            past_task >> curr_task
+        
+        past_task = task_group
+
 
     spark_args = [
         Variable.get("s3_bucket"),
@@ -85,4 +92,4 @@ with DAG(
         ],
     )
 
-    task_group_list >> spark_application_task
+    curr_task >> spark_application_task
