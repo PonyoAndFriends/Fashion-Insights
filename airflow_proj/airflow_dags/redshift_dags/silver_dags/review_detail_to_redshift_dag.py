@@ -30,7 +30,7 @@ with DAG(
     # 기본적인 설정 정의
     now_string = NOW_STRING
     silver_bucket_url = DEFULAT_SILVER_BUCKET_URL
-    platforms = PLATFORMS
+    platforms = ["29cm"]
     redshift_iam_role = Variable.get("redshift_iam_role")
 
     for platform in platforms:
@@ -68,7 +68,7 @@ with DAG(
 
         copy_query = f"""
             COPY INTO {DEFAULT_SILVER_SHCEMA}.{table}
-            FROM '{silver_bucket_url}/{now_string}/{platform}/product_review_data/'
+            FROM '{silver_bucket_url}/{now_string}/{platform}/29cm_review_detail_tb/'
             IAM_ROLE {redshift_iam_role}
             FORMAT AS PARQUET;
             """
