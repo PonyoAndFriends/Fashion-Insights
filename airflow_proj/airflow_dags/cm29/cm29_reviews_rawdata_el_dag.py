@@ -59,17 +59,12 @@ with DAG(
                         )
             task_group_list.append(medium_group)
 
-    spark_args = [
-        Variable.get("s3_bucket"),
-        Variable.get("aws_access_key_id"),
-        Variable.get("aws_secret_access_key"),
-    ]
     spark_application_task = PythonOperator(
         task_id="29cm_reviews_silver_etl_spark",
         python_callable=submit_spark_application,
         op_args=[
             "cm29-reviews-silver-etl-spark",
             "cm29/cm29_reviews_bronze_to_silver.py",
-            spark_args,
+            None
         ],
     )

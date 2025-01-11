@@ -5,20 +5,11 @@ from datetime import datetime, timedelta
 import logging
 import sys
 
-args = sys.argv
+
 BUCKET_NAME = "team3-2-s3"
-AWS_ACCESS_KEY = args[1]
-AWS_SECRET_KEY = args[2]
 
 # Spark 세션 생성
-spark = (
-    SparkSession.builder.appName("Review Data Transformation")
-    .config("spark.hadoop.fs.s3a.access.key", AWS_ACCESS_KEY)
-    .config("spark.hadoop.fs.s3a.secret.key", AWS_SECRET_KEY)
-    .config("spark.hadoop.fs.s3a.endpoint", "s3.ap-northeast-2.amazonaws.com")
-    .config("spark.sql.parquet.compression.codec", "snappy")
-    .getOrCreate()
-)
+spark = SparkSession.builder.appName("Review Data Transformation").getOrCreate()
 
 today = (datetime.now() + timedelta(hours=9)).strftime("%Y-%m-%d")
 

@@ -20,20 +20,11 @@ logging.basicConfig(
 
 
 # AWS 자격 증명 설정
-args = sys.argv
 BUCKET_NAME = "team3-2-s3"
-AWS_ACCESS_KEY = args[1]
-AWS_SECRET_KEY = args[2]
 
 # Spark 세션 생성
-spark = (
-    SparkSession.builder.appName("29cm Silver Layer")
-    .config("spark.hadoop.fs.s3a.access.key", AWS_ACCESS_KEY)
-    .config("spark.hadoop.fs.s3a.secret.key", AWS_SECRET_KEY)
-    .config("spark.hadoop.fs.s3a.endpoint", "s3.ap-northeast-2.amazonaws.com")
-    .config("spark.sql.parquet.compression.codec", "snappy")
-    .getOrCreate()
-)
+spark = SparkSession.builder.appName("29cm Silver Layer").getOrCreate()
+
 
 today = (datetime.now() + timedelta(hours=9)).strftime("%Y-%m-%d")
 
@@ -179,3 +170,4 @@ sub_category_df = raw_data.select(
 sub_category_output_path = f"s3a://{BUCKET_NAME}/silver/{today}/29cm/sub_category_tb/"
 sub_category_df.write.mode("overwrite").parquet(sub_category_output_path)
 logging.info(f"sub_category_tb 저장 완료: {sub_category_output_path}")
+

@@ -76,18 +76,13 @@ with DAG(
 
         past_task = task_group
 
-    spark_args = [
-        Variable.get("s3_bucket"),
-        Variable.get("aws_access_key_id"),
-        Variable.get("aws_secret_access_key"),
-    ]
     spark_application_task = PythonOperator(
         task_id="29cm_ranking_silver_etl_spark",
         python_callable=submit_spark_application,
         op_args=[
             "cm29-ranking-silver-etl-spark",
             "cm29/cm29_product_bronze_to_silver.py",
-            spark_args,
+            None,
         ],
     )
 

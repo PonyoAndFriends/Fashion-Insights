@@ -7,18 +7,10 @@ from ably_modules.ably_dependencies import (
     ABLY_CATEGORY,
 )
 import threading
-<<<<<<< HEAD
 import logging
 import json
 import boto3
 import requests
-=======
-import requests
-import logging
-import json
-import boto3
-
->>>>>>> 45f58798e10964619b403af6d72679d71512ae7a
 
 # 로깅 설정
 logging.basicConfig(
