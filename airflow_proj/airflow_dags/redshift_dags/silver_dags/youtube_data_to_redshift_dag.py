@@ -19,7 +19,7 @@ default_args = SILVER_LOAD_DEFAULT_ARGS
 
 # DAG 정의
 with DAG(
-    dag_id="snap_user_ranking_silver_table_to_redshift_dag",
+    dag_id="youtube_data_silver_table_to_redshift_dag",
     default_args=default_args,
     schedule_interval=None,
     start_date=datetime(2023, 1, 1),
