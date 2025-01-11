@@ -1,7 +1,4 @@
 from airflow import DAG
-from airflow.providers.cncf.kubernetes.operators.kubernetes_pod import (
-    KubernetesPodOperator,
-)
 from airflow.operators.dummy import DummyOperator
 from musinsa.custom_operators.k8s_spark_job_submit_operator import (
     SparkApplicationOperator,

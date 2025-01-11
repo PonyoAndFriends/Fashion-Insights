@@ -54,8 +54,8 @@ class CustomKubernetesPodOperator(KubernetesPodOperator):
             arguments=arguments,
             image=image,
             namespace=self.namespace,
-            is_delete_operator_pod = self.is_delete_operator_pod,
-            get_logs = self.get_logs,
+            is_delete_operator_pod=self.is_delete_operator_pod,
+            get_logs=self.get_logs,
             *args,
             **kwargs,
         )
@@ -68,7 +68,9 @@ class CustomKubernetesPodOperator(KubernetesPodOperator):
         for key, value in self.required_args.items():
             args.append(f"--{key}")
             args.append(
-                json.dumps(value, ensure_ascii=False) if isinstance(value, (dict, list)) else str(value)
+                json.dumps(value, ensure_ascii=False)
+                if isinstance(value, (dict, list))
+                else str(value)
             )
 
         # 선택적 아규먼트 추가
@@ -76,7 +78,9 @@ class CustomKubernetesPodOperator(KubernetesPodOperator):
             if value is not None:
                 args.append(f"--{key}")
                 args.append(
-                    json.dumps(value, ensure_ascii=False) if isinstance(value, (dict, list)) else str(value)
+                    json.dumps(value, ensure_ascii=False)
+                    if isinstance(value, (dict, list))
+                    else str(value)
                 )
 
         return args

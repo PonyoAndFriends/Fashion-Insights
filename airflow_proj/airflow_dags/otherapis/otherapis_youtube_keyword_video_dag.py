@@ -44,7 +44,11 @@ with DAG(
 ) as dag:
 
     tasks_config = [
-        {"gender": "여성", "category_list": FEMALE_CATEGORY_LIST, "task_gender": "female"},
+        {
+            "gender": "여성",
+            "category_list": FEMALE_CATEGORY_LIST,
+            "task_gender": "female",
+        },
         {"gender": "남성", "category_list": MALE_CATEGORY_LIST, "task_gender": "male"},
     ]
 
@@ -79,12 +83,8 @@ with DAG(
 
         file_topic = "youtoube_videos_by_categories"
         now_string = (datetime.now() + timedelta(hours=9)).strftime("%Y-%m-%d")
-        bronze_file_path = (
-            f"bronze/{now_string}/otherapis/{task['task_gender']}_{file_topic}_raw_data/"
-        )
-        silver_file_path = (
-            f"silver/{now_string}/otherapis/{task['task_gender']}_{file_topic}_raw_data/"
-        )
+        bronze_file_path = f"bronze/{now_string}/otherapis/{task['task_gender']}_{file_topic}_raw_data/"
+        silver_file_path = f"silver/{now_string}/otherapis/{task['task_gender']}_{file_topic}_raw_data/"
         spark_job_submit_task = SparkApplicationOperator(
             task_id=f"youtube_category_videos_{task['task_gender']}_submit_spark_job_task",
             name=f"youtube_category_videos_{task['task_gender']}_from_bronze_to_silver_data",

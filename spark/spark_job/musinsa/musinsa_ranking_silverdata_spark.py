@@ -2,13 +2,12 @@ from pyspark.sql import SparkSession
 from pyspark.sql.functions import to_date
 from pyspark.sql.functions import col, explode, lit
 
-from pyspark.conf import SparkConf
 
-import os
 import pendulum
 
 from modules.musinsa_mappingtable import (
-    SEXUAL_CATEGORY_DYNAMIC_PARAMS, mapping2depth_en
+    SEXUAL_CATEGORY_DYNAMIC_PARAMS,
+    mapping2depth_en,
 )
 
 # 오늘 날짜 - 날짜 path

@@ -4,7 +4,7 @@ import json
 
 import argparse
 
-from modules.s3_module import connect_s3, validate_and_upload_s3_file
+from modules.s3_module import validate_and_upload_s3_file
 from modules.config import Musinsa_Config
 
 # url
@@ -60,9 +60,7 @@ def main():
             bucket_name = "team3-2-s3"
             file_name = f"bronze/{TODAY_DATE}/musinsa/ranking_data/{category3depth[0]}/{sexual_data[1]}_{category2depth}_{category3depth[0]}_{category4name}.json"
 
-            validate_and_upload_s3_file(
-                bucket_name, file_name, response_json
-            )
+            validate_and_upload_s3_file(bucket_name, file_name, response_json)
 
 
 if __name__ == "__main__":

@@ -1,7 +1,11 @@
-from pyspark.conf import SparkConf
-
 from pyspark.sql import SparkSession
-from pyspark.sql.types import StructType, StructField, StringType, IntegerType
+from pyspark.sql.types import (
+    StructType,
+    StructField,
+    StringType,
+    IntegerType,
+    ArrayType,
+)
 
 from pyspark.sql.functions import col, from_json, explode, to_date, to_timestamp, lit
 from pyspark.sql.types import *

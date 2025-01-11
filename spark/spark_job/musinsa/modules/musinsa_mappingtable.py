@@ -226,14 +226,14 @@ CATEGORY2DEPTH_MAPPING = {
 
 
 def mapping2depth_en(depth2category):
-    if depth2category == "신발":
-        return "shoes"
-    elif depth2category == "아우터":
-        return "outer"
-    elif depth2category == "상의":
-        return "top"
-    elif depth2category == "하의":
-        return "bottom"
+    if depth2category == "shoes":
+        return "신발"
+    elif depth2category == "outer":
+        return "아우터"
+    elif depth2category == "top":
+        return "상의"
+    elif depth2category == "bottom":
+        return "하의"
 
 
 def mapping3depth_en(depth3category):

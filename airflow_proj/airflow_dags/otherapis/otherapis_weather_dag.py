@@ -18,7 +18,7 @@ default_args = OTHERAPI_DEFAULT_ARGS
 
 now = datetime.now() + timedelta(hours=9)
 now_string = now.strftime("%Y-%m-%d")
-FILE_TOPIC = f"weekly_weather_data"
+FILE_TOPIC = "weekly_weather_data"
 BRONZE_FILE_PATH = f"bronze/{now_string}/otherapis/{FILE_TOPIC}_raw_data/"
 SILVER_FILE_PATH = f"silver/{now_string}/otherapis/{FILE_TOPIC}_raw_data/"
 
