@@ -17,7 +17,11 @@ from musinsa.modules.musinsa_mappingtable import (
 )
 from musinsa.modules.config import DEFAULT_DAG
 
-import json
+import json, time
+
+def sleep_20_min():
+    time.sleep(20 * 60)
+    return "동희님 바보"
 
 # DAG 정의
 with DAG(
@@ -87,6 +91,11 @@ with DAG(
 
     trigger_tasks = []
 
+    sleep_task = PythonOperator(
+        task_id="wait_for_trigger",
+        python_callable=sleep_20_min
+    )
+
     for i, dag_id in enumerate(trigger_dag_ids):
         trigger_task = TriggerDagRunOperator(
             task_id=f"triggers_other_dags_{i}",
@@ -94,4 +103,4 @@ with DAG(
         )
         trigger_tasks.append(trigger_task)
 
-    raw_end >> spark_application_task >> trigger_tasks >> dag_end
+    raw_end >> spark_application_task >> sleep_task >> trigger_tasks >> dag_end
