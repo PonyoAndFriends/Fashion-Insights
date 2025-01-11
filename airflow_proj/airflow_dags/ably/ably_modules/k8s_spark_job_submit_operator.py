@@ -1,5 +1,5 @@
 from kubernetes import client, config
-from musinsa.custom_operators.custom_modules.spark_dependencies import *
+from ably.ably_modules.spark_dependencies import *
 from airflow.models import Variable
 
 
