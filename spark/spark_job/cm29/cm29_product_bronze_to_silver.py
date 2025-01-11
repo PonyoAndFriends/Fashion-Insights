@@ -9,7 +9,7 @@ from pyspark.sql.functions import (
     concat_ws,
 )
 from datetime import datetime, timedelta
-import os, sys
+import sys
 from functools import reduce
 from cm29_product_detail_mapping_table import depth_mapping
 
@@ -17,7 +17,6 @@ from cm29_product_detail_mapping_table import depth_mapping
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
 )
-
 
 
 # AWS 자격 증명 설정
@@ -163,9 +162,7 @@ ranking_df = raw_data.select(
 )
 
 # ranking_tb 저장
-ranking_output_path = (
-    f"s3a://{BUCKET_NAME}/silver/{today}/29cm/ranking_tb/"
-)
+ranking_output_path = f"s3a://{BUCKET_NAME}/silver/{today}/29cm/ranking_tb/"
 ranking_df.write.mode("overwrite").parquet(ranking_output_path)
 logging.info(f"ranking_tb 저장 완료: {ranking_output_path}")
 
@@ -179,8 +176,6 @@ sub_category_df = raw_data.select(
 ).distinct()
 
 # sub_category_tb 저장
-sub_category_output_path = (
-    f"s3a://{BUCKET_NAME}/silver/{today}/29cm/sub_category_tb/"
-)
+sub_category_output_path = f"s3a://{BUCKET_NAME}/silver/{today}/29cm/sub_category_tb/"
 sub_category_df.write.mode("overwrite").parquet(sub_category_output_path)
 logging.info(f"sub_category_tb 저장 완료: {sub_category_output_path}")

@@ -12,7 +12,7 @@ from otherapis.custom_operators.custom_modules.otherapis_dependencies import (
     DEFAULT_S3_DICT,
 )
 from otherapis.custom_operators.k8s_spark_job_submit_operator import (
-    submit_spark_application
+    submit_spark_application,
 )
 from otherapis.custom_operators.k8s_custom_python_pod_operator import (
     CustomKubernetesPodOperator,
@@ -86,19 +86,19 @@ with DAG(
         now_string = (datetime.now() + timedelta(hours=9)).strftime("%Y-%m-%d")
         bronze_file_path = f"bronze/{now_string}/otherapis/{task['task_gender']}_{file_topic}_raw_data/"
         silver_file_path = f"silver/{now_string}/otherapis/{task['task_gender']}_{file_topic}_raw_data/"
-        spark_args=[
-                make_s3_url(Variable.get("s3_bucket"), bronze_file_path),
-                make_s3_url(Variable.get("s3_bucket"), silver_file_path),
-                task["task_gender"],
-            ]
+        spark_args = [
+            make_s3_url(Variable.get("s3_bucket"), bronze_file_path),
+            make_s3_url(Variable.get("s3_bucket"), silver_file_path),
+            task["task_gender"],
+        ]
         spark_job_submit_task = PythonOperator(
             task_id=f"youtube_category_videos_{task['task_gender']}_submit_spark_job_task",
             python_callable=submit_spark_application,
             op_args=[
                 f"youtube_category_videos_{task['task_gender']}_from_bronze_to_silver_data",
                 r"otherapis/bronze_to_silver/youtube_data_to_silver.py",
-                spark_args
-            ]
+                spark_args,
+            ],
         )
         spark_submit_tasks.append(spark_job_submit_task)
 

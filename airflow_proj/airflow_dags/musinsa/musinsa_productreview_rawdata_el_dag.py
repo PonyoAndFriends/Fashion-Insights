@@ -2,7 +2,7 @@ from airflow import DAG
 from airflow.operators.dummy import DummyOperator
 from airflow.operators.python import PythonOperator
 from musinsa.custom_operators.k8s_spark_job_submit_operator import (
-    submit_spark_application
+    submit_spark_application,
 )
 from musinsa.custom_operators.k8s_custom_python_pod_operator import (
     CustomKubernetesPodOperator,
@@ -27,7 +27,7 @@ with DAG(
     catchup=False,
     tags=["MUSINSA", "REVIEW_RAWDATA", "EXTRACT", "LOAD", "S3", "K8S"],
     concurrency=5,
-    max_active_runs=1
+    max_active_runs=1,
 ) as dag:
 
     # start task
@@ -69,7 +69,6 @@ with DAG(
             category2depth_task >> category3depth_task >> wait_task
 
         wait_task >> raw_end
-
 
     spark_submit_task = PythonOperator(
         task_id="musinsa_product_review_data_spark_task",

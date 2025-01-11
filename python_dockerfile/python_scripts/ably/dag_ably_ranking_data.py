@@ -1,13 +1,16 @@
 from datetime import datetime
 from itertools import islice
 from ably_modules.ably_dependencies import (
-    ABLYAPI_DEFAULT_ARGS,
     DEFAULT_S3_DICT,
     ABLY_HEADER,
     ABLY_NEXT_TOKEN,
     ABLY_CATEGORY,
 )
-import threading, requests, logging, json, boto3
+import threading
+import requests
+import logging
+import json
+import boto3
 
 
 # 로깅 설정

@@ -3,7 +3,7 @@ from pyspark.sql.functions import col, regexp_replace, substring, when
 from pyspark.sql.types import FloatType
 from datetime import datetime, timedelta
 import logging
-import os, sys
+import sys
 
 args = sys.argv
 BUCKET_NAME = "team3-2-s3"
@@ -23,7 +23,9 @@ spark = (
 today = (datetime.now() + timedelta(hours=9)).strftime("%Y-%m-%d")
 
 # JSON 데이터 경로
-review_data_path = f"s3a://{BUCKET_NAME}/bronze/{today}/29cm/29cm_reviews/*/*/*_reviews.json"
+review_data_path = (
+    f"s3a://{BUCKET_NAME}/bronze/{today}/29cm/29cm_reviews/*/*/*_reviews.json"
+)
 
 # 데이터 로드
 try:

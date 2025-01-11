@@ -73,9 +73,8 @@ with DAG(
 
         if past_task:
             past_task >> curr_task
-        
-        past_task = task_group
 
+        past_task = task_group
 
     spark_args = [
         Variable.get("s3_bucket"),
