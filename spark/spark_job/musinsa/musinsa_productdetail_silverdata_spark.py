@@ -9,7 +9,7 @@ from pyspark.sql.types import (
 )
 from pyspark.sql.functions import col, from_json
 
-from modules.musinsa_mappingtable import CATEGORY2DEPTH_MAPPING
+from modules.musinsa_mappingtable import CATEGORY2DEPTH_MAPPING, mapping2depth_en
 
 import pendulum
 

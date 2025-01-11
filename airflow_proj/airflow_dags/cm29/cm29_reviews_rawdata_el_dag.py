@@ -9,6 +9,10 @@ from cm29.cm29_reviews_rawdata_el import (
     fetch_and_save_reviews_from_all_files,
 )
 
+from cm29.custom_operators.k8s_spark_job_submit_operator import (
+    submit_spark_application,
+)
+
 REVIEW_FOLDER_PATH = "29cm_reviews"
 PLATFORM_FOLDER_PATH = "29cm"
 
@@ -51,3 +55,13 @@ with DAG(
                             python_callable=fetch_and_save_reviews_from_all_files,
                             op_args=[file_key],
                         )
+
+    spark_application_task = PythonOperator(
+        task_id="29cm_reviews_silver_etl_spark",
+        python_callable=submit_spark_application,
+        op_args=[
+            "29cm-reviews-silver-etl-spark",
+            "29cm/cm29_reviews_bronze_to_silver.py",
+            None,
+        ],
+    )

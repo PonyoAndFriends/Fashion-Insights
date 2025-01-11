@@ -6,6 +6,10 @@ from airflow.utils.dates import days_ago
 from cm29.cm29_ranking_rawdata_el import fetch_and_save_data_to_s3
 from cm29.cm29_mapping_table import CATEGORY_TREE
 
+from cm29.custom_operators.k8s_spark_job_submit_operator import (
+    submit_spark_application,
+)
+
 # DAG 기본 설정
 default_args = {
     "owner": "pcy7805@naver.com",
@@ -62,3 +66,13 @@ with DAG(
                         python_callable=fetch_and_save_data_to_s3,
                         op_args=[large_id, medium_info, None, s3_path, gender_folder],
                     )
+
+    spark_application_task = PythonOperator(
+            task_id="29cm_ranking_silver_etl_spark",
+            python_callable=submit_spark_application,
+            op_args=[
+                "29cm-ranking-silver-etl-spark",
+                "29cm/cm29_ranking_bronze_to_silver.py",
+                None,
+            ],
+        )
