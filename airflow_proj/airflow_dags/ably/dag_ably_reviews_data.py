@@ -1,5 +1,5 @@
 from airflow import DAG
-from ably_modules.k8s_custom_python_pod_operator import CustomKubernetesPodOperator
+from ably.ably_modules.k8s_custom_python_pod_operator import CustomKubernetesPodOperator
 from datetime import datetime
 from ably.ably_modules.ably_dependencies import ABLYAPI_DEFAULT_ARGS
 
