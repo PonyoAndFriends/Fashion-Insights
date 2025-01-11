@@ -169,7 +169,7 @@ def main():
     args = parser.parse_args()
 
     sexual_data = json.loads(args.sexual_dict)
-    category_data = json.loads(args.args.category_2_depth)
+    category_data = json.loads(args.category_2_depth)
 
     category2depth = mapping_2depth_kor(category_data[0])
 

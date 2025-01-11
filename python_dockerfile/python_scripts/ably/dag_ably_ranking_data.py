@@ -7,8 +7,11 @@ from ably_modules.ably_dependencies import (
     ABLY_NEXT_TOKEN,
     ABLY_CATEGORY,
 )
-import threading, requests, logging, json, boto3
-
+import threading
+import logging
+import json
+import boto3
+import requests
 
 # 로깅 설정
 logging.basicConfig(
@@ -143,38 +146,8 @@ class DataPipeline:
             thread.join()
 
 
-# KubernetesPodOperator 태스크 정의
-ranking_data_task = KubernetesPodOperator(
-    namespace="default",  # 쿠버네티스 네임스페이스
-    image="coffeeisnan/python_pod_image:latest",  # 실행할 Docker 이미지
-    cmds=["python", "-c"],  # 파이썬 코드 실행
-    arguments=[
-        """
 
-        """
-    ],
-    name="process-ranking-data",  # 태스크 이름
-    task_id="ranking_data_task",  # Airflow 태스크 ID
-    get_logs=True,  # 태스크 로그 출력 활성화
-    dag=dag,  # DAG 참조
-)
-
-goods_data_task = KubernetesPodOperator(
-    namespace="default",
-    image="coffeeisnan/python_pod_image:latest",
-    cmds=["python", "-c"],
-    arguments=[
-        """
-from __main__ import DataPipeline
-pipeline = DataPipeline()
-pipeline.run_all_categories('goods_sno')
-        """
-    ],
-    name="process-goods-data",
-    task_id="goods_data_task",
-    get_logs=True,
-    dag=dag,
-)
-
-# 태스크 의존성 설정
-ranking_data_task >> goods_data_task
+if __name__=="__main__":
+    pipeline = DataPipeline()
+    pipeline.run_all_categories('ranking')
+    pipeline.run_all_categories('goods_sno')

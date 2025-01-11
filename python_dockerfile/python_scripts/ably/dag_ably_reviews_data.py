@@ -1,56 +1,53 @@
-from airflow import DAG
-from airflow.providers.cncf.kubernetes.operators.kubernetes_pod import (
-    KubernetesPodOperator,
-)
 from datetime import datetime
 from ably_modules.ably_dependencies import ABLYAPI_DEFAULT_ARGS, DEFAULT_S3_DICT
+import boto3
+import json
+from ably_modules.aws_info import AWS_S3_CONFIG
 
-
-def create_dag():
-    dag = DAG(
-        dag_id="fetch_and_save_ably_product_reviews_split",
-        default_args=ABLYAPI_DEFAULT_ARGS,
-        schedule_interval="@daily",
-        start_date=datetime(2024, 1, 1),
-        catchup=False,
+def list_folders(bucket_name, base_path):
+    s3_client = boto3.client(
+        "s3",
+        aws_access_key_id=AWS_S3_CONFIG.get("aws_access_key_id"),
+        aws_secret_access_key=AWS_S3_CONFIG.get("aws_secret_access_key")
     )
+    response = s3_client.list_objects_v2(Bucket=bucket_name, Prefix=base_path, Delimiter='/')
+    return [content['Prefix'] for content in response.get('CommonPrefixes', [])]
 
-    # S3 폴더 리스트 가져오기 작업
-    list_folders_task = KubernetesPodOperator(
-        task_id="list_folders_task",
-        name="list_folders_task",
-        namespace="default",
-        image="coffeeisnan/python_pod_image:latest",
-        cmds=["python", "-c"],
-        arguments=[
-            """
-            import boto3
-            import json
-            from ably_modules.aws_info import AWS_S3_CONFIG
+bucket_name = DEFAULT_S3_DICT["bucket_name"]
+base_path=f"{datetime.now().strftime('%Y-%m-%d')}/ReviewData/"
+folders = list_folders(bucket_name, base_path)
 
-            def list_folders(bucket_name, base_path):
-                s3_client = boto3.client(
-                    "s3",
-                    aws_access_key_id=AWS_S3_CONFIG.get("aws_access_key_id"),
-                    aws_secret_access_key=AWS_S3_CONFIG.get("aws_secret_access_key")
-                )
-                response = s3_client.list_objects_v2(Bucket=bucket_name, Prefix=base_path, Delimiter='/')
-                return [content['Prefix'] for content in response.get('CommonPrefixes', [])]
+with open('/airflow/xcom/return.json', 'w') as f:
+    json.dump({"folders": folders}, f)
 
-            bucket_name = "{bucket_name}"
-            base_path = "{base_path}"
-            folders = list_folders(bucket_name, base_path)
 
-            with open('/airflow/xcom/return.json', 'w') as f:
-                json.dump({"folders": folders}, f)
-            """.format(
-                bucket_name=DEFAULT_S3_DICT["bucket_name"],
-                base_path=f"{datetime.now().strftime('%Y-%m-%d')}/ReviewData/",
-            ),
-        ],
-        is_delete_operator_pod=True,
-        dag=dag,
+import boto3
+import json
+from ably_modules.aws_info import AWS_S3_CONFIG
+
+def get_product_ids(bucket_name, folder):
+    s3_client = boto3.client(
+        "s3",
+        aws_access_key_id=AWS_S3_CONFIG.get("aws_access_key_id"),
+        aws_secret_access_key=AWS_S3_CONFIG.get("aws_secret_access_key")
     )
+    key = f"{folder}goods_sno_list.json"
+    response = s3_client.get_object(Bucket=bucket_name, Key=key)
+    data = json.loads(response['Body'].read().decode('utf-8'))
+    return next(iter(data.items()))
+
+bucket_name = "{bucket_name}"
+folders = {folders}
+
+product_ids_map = {}
+for folder in folders:
+    category_key, product_ids = get_product_ids(bucket_name, folder)
+    product_ids_map[folder] = {"category_key": category_key, "product_ids": product_ids}
+
+with open('/airflow/xcom/return.json', 'w') as f:
+    json.dump(product_ids_map, f)
+
+
 
     # 상품 ID 추출 작업
     extract_product_ids_task = KubernetesPodOperator(
