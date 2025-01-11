@@ -3,7 +3,6 @@ from pyspark.sql.functions import col, regexp_replace, substring, when
 from pyspark.sql.types import FloatType
 from datetime import datetime, timedelta
 import logging
-import sys
 
 
 BUCKET_NAME = "team3-2-s3"

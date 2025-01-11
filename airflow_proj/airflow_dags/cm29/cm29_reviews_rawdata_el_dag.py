@@ -1,7 +1,6 @@
 import os
 from datetime import datetime, timedelta
 from airflow import DAG
-from airflow.models import Variable
 from airflow.operators.python import PythonOperator
 from airflow.utils.task_group import TaskGroup
 from airflow.utils.dates import days_ago
@@ -65,6 +64,6 @@ with DAG(
         op_args=[
             "cm29-reviews-silver-etl-spark",
             "cm29/cm29_reviews_bronze_to_silver.py",
-            None
+            None,
         ],
     )

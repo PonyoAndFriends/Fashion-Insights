@@ -145,8 +145,7 @@ class DataPipeline:
             thread.join()
 
 
-
-if __name__=="__main__":
+if __name__ == "__main__":
     pipeline = DataPipeline()
-    pipeline.run_all_categories('ranking')
-    pipeline.run_all_categories('goods_sno')
+    pipeline.run_all_categories("ranking")
+    pipeline.run_all_categories("goods_sno")
