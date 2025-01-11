@@ -3,11 +3,12 @@ from pyspark.sql.functions import col, regexp_replace, substring, when
 from pyspark.sql.types import FloatType
 from datetime import datetime
 import logging
-import os
+import os, sys
 
-# AWS 자격 증명 설정
-AWS_ACCESS_KEY = os.environ.get("AWS_ACCESS_KEY_ID")
-AWS_SECRET_KEY = os.environ.get("AWS_SECRET_ACCESS_KEY")
+args = sys.argv
+BUCKET_NAME = args[0]
+AWS_ACCESS_KEY = args[1]
+AWS_SECRET_KEY = args[2]
 
 # Spark 세션 생성
 spark = (
@@ -22,7 +23,7 @@ spark = (
 today = datetime.now().strftime("%Y-%m-%d")
 
 # JSON 데이터 경로
-review_data_path = f"s3a://pcy-test-rawdata-bucket/bronze_layer/{today}/29cm/29cm_reviews/*/*/*_reviews.json"
+review_data_path = f"s3a://{BUCKET_NAME}/bronze/{today}/29cm/29cm_reviews/*/*/*_reviews.json"
 
 # 데이터 로드
 try:
@@ -52,7 +53,7 @@ transformed_data = raw_data.select(
 
 # 저장 경로
 output_path = (
-    f"s3a://pcy-test-rawdata-bucket/silver_layer/{today}/29cm/29cm_review_detail_tb/"
+    f"s3a://{BUCKET_NAME}/silver/{today}/29cm/29cm_review_detail_tb/"
 )
 
 try:

@@ -9,7 +9,7 @@ from pyspark.sql.functions import (
     concat_ws,
 )
 from datetime import datetime
-import os
+import os, sys
 from functools import reduce
 from cm29_product_detail_mapping_table import depth_mapping
 
@@ -19,8 +19,10 @@ logging.basicConfig(
 )
 
 # AWS 자격 증명 설정
-AWS_ACCESS_KEY = os.environ.get("AWS_ACCESS_KEY_ID")
-AWS_SECRET_KEY = os.environ.get("AWS_SECRET_ACCESS_KEY")
+args = sys.argv
+BUCKET_NAME = args[0]
+AWS_ACCESS_KEY = args[1]
+AWS_SECRET_KEY = args[2]
 
 # Spark 세션 생성
 spark = (
@@ -36,9 +38,9 @@ today = datetime.now().strftime("%Y-%m-%d")
 
 # S3 경로
 man_data_path = (
-    f"s3a://pcy-test-rawdata-bucket/bronze_layer/{today}/29cm/29cm_product/Man/*/*.json"
+    f"s3a://{BUCKET_NAME}/bronze/{today}/29cm/29cm_product/Man/*/*.json"
 )
-woman_data_path = f"s3a://pcy-test-rawdata-bucket/bronze_layer/{today}/29cm/29cm_product/Woman/*/*.json"
+woman_data_path = f"s3a://{BUCKET_NAME}/bronze/{today}/29cm/29cm_product/Woman/*/*.json"
 
 # 데이터 로드
 try:
@@ -118,7 +120,7 @@ master_category_df = raw_data.select(
 
 # master_category_tb 저장
 master_category_output_path = (
-    f"s3a://pcy-test-rawdata-bucket/silver_layer/{today}/29cm/master_category_tb/"
+    f"s3a://{BUCKET_NAME}/silver/{today}/29cm/master_category_tb/"
 )
 master_category_df.write.mode("overwrite").parquet(master_category_output_path)
 logging.info(f"master_category_tb 저장 완료: {master_category_output_path}")
@@ -144,7 +146,7 @@ product_detail_df = raw_data.select(
 
 # product_detail_tb 저장
 product_detail_output_path = (
-    f"s3a://pcy-test-rawdata-bucket/silver_layer/{today}/29cm/product_detail_tb/"
+    f"s3a://{BUCKET_NAME}/silver/{today}/29cm/product_detail_tb/"
 )
 product_detail_df.write.mode("overwrite").parquet(product_detail_output_path)
 logging.info(f"product_detail_tb 저장 완료: {product_detail_output_path}")
@@ -161,7 +163,7 @@ ranking_df = raw_data.select(
 
 # ranking_tb 저장
 ranking_output_path = (
-    f"s3a://pcy-test-rawdata-bucket/silver_layer/{today}/29cm/ranking_tb/"
+    f"s3a://{BUCKET_NAME}/silver/{today}/29cm/ranking_tb/"
 )
 ranking_df.write.mode("overwrite").parquet(ranking_output_path)
 logging.info(f"ranking_tb 저장 완료: {ranking_output_path}")
@@ -177,7 +179,7 @@ sub_category_df = raw_data.select(
 
 # sub_category_tb 저장
 sub_category_output_path = (
-    f"s3a://pcy-test-rawdata-bucket/silver_layer/{today}/29cm/sub_category_tb/"
+    f"s3a://{BUCKET_NAME}/silver/{today}/29cm/sub_category_tb/"
 )
 sub_category_df.write.mode("overwrite").parquet(sub_category_output_path)
 logging.info(f"sub_category_tb 저장 완료: {sub_category_output_path}")

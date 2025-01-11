@@ -1,5 +1,6 @@
 from datetime import timedelta
 from airflow import DAG
+from airflow.models import Variable
 from airflow.operators.python import PythonOperator
 from airflow.utils.task_group import TaskGroup
 from airflow.utils.dates import days_ago
@@ -29,6 +30,7 @@ with DAG(
     catchup=False,
 ) as dag:
 
+    task_group_list = []
     for large_category, category_info in CATEGORY_TREE.items():
         large_id = category_info["large_id"]
         gender_folder = "Woman" if "Woman" in large_category else "Man"
@@ -66,13 +68,21 @@ with DAG(
                         python_callable=fetch_and_save_data_to_s3,
                         op_args=[large_id, medium_info, None, s3_path, gender_folder],
                     )
+        task_group_list.append(task_group)
 
+    spark_args = [
+        Variable.get("s3_bucket"),
+        Variable.get("aws_access_key_id"),
+        Variable.get("aws_secret_access_key"),
+    ]
     spark_application_task = PythonOperator(
         task_id="29cm_ranking_silver_etl_spark",
         python_callable=submit_spark_application,
         op_args=[
             "29cm-ranking-silver-etl-spark",
             "29cm/cm29_ranking_bronze_to_silver.py",
-            None,
+            spark_args,
         ],
     )
+
+    task_group_list >> spark_application_task

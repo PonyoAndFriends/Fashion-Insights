@@ -1,6 +1,7 @@
 import os
 from datetime import datetime, timedelta
 from airflow import DAG
+from airflow.models import Variable
 from airflow.operators.python import PythonOperator
 from airflow.utils.task_group import TaskGroup
 from airflow.utils.dates import days_ago
@@ -38,6 +39,7 @@ with DAG(
 
     today = datetime.now().strftime("%Y-%m-%d")
 
+    task_group_list = []
     genders = ["Woman", "Man"]
     for gender in genders:
         for medium_folder in ["Pants", "Tops", "Shoes", "Outerwear", "Knitwear"]:
@@ -55,13 +57,19 @@ with DAG(
                             python_callable=fetch_and_save_reviews_from_all_files,
                             op_args=[file_key],
                         )
+            task_group_list.append(medium_group)
 
+    spark_args = [
+        Variable.get("s3_bucket"),
+        Variable.get("aws_access_key_id"),
+        Variable.get("aws_secret_access_key"),
+    ]
     spark_application_task = PythonOperator(
         task_id="29cm_reviews_silver_etl_spark",
         python_callable=submit_spark_application,
         op_args=[
             "29cm-reviews-silver-etl-spark",
             "29cm/cm29_reviews_bronze_to_silver.py",
-            None,
+            spark_args,
         ],
     )
