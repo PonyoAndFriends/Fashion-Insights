@@ -2,6 +2,7 @@ from airflow import DAG
 from airflow.models import Variable
 from datetime import datetime, timedelta
 from airflow.operators.python import PythonOperator
+from airflow.operators.dummy import DummyOperator
 from otherapis.custom_operators.k8s_custom_python_pod_operator import (
     CustomKubernetesPodOperator,
 )
@@ -99,6 +100,10 @@ with DAG(
                 fetch_snap_ranking_story_data_task
             )
 
+    fetch_complete_task = DummyOperator(
+        task_id = "fetch_complete_task",
+    )
+
     fetch_snap_ranking_story_data_spark_submit_tasks = []
     for gender in ["남성", "여성"]:
         file_topic = f"musinsa_{gender}_ranking_story_group"
@@ -122,5 +127,6 @@ with DAG(
     (
         calculate_page_range_task
         >> fetch_snap_ranking_story_data_tasks
+        >> fetch_complete_task
         >> fetch_snap_ranking_story_data_spark_submit_tasks
     )
