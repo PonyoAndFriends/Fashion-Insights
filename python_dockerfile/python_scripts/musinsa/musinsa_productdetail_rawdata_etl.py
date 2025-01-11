@@ -114,7 +114,7 @@ def et_product2_detail(product_id):
 
 
 # product detail parsing => DataFrame Record
-def et_product_detail(master_category, depth4category, product_id_list, key):
+def et_product_detail(s3_client, master_category, depth4category, product_id_list, key):
     for product_id in product_id_list:
         bronze_bucket = "team3-2-s3"
         s3_key = key + f"{product_id}.json"
@@ -157,7 +157,7 @@ def et_product_detail(master_category, depth4category, product_id_list, key):
             "created_at": created_at,
         }
 
-        s3_module.upload_json_to_s3(bronze_bucket, s3_key, data)
+        s3_module.upload_json_to_s3(s3_client, bronze_bucket, s3_key, data)
 
 
 def main():
@@ -172,6 +172,8 @@ def main():
     category_data = json.loads(args.category_2_depth)
 
     category2depth = mapping_2depth_kor(category_data[0])
+
+    s3_client = s3_module.connect_s3()
 
     for category_info in category_data[1]:
         category3depth = list(category_info.items())[0]
@@ -189,7 +191,7 @@ def main():
                 key = f"bronze/{TODAY_DATE}/musinsa/product_detail_data/{category3depth[0]}/{category4depth}/"
                 t = threading.Thread(
                     target=et_product_detail,
-                    args=(master_category, category4depth, product_list, key),
+                    args=(s3_client, master_category, category4depth, product_list, key),
                 )
                 t.start()
 

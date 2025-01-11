@@ -33,7 +33,7 @@ def porductid_list_iterable(iterable):
         yield iterable[i : i + LIST_SIZE]
 
 
-def el_productreview(product_id_list, key):
+def el_productreview(s3_client, product_id_list, key):
     bronze_bucket = "team3-2-s3"
     for sort_method in SORT:
         PARAMS["sort"] = sort_method
@@ -43,7 +43,7 @@ def el_productreview(product_id_list, key):
             time.sleep(1.2)
             response = requests.get(URL, headers=Musinsa_Config.HEADERS, params=PARAMS)
             data = response.json()["data"]
-            s3_module.upload_json_to_s3(bronze_bucket, s3_key, data)
+            s3_module.upload_json_to_s3(s3_client, bronze_bucket, s3_key, data)
 
 
 def main():
@@ -56,6 +56,8 @@ def main():
 
     category3depth = args.category_3_depth
     category4depth_list = json.loads(args.category_4_depth_list)
+
+    s3_client = s3_module.connect_s3()
 
     # product_id list 불러오기
     silver_bucket = "team3-2-s3"
@@ -87,7 +89,7 @@ def main():
 
         for product_list in porductid_list_iterable(product_ids):
             key = f"bronze/{TODAY_DATE}/musinsa/product_review_data/{category3depth}/{category4depth}/"
-            t = threading.Thread(target=el_productreview, args=(product_list, key))
+            t = threading.Thread(target=el_productreview, args=(s3_client, product_list, key))
             t.start()
 
 

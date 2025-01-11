@@ -32,8 +32,7 @@ def connect_s3fs():
 
 
 # check if file exists in s3
-def check_file_exists(bucket_name, s3_key):
-    s3_client = connect_s3()
+def check_file_exists(bucket_name, s3_key, s3_client):
     try:
         s3_client.head_object(Bucket=bucket_name, Key=s3_key)
         return True
@@ -46,8 +45,7 @@ def check_file_exists(bucket_name, s3_key):
 
 
 # upload json to s3
-def upload_json_to_s3(bucket_name, s3_key, json_data):
-    s3_client = connect_s3()
+def upload_json_to_s3(bucket_name, s3_key, json_data, s3_client):
     try:
         json_string = json.dumps(json_data)
         s3_client.put_object(Bucket=bucket_name, Key=s3_key, Body=json_string)
@@ -57,8 +55,7 @@ def upload_json_to_s3(bucket_name, s3_key, json_data):
 
 
 # validate s3 file and delete if exists
-def validate_and_upload_s3_file(bucket_name, s3_key, json_data):
-    s3_client = connect_s3()
+def validate_and_upload_s3_file(bucket_name, s3_key, json_data, s3_client):
     if check_file_exists(bucket_name, s3_key):
         logging.info(f"{s3_key} already exists in {bucket_name}")
         s3_client.delete_object(Bucket=bucket_name, Key=s3_key)

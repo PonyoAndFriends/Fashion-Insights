@@ -1,7 +1,5 @@
 from airflow import DAG
-from airflow.providers.cncf.kubernetes.operators.kubernetes_pod import (
-    KubernetesPodOperator,
-)
+from ably.ably_modules.k8s_custom_python_pod_operator import CustomKubernetesPodOperator
 from datetime import datetime
 from itertools import islice
 from ably_modules.ably_dependencies import (
@@ -160,40 +158,15 @@ class DataPipeline:
             thread.join()
 
 
-# KubernetesPodOperator 태스크 정의
-ranking_data_task = KubernetesPodOperator(
-    namespace="default",  # 쿠버네티스 네임스페이스
-    image="coffeeisnan/python_pod_image:latest",  # 실행할 Docker 이미지
-    cmds=["python", "-c"],  # 파이썬 코드 실행
-    arguments=[
-        """
-from __main__ import DataPipeline
-pipeline = DataPipeline()
-pipeline.run_all_categories('ranking')
-        """
-    ],
-    name="process-ranking-data",  # 태스크 이름
-    task_id="ranking_data_task",  # Airflow 태스크 ID
-    get_logs=True,  # 태스크 로그 출력 활성화
-    dag=dag,  # DAG 참조
-)
 
-goods_data_task = KubernetesPodOperator(
-    namespace="default",
-    image="coffeeisnan/python_pod_image:latest",
-    cmds=["python", "-c"],
-    arguments=[
-        """
-from __main__ import DataPipeline
-pipeline = DataPipeline()
-pipeline.run_all_categories('goods_sno')
-        """
-    ],
-    name="process-goods-data",
-    task_id="goods_data_task",
+raking_goods_data_task = CustomKubernetesPodOperator(
+    task_id=f"ranking_goods_data_task",
+    namespace="airflow",
+    script_path="/python_scripts/ably/ably_ranking_data.py",
+    cpu_limit="1000m",
+    memory_limit="1Gi",
+    is_delete_operator_pod=True,
     get_logs=True,
-    dag=dag,
 )
 
-# 태스크 의존성 설정
-ranking_data_task >> goods_data_task
+raking_goods_data_task
