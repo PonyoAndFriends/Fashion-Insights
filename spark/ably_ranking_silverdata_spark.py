@@ -1,5 +1,5 @@
 from pyspark.sql import SparkSession
-from pyspark.sql.functions import to_date, col, explode, lit, row_number
+from pyspark.sql.functions import to_date, col, lit, row_number
 from pyspark.sql.window import Window
 from pyspark.conf import SparkConf
 from datetime import datetime
@@ -8,7 +8,8 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from ably_modules.ably_mapping_table import CATEGORY_PARAMS
 
 # 오늘 날짜 - 날짜 path
-TODAY_DATE = datetime.now().strftime('%Y-%m-%d')
+TODAY_DATE = datetime.now().strftime("%Y-%m-%d")
+
 
 def create_spark_session():
     # SparkConf 설정
@@ -38,7 +39,16 @@ def create_spark_session():
     spark = SparkSession.builder.config(conf=conf).getOrCreate()
     return spark
 
-def making_ranking_table(spark, json_path, master_category_code, today_date, gender, category2depth, category3depth):
+
+def making_ranking_table(
+    spark,
+    json_path,
+    master_category_code,
+    today_date,
+    gender,
+    category2depth,
+    category3depth,
+):
     df = spark.read.json(json_path)
 
     # `logging.analytics.GOODS_SNO`와 기타 데이터를 추출
@@ -52,14 +62,17 @@ def making_ranking_table(spark, json_path, master_category_code, today_date, gen
 
     # master_category_name 생성
     master_category_name = f"{gender}-{category2depth}-{category3depth}"
-    final_df = ranked_df.withColumn("master_category_name", lit(master_category_name)) \
-                        .withColumn("platform", lit("ably")) \
-                        .withColumn("created_at", to_date(lit(today_date), "yyyy-MM-dd"))
+    final_df = (
+        ranked_df.withColumn("master_category_name", lit(master_category_name))
+        .withColumn("platform", lit("ably"))
+        .withColumn("created_at", to_date(lit(today_date), "yyyy-MM-dd"))
+    )
 
     # Parquet 크기를 1개 파일로 병합
     final_df = final_df.coalesce(1)
 
     return final_df
+
 
 def process_category(spark, category3depth, gender, category2depth, category4depth):
     try:
@@ -75,13 +88,20 @@ def process_category(spark, category3depth, gender, category2depth, category4dep
         master_category_code = f"{gender}-{category2depth}-{category3depth}"
         print(f"Processing {master_category_code}-{category4depth}")
         cleaned_df = making_ranking_table(
-            spark, input_path, master_category_code, TODAY_DATE, gender, category2depth, category3depth
+            spark,
+            input_path,
+            master_category_code,
+            TODAY_DATE,
+            gender,
+            category2depth,
+            category3depth,
         )
 
         cleaned_df.write.mode("overwrite").parquet(table_output_path)
 
     except Exception as e:
         print(f"Error processing category {category4depth}: {e}")
+
 
 def main():
     spark = create_spark_session()
@@ -106,7 +126,9 @@ def main():
                     # category4depth 추출
                     for category4 in category3["cat_4"]:
                         for cat_key, category4depth in category4.items():
-                            print(f"    Category4 Depth Key: {cat_key}, Name: {category4depth}")
+                            print(
+                                f"    Category4 Depth Key: {cat_key}, Name: {category4depth}"
+                            )
 
                             futures.append(
                                 executor.submit(
@@ -124,6 +146,7 @@ def main():
                 future.result()  # 작업 완료 대기
             except Exception as e:
                 print(f"Error in thread execution: {e}")
+
 
 if __name__ == "__main__":
     main()
