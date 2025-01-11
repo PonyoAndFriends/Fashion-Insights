@@ -6,7 +6,8 @@ import os
 import glob
 
 # 오늘 날짜
-TODAY_DATE = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+TODAY_DATE = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
 
 def create_spark_session():
     """
@@ -24,6 +25,7 @@ def create_spark_session():
 
     return SparkSession.builder.config(conf=conf).getOrCreate()
 
+
 def get_filtered_input_files(input_path_pattern, exclude_file):
     """
     입력 경로에서 제외 파일을 제외한 JSON 파일 경로를 가져오는 함수
@@ -37,7 +39,10 @@ def get_filtered_input_files(input_path_pattern, exclude_file):
     filtered_files = [file for file in all_files if exclude_file not in file]
     return filtered_files
 
-def transform_to_product_review_detail(spark, input_files, output_path, platform_name="ably"):
+
+def transform_to_product_review_detail(
+    spark, input_files, output_path, platform_name="ably"
+):
     """
     JSON 데이터를 스키마에 맞게 변환하고 Parquet로 저장
 
@@ -50,19 +55,23 @@ def transform_to_product_review_detail(spark, input_files, output_path, platform
     df = spark.read.json(input_files)
 
     # 데이터 변환 및 매핑
-    transformed_df = df.select(
-        col("goods_sno").alias("product_id"),
-        col("contents").alias("review_content"),
-        col("eval").alias("review_rating"),
-        to_date(col("created_at")).alias("review_date"),
-        col("height").alias("reviewer_height"),
-        col("weight").alias("reviewer_weight"),
-        array_join(col("goods_option"), ", ").alias("selected_options")
-    ).withColumn("created_at", lit(TODAY_DATE)) \
-     .withColumn("platform", lit(platform_name))
+    transformed_df = (
+        df.select(
+            col("goods_sno").alias("product_id"),
+            col("contents").alias("review_content"),
+            col("eval").alias("review_rating"),
+            to_date(col("created_at")).alias("review_date"),
+            col("height").alias("reviewer_height"),
+            col("weight").alias("reviewer_weight"),
+            array_join(col("goods_option"), ", ").alias("selected_options"),
+        )
+        .withColumn("created_at", lit(TODAY_DATE))
+        .withColumn("platform", lit(platform_name))
+    )
 
     # Parquet 저장
     transformed_df.write.mode("overwrite").parquet(output_path)
+
 
 def main():
     # SparkSession 생성
@@ -84,6 +93,7 @@ def main():
     transform_to_product_review_detail(spark, input_files, output_parquet_path)
 
     print(f"Data successfully saved to {output_parquet_path}")
+
 
 if __name__ == "__main__":
     main()
