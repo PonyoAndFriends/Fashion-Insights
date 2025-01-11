@@ -1,10 +1,16 @@
 from pyspark.sql import SparkSession
-from pyspark.sql.types import StructType, StructField, StringType, IntegerType, ArrayType
+from pyspark.sql.types import (
+    StructType,
+    StructField,
+    StringType,
+    IntegerType,
+    ArrayType,
+)
 
 from pyspark.sql.functions import col, from_json, explode, to_date, to_timestamp, lit
 from pyspark.sql.types import *
 
-from modules.musinsa_mappingtable import CATEGORY2DEPTH_MAPPING, mapping2depth_en
+from modules.musinsa_mappingtable import CATEGORY2DEPTH_MAPPING
 
 import pendulum
 

@@ -68,11 +68,11 @@ with DAG(
                     )
 
     spark_application_task = PythonOperator(
-            task_id="29cm_ranking_silver_etl_spark",
-            python_callable=submit_spark_application,
-            op_args=[
-                "29cm-ranking-silver-etl-spark",
-                "29cm/cm29_ranking_bronze_to_silver.py",
-                None,
-            ],
-        )
+        task_id="29cm_ranking_silver_etl_spark",
+        python_callable=submit_spark_application,
+        op_args=[
+            "29cm-ranking-silver-etl-spark",
+            "29cm/cm29_ranking_bronze_to_silver.py",
+            None,
+        ],
+    )
