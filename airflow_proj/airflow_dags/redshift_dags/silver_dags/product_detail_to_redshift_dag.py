@@ -46,7 +46,7 @@ with DAG(
         product_id INT NOT NULL,
         img_url VARCHAR(1000),
         product_name VARCHAR(512) NOT NULL,
-        brand_name_kr VARCHAR(100) NOT NULL,
+        brand_name_kr VARCHAR(100),
         brand_name_en VARCHAR(100),
         original_price INT,
         final_price INT,

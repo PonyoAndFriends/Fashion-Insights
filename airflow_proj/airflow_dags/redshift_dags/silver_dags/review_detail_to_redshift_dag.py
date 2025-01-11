@@ -43,8 +43,8 @@ with DAG(
         CREATE TABLE {DEFAULT_SILVER_SHCEMA}.{table} (
             product_id INT NOT NULL,
             review_content VARCHAR(4000),
-            review_rating INT NOT NULL,
-            review_date DATE NOT NULL,
+            review_rating INT,
+            review_date DATE,
             reviewer_height FLOAT,
             reviewer_weight FLOAT,
             selected_options VARCHAR(50),

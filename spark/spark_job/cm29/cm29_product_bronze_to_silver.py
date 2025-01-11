@@ -8,6 +8,7 @@ from pyspark.sql.functions import (
     when,
     concat_ws,
 )
+from pyspark.sql.types import FloatType, IntegerType, StringType, DateType
 from datetime import datetime, timedelta
 from functools import reduce
 from cm29_product_detail_mapping_table import depth_mapping
@@ -115,23 +116,22 @@ master_category_output_path = (
 master_category_df.write.mode("overwrite").parquet(master_category_output_path)
 logging.info(f"master_category_tb 저장 완료: {master_category_output_path}")
 
-# product_detail_tb 생성
 product_detail_df = raw_data.select(
-    col("platform"),
-    col("master_category_name"),
-    col("small_category_name"),  # 한글로 매핑된 small_category_name 포함
-    col("product_id"),
-    col("img_url"),
-    col("product_name"),
-    col("brand_name_kr"),
-    col("brand_name_en"),
-    col("original_price"),
-    col("final_price"),
-    col("discount_ratio"),
-    col("review_counting"),
-    col("review_avg_rating"),
-    col("like_counting"),
-    col("created_at"),
+    col("platform").cast(StringType()).alias("platform"),
+    col("master_category_name").cast(StringType()).alias("master_category_name"),
+    col("small_category_name").cast(StringType()).alias("small_category_name"),
+    col("product_id").cast(IntegerType()).alias("product_id"),
+    col("img_url").cast(StringType()).alias("img_url"),
+    col("product_name").cast(StringType()).alias("product_name"),
+    col("brand_name_kr").cast(StringType()).alias("brand_name_kr"),
+    col("brand_name_en").cast(StringType()).alias("brand_name_en"),
+    col("original_price").cast(IntegerType()).alias("original_price"),
+    col("final_price").cast(IntegerType()).alias("final_price"),
+    col("discount_ratio").cast(IntegerType()).alias("discount_ratio"),
+    col("review_counting").cast(IntegerType()).alias("review_counting"),
+    col("review_avg_rating").cast(FloatType()).alias("review_rating"),
+    col("like_counting").cast(IntegerType()).alias("like_counting"),
+    col("created_at").cast(DateType()).alias("created_at"),
 )
 
 # product_detail_tb 저장
@@ -141,27 +141,27 @@ product_detail_output_path = (
 product_detail_df.write.mode("overwrite").parquet(product_detail_output_path)
 logging.info(f"product_detail_tb 저장 완료: {product_detail_output_path}")
 
-# ranking_tb 생성
+# ranking_tb 생성 및 저장
 ranking_df = raw_data.select(
-    col("platform"),
-    col("master_category_name"),
-    col("product_id"),
-    col("ranking"),
-    col("created_at"),
+    col("platform").cast(StringType()).alias("platform"),
+    col("master_category_name").cast(StringType()).alias("master_category_name"),
+    col("product_id").cast(IntegerType()).alias("product_id"),
+    col("ranking").cast(IntegerType()).alias("ranking"),
+    col("created_at").cast(DateType()).alias("created_at"),
 )
+
 
 # ranking_tb 저장
 ranking_output_path = f"s3a://{BUCKET_NAME}/silver/{today}/29cm/ranking_tb/"
 ranking_df.write.mode("overwrite").parquet(ranking_output_path)
 logging.info(f"ranking_tb 저장 완료: {ranking_output_path}")
 
-# sub_category_tb 생성
 sub_category_df = raw_data.select(
-    col("cat_depth_4").alias("sub_category_id"),
-    col("platform"),
-    col("master_category_name").alias("master_category_id"),
-    col("small_category_name"),
-    col("created_at"),
+    col("cat_depth_4").cast(StringType()).alias("sub_category_id"),
+    col("platform").cast(StringType()).alias("platform"),
+    col("master_category_name").cast(StringType()).alias("master_category_id"),
+    col("small_category_name").cast(StringType()).alias("cat_depth_4"),
+    col("created_at").cast(DateType()).alias("created_at"),
 ).distinct()
 
 # sub_category_tb 저장

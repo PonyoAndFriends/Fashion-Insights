@@ -1,9 +1,8 @@
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import col, regexp_replace, substring, when
-from pyspark.sql.types import FloatType
+from pyspark.sql.types import FloatType, IntegerType, StringType, DateType
 from datetime import datetime, timedelta
 import logging
-
 
 BUCKET_NAME = "team3-2-s3"
 
@@ -27,20 +26,20 @@ except Exception as e:
 
 # 테이블 변환
 transformed_data = raw_data.select(
-    col("product_id").cast("int").alias("product_id"),
-    col("contents").alias("review_content"),
-    col("point").cast("int").alias("review_rating"),
-    substring(col("insertTimestamp"), 1, 10).alias("review_date"),
+    col("product_id").cast(IntegerType()).alias("product_id"),
+    col("contents").cast(StringType()).alias("review_content"),
+    col("point").cast(IntegerType()).alias("review_rating"),
+    substring(col("insertTimestamp"), 1, 10).cast(DateType()).alias("review_date"),
     regexp_replace(col("userSize").getItem(0), "cm", "")
     .cast(FloatType())
     .alias("reviewer_height"),
     regexp_replace(col("userSize").getItem(1), "kg", "")
     .cast(FloatType())
     .alias("reviewer_weight"),
-    when(col("optionValue").isNotNull(), col("optionValue").getItem(0)).alias(
-        "selected_options"
-    ),
-    col("created_at").alias("created_at"),  # created_at 유지
+    when(col("optionValue").isNotNull(), col("optionValue").getItem(0))
+    .cast(StringType())
+    .alias("selected_options"),
+    col("created_at").cast(DateType()).alias("created_at"),
 )
 
 # 저장 경로
