@@ -66,6 +66,6 @@ with DAG(
         op_args=[
             "cm29-reviews-silver-etl-spark",
             "cm29/cm29_reviews_bronze_to_silver.py",
-            None
+            None,
         ],
     )

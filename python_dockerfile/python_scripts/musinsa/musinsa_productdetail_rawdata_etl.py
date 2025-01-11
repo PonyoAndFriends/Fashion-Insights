@@ -191,7 +191,13 @@ def main():
                 key = f"bronze/{TODAY_DATE}/musinsa/product_detail_data/{category3depth[0]}/{category4depth}/"
                 t = threading.Thread(
                     target=et_product_detail,
-                    args=(s3_client, master_category, category4depth, product_list, key),
+                    args=(
+                        s3_client,
+                        master_category,
+                        category4depth,
+                        product_list,
+                        key,
+                    ),
                 )
                 t.start()
 

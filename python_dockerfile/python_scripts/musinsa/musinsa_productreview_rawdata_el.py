@@ -42,7 +42,9 @@ def el_productreview(s3_client, product_id_list, key):
             PARAMS["goodsNo"] = product_id
             time.sleep(1.2)
             try:
-                response = requests.get(URL, headers=Musinsa_Config.HEADERS, params=PARAMS)
+                response = requests.get(
+                    URL, headers=Musinsa_Config.HEADERS, params=PARAMS
+                )
                 data = response.json()["data"]
             except:
                 logging.warning(product_id, "는 리뷰가 없습니다.")
@@ -93,7 +95,9 @@ def main():
 
         for product_list in porductid_list_iterable(product_ids):
             key = f"bronze/{TODAY_DATE}/musinsa/product_review_data/{category3depth}/{category4depth}/"
-            t = threading.Thread(target=el_productreview, args=(s3_client, product_list, key))
+            t = threading.Thread(
+                target=el_productreview, args=(s3_client, product_list, key)
+            )
             t.start()
 
 
