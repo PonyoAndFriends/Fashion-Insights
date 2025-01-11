@@ -60,6 +60,7 @@ def submit_spark_application(spark_app_name, pyspark_py_path, spark_args=None):
                 "spark.hadoop.fs.s3a.access.key": Variable.get("aws_access_key_id"),
                 "spark.hadoop.fs.s3a.secret.key": Variable.get("aws_secret_access_key"),
                 "spark.hadoop.fs.s3a.endpoint": "s3.amazonaws.com",
+                "spark.hadoop.fs.s3a.impl": "org.apache.hadoop.fs.s3a.S3AFileSystem",
                 "spark.kubernetes.driver.deleteOnTermination": "true",
                 "spark.kubernetes.executor.deleteOnTermination": "true",
             },
