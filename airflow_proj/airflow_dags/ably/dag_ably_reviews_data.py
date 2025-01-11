@@ -1,8 +1,7 @@
 from airflow import DAG
 from ably_modules.k8s_custom_python_pod_operator import CustomKubernetesPodOperator
 from datetime import datetime
-from ably_modules.ably_dependencies import ABLYAPI_DEFAULT_ARGS
-
+from ably.ably_modules.ably_dependencies import ABLYAPI_DEFAULT_ARGS
 
 dag = DAG(
     dag_id="fetch_and_save_ably_product_reviews_split",
