@@ -47,18 +47,20 @@ with DAG(
         content_type="plain/text",
     )
 
-    spark_args=[
+    spark_args = (
+        [
             make_s3_url(Variable.get("s3_bucket"), BRONZE_FILE_PATH),
             make_s3_url(Variable.get("s3_bucket"), SILVER_FILE_PATH),
         ],
+    )
     spark_job_submit_task = PythonOperator(
         task_id="weekly_weather_submit_spark_job_task",
         python_callable=submit_spark_application,
         op_args=[
             "weekly-weather-data-from-bronze-to-silver-task",
             r"otherapis/bronze_to_silver/weekly_weather_data_to_silver.py",
-            spark_args
-        ]
+            spark_args,
+        ],
     )
 
     fetch_weather_station_data_task

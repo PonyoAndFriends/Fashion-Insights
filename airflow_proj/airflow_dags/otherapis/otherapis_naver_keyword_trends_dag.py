@@ -18,7 +18,7 @@ from otherapis.custom_operators.keyword_dictionary_process_oprerator import (
     CategoryDictionaryMergeAndExplodeOperator,
 )
 from otherapis.custom_operators.k8s_spark_job_submit_operator import (
-    submit_spark_application
+    submit_spark_application,
 )
 from airflow.operators.python import PythonOperator
 from otherapis.custom_operators.custom_modules.s3_upload import (
@@ -91,19 +91,19 @@ with DAG(
         silver_file_path = (
             f"silver/{now_string}/otherapis/{task['gender']}_keyword_trends/"
         )
-        spark_args=[
-                make_s3_url(Variable.get("s3_bucket"), bronze_file_path),
-                make_s3_url(Variable.get("s3_bucket"), silver_file_path),
-                task["gender"],
-            ]
+        spark_args = [
+            make_s3_url(Variable.get("s3_bucket"), bronze_file_path),
+            make_s3_url(Variable.get("s3_bucket"), silver_file_path),
+            task["gender"],
+        ]
         spark_job_submit_task = PythonOperator(
             task_id=f"naver_keywords_trend_{task['task_gender']}_submit_spark_job_task",
             python_callable=submit_spark_application,
             op_args=[
                 f"naveer_keywords_trend_{task['task_gender']}_from_bronze_to_silver_data",
                 r"otherapis/bronze_to_silver/naver_keyword_trend_to_silver.py",
-                spark_args
-            ]
+                spark_args,
+            ],
         )
         spark_submit_tasks.append(spark_job_submit_task)
 

@@ -17,11 +17,14 @@ from musinsa.modules.musinsa_mappingtable import (
 )
 from musinsa.modules.config import DEFAULT_DAG
 
-import json, time
+import json
+import time
+
 
 def sleep_20_min():
     time.sleep(20 * 60)
     return "동희님 바보"
+
 
 # DAG 정의
 with DAG(
@@ -33,7 +36,7 @@ with DAG(
     catchup=False,
     tags=["MUSINSA", "RANKING_RAWDATA", "EXTRACT", "LOAD", "S3", "K8S"],
     concurrency=5,
-    max_active_runs=1
+    max_active_runs=1,
 ) as dag:
 
     # start task
@@ -94,8 +97,7 @@ with DAG(
     trigger_tasks = []
 
     sleep_task = PythonOperator(
-        task_id="wait_for_trigger",
-        python_callable=sleep_20_min
+        task_id="wait_for_trigger", python_callable=sleep_20_min
     )
 
     for i, dag_id in enumerate(trigger_dag_ids):

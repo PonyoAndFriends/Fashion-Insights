@@ -2,7 +2,7 @@ from airflow import DAG
 from airflow.operators.dummy import DummyOperator
 from airflow.operators.python import PythonOperator
 from musinsa.custom_operators.k8s_spark_job_submit_operator import (
-    submit_spark_application
+    submit_spark_application,
 )
 from musinsa.custom_operators.k8s_custom_python_pod_operator import (
     CustomKubernetesPodOperator,
@@ -33,7 +33,7 @@ with DAG(
         "K8S",
     ],
     concurrency=5,
-    max_active_runs=1
+    max_active_runs=1,
 ) as dag:
 
     # start task

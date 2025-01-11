@@ -12,7 +12,7 @@ import modules.s3_module as s3_module
 
 TODAY_DATE = Musinsa_Config.TODAY_DATE
 
-LIST_SIZE = 10
+LIST_SIZE = 20
 
 
 def porductid_list_iterable(iterable):

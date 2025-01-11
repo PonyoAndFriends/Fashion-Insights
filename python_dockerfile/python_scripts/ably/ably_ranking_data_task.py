@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 
 
 # 데이터 수집 및 업로드 클래스 정의
@@ -125,6 +126,9 @@ class DataPipeline:
         for thread in threads:
             thread.join()
 
+=======
+from __main__ import DataPipeline
+>>>>>>> 45f58798e10964619b403af6d72679d71512ae7a
 
 pipeline = DataPipeline()
-pipeline.run_all_categories('ranking')
+pipeline.run_all_categories("ranking")

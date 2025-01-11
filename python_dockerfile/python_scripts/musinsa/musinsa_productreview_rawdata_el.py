@@ -11,7 +11,7 @@ from modules.config import Musinsa_Config
 
 import modules.s3_module as s3_module
 
-LIST_SIZE = 10
+LIST_SIZE = 20
 
 URL = "https://goods.musinsa.com/api2/review/v1/view/list"
 
