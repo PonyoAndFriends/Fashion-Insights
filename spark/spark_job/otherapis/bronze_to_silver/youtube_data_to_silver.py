@@ -20,7 +20,7 @@ spark = SparkSession.builder.appName("YouTubeDataProcessing").getOrCreate()
 
 # 실행 시 전달받은 인자
 args = sys.argv
-source_path = args[1]
+source_path = args[1] + "/*.json"
 target_path = args[2]
 gender = args[3] if len(args) > 3 else None
 

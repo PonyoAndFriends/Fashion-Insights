@@ -12,7 +12,7 @@ spark = SparkSession.builder.appName("WeatherDataProcessing").getOrCreate()
 
 # 실행 시 전달받은 인자
 args = sys.argv
-source_path = args[1]
+source_path = args[1] + "/*.txt"
 target_path = args[2]
 
 # 텍스트 파일 읽기

@@ -19,7 +19,7 @@ spark = SparkSession.builder.appName("snap_ranking_story_to_silver_s3").getOrCre
 
 # 실행 시 전달받은 인자
 args = sys.argv
-source_path = args[1]
+source_path = args[1] + "/*.json"
 target_path = args[2]
 gender = args[3]
 
