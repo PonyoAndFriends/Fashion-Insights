@@ -33,7 +33,7 @@ with DAG(
     redshift_iam_role = Variable.get("redshift_iam_role")
 
     drop_sql = f"""
-    DROP TABLE IF EXIST {DEFAULT_SILVER_SHCEMA}.{table};
+    DROP TABLE IF EXISTS {DEFAULT_SILVER_SHCEMA}.{table};
     """
     create_sql = """
     CREATE TABLE youtube_videos (

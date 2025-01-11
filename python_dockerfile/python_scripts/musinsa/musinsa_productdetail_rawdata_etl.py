@@ -45,13 +45,14 @@ def et_product1_detail(product_id):
 
     response = requests.get(url, headers=Musinsa_Config.HEADERS)
 
+    time.sleep(1.2)
     soup = BeautifulSoup(response.text, features="html.parser")
 
     title_text = soup.find("title").text
     product_name = re.sub(r" - 사이즈 & 후기.*", "", title_text)
 
     # brand naeme_kr, brand name_en
-    brand_name_kr = soup.find("meta", {"property": "product:brand"}).get("content")
+    brand_name_kr = get_content_or_none(soup.find("meta", {"property": "product:brand"}))
     brand_name_en = soup.find("div", class_="sc-11x022e-0 hzZrPp")
     brand_name_en = (
         brand_name_en.find("a", href=True)["href"].split("brand/")[1]
@@ -191,13 +192,7 @@ def main():
                 key = f"bronze/{TODAY_DATE}/musinsa/product_detail_data/{category3depth[0]}/{category4depth}/"
                 t = threading.Thread(
                     target=et_product_detail,
-                    args=(
-                        s3_client,
-                        master_category,
-                        category4depth,
-                        product_list,
-                        key,
-                    ),
+                    args=(s3_client, master_category, category4depth, product_list, key),
                 )
                 t.start()
 

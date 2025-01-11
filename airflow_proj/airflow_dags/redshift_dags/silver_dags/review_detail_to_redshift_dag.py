@@ -36,7 +36,7 @@ with DAG(
     for platform in platforms:
         table = f"{platform}_product_review_detail_tb"
         drop_sql = f"""
-        DROP TABLE IF EXIST {DEFAULT_SILVER_SHCEMA}.{table};
+        DROP TABLE IF EXISTS {DEFAULT_SILVER_SHCEMA}.{table};
         """
 
         create_sql = f"""
