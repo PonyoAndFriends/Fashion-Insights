@@ -147,6 +147,8 @@ class DataPipeline:
 
 
 if __name__=="__main__":
-    pipeline = DataPipeline()
-    pipeline.run_all_categories('ranking')
-    pipeline.run_all_categories('goods_sno')
+    pipeline_1 = DataPipeline()
+    pipeline_1.run_all_categories('ranking')
+
+    pipeline_2 = DataPipeline()
+    pipeline_2.run_all_categories('goods_sno')
