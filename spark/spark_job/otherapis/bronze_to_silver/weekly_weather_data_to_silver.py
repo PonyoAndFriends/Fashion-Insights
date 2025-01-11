@@ -15,7 +15,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 # 스파크 세션 생성
-spark = SparkSession.builder.appName("Weather Data Processing").getOrCreate()
+spark = SparkSession.builder.getOrCreate()
 
 # 실행 시 전달받은 인자
 args = sys.argv

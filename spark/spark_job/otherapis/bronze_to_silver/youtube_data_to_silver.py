@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 
 
 # Spark 세션 생성
-spark = SparkSession.builder.appName("YouTubeDataProcessing").getOrCreate()
+spark = SparkSession.builder.getOrCreate()
 
 # 실행 시 전달받은 인자
 args = sys.argv

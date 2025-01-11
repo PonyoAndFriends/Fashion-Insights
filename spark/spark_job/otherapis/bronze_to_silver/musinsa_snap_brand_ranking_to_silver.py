@@ -19,9 +19,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 # 스파크 세션 생성
-spark = SparkSession.builder.appName(
-    "musinsa_snap_brand_ranking_to_silver_s3"
-).getOrCreate()
+spark = SparkSession.builder.getOrCreate()
 
 # 실행 시 전달받은 인자
 args = sys.argv
