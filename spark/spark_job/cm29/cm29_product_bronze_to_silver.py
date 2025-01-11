@@ -9,7 +9,6 @@ from pyspark.sql.functions import (
     concat_ws,
 )
 from datetime import datetime, timedelta
-import sys
 from functools import reduce
 from cm29_product_detail_mapping_table import depth_mapping
 
@@ -170,4 +169,3 @@ sub_category_df = raw_data.select(
 sub_category_output_path = f"s3a://{BUCKET_NAME}/silver/{today}/29cm/sub_category_tb/"
 sub_category_df.write.mode("overwrite").parquet(sub_category_output_path)
 logging.info(f"sub_category_tb 저장 완료: {sub_category_output_path}")
-

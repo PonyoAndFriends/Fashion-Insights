@@ -1,40 +1,44 @@
 from datetime import datetime
-from ably_modules.ably_dependencies import ABLYAPI_DEFAULT_ARGS, DEFAULT_S3_DICT
+from ably_modules.ably_dependencies import DEFAULT_S3_DICT
 import boto3
 import json
 from ably_modules.aws_info import AWS_S3_CONFIG
+
 
 def list_folders(bucket_name, base_path):
     s3_client = boto3.client(
         "s3",
         aws_access_key_id=AWS_S3_CONFIG.get("aws_access_key_id"),
-        aws_secret_access_key=AWS_S3_CONFIG.get("aws_secret_access_key")
+        aws_secret_access_key=AWS_S3_CONFIG.get("aws_secret_access_key"),
     )
-    response = s3_client.list_objects_v2(Bucket=bucket_name, Prefix=base_path, Delimiter='/')
-    return [content['Prefix'] for content in response.get('CommonPrefixes', [])]
+    response = s3_client.list_objects_v2(
+        Bucket=bucket_name, Prefix=base_path, Delimiter="/"
+    )
+    return [content["Prefix"] for content in response.get("CommonPrefixes", [])]
+
 
 bucket_name = DEFAULT_S3_DICT["bucket_name"]
-base_path=f"{datetime.now().strftime('%Y-%m-%d')}/ReviewData/"
+base_path = f"{datetime.now().strftime('%Y-%m-%d')}/ReviewData/"
 folders = list_folders(bucket_name, base_path)
 
-with open('/airflow/xcom/return.json', 'w') as f:
+with open("/airflow/xcom/return.json", "w") as f:
     json.dump({"folders": folders}, f)
 
 
-import boto3
 import json
-from ably_modules.aws_info import AWS_S3_CONFIG
+
 
 def get_product_ids(bucket_name, folder):
     s3_client = boto3.client(
         "s3",
         aws_access_key_id=AWS_S3_CONFIG.get("aws_access_key_id"),
-        aws_secret_access_key=AWS_S3_CONFIG.get("aws_secret_access_key")
+        aws_secret_access_key=AWS_S3_CONFIG.get("aws_secret_access_key"),
     )
     key = f"{folder}goods_sno_list.json"
     response = s3_client.get_object(Bucket=bucket_name, Key=key)
-    data = json.loads(response['Body'].read().decode('utf-8'))
+    data = json.loads(response["Body"].read().decode("utf-8"))
     return next(iter(data.items()))
+
 
 bucket_name = "{bucket_name}"
 folders = {folders}
@@ -44,10 +48,8 @@ for folder in folders:
     category_key, product_ids = get_product_ids(bucket_name, folder)
     product_ids_map[folder] = {"category_key": category_key, "product_ids": product_ids}
 
-with open('/airflow/xcom/return.json', 'w') as f:
+with open("/airflow/xcom/return.json", "w") as f:
     json.dump(product_ids_map, f)
-
-
 
     # 상품 ID 추출 작업
     extract_product_ids_task = KubernetesPodOperator(

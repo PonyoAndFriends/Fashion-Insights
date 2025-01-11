@@ -145,6 +145,7 @@ class DataPipeline:
             thread.join()
 
 
+<<<<<<< HEAD:python_dockerfile/python_scripts/ably/ably_ranking_data.py
 
 if __name__=="__main__":
     pipeline_1 = DataPipeline()
@@ -152,3 +153,9 @@ if __name__=="__main__":
 
     pipeline_2 = DataPipeline()
     pipeline_2.run_all_categories('goods_sno')
+=======
+if __name__ == "__main__":
+    pipeline = DataPipeline()
+    pipeline.run_all_categories("ranking")
+    pipeline.run_all_categories("goods_sno")
+>>>>>>> 7c2a8840d8497ba441288bc326da431e62e7c7ca:python_dockerfile/python_scripts/ably/dag_ably_ranking_data.py
