@@ -91,8 +91,8 @@ with DAG(
         fetch_snap_ranking_brand_data_tasks.append(fetch_snap_ranking_brand_data_task)
 
     spark_args = [
-        make_s3_url(Variable("s3_bucket"), BRONZE_FILE_PATH),
-        make_s3_url(Variable("s3_bucket"), SILVER_FILE_PATH),
+        make_s3_url(Variable.get("s3_bucket"), BRONZE_FILE_PATH),
+        make_s3_url(Variable.get("s3_bucket"), SILVER_FILE_PATH),
     ]
 
     spark_job_submit_task = PythonOperator(
