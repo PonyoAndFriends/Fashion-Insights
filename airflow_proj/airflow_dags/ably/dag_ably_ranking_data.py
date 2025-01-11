@@ -1,9 +1,11 @@
 from airflow import DAG
 from ably.ably_modules.k8s_custom_python_pod_operator import CustomKubernetesPodOperator
 from datetime import datetime
+from airflow.operators.trigger_dagrun import TriggerDagRunOperator
 from ably.ably_modules.ably_dependencies import (
     ABLYAPI_DEFAULT_ARGS,
 )
+from ably.ably_modules.k8s_spark_job_submit_operator import submit_spark_application
 import logging
 
 
@@ -32,6 +34,10 @@ raking_goods_data_task = CustomKubernetesPodOperator(
     memory_limit="1Gi",
     is_delete_operator_pod=True,
     get_logs=True,
+)
+
+trigger_task = TriggerDagRunOperator(
+    task_id=""
 )
 
 raking_goods_data_task

@@ -46,10 +46,11 @@ def el_productreview(s3_client, product_id_list, key):
                     URL, headers=Musinsa_Config.HEADERS, params=PARAMS
                 )
                 data = response.json()["data"]
+                if data['total'] != 0:
+                    s3_module.upload_json_to_s3(s3_client, bronze_bucket, s3_key, data)
             except:
-                logging.warning(product_id, "는 리뷰가 없습니다.")
+                logging.error(f"Error: {e}")
                 continue
-            s3_module.upload_json_to_s3(s3_client, bronze_bucket, s3_key, data)
 
 
 def main():
