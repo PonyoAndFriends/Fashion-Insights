@@ -35,8 +35,8 @@ PAGE_SIZE = math.ceil(TOTAL_DATA_COUNT // (PARALLEL_POD_NUM * PARALLEL_THREAD_NU
 
 # 파일 경로 설정
 FILE_TOPIC = "musinsa_snap_brand_ranking"
-BRONZE_FILE_PATH = f"bronze/{(datetime.now() + timedelta(hours=9)).strftime('%Y-%m-%d')}/otherapis/{FILE_TOPIC}_raw_data/"
-SILVER_FILE_PATH = f"silver/{(datetime.now() + timedelta(hours=9)).strftime('%Y-%m-%d')}/otherapis/{FILE_TOPIC}_raw_data/"
+BRONZE_FILE_PATH = f"bronze/{(datetime.now() + timedelta(hours=9)).strftime('%Y-%m-%d')}/otherapis/{FILE_TOPIC}_raw_data/".strip()
+SILVER_FILE_PATH = f"silver/{(datetime.now() + timedelta(hours=9)).strftime('%Y-%m-%d')}/otherapis/{FILE_TOPIC}_raw_data/".strip()
 
 # DAG의 기본 args 정의
 default_args = OTHERAPI_DEFAULT_ARGS

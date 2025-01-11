@@ -27,6 +27,8 @@ spark = SparkSession.builder.appName(
 args = sys.argv
 source_path = args[1]
 target_path = args[2]
+logger.info(f"source_path: {source_path}")
+logger.info(f"target_path: {target_path}")
 
 # S3에서 모든 JSON 파일 읽기
 raw_json_df = s3_spark_module.read_and_partition_s3_data(spark, source_path, "json")
