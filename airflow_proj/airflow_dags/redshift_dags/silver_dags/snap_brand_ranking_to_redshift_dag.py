@@ -37,11 +37,15 @@ with DAG(
     """
     create_sql = f"""
     CREATE TABLE {DEFAULT_SILVER_SHCEMA}.{table} (
-        story_id VARCHAR(30) PRIMARY KEY,
-        content_type VARCHAR NOT NULL,
-        aggregation_like_count INT NOT NULL,
-        tags SUPER NOT NULL,
-        created_at TIMESTAMP NOT NULL
+        brand_id VARCHAR(30) PRIMARY KEY,
+        brand_name VARCHAR(30) NOT NULL,
+        img_url VARCHAR(1000),
+        content_type VARCHAR(50) NOT NULL,
+        rank INT NOT NULL,
+        previous_rank INT NOT NULL,
+        follower_count INT NOT NULL,
+        label_names SUPER NOT NULL,
+        created_at DATE NOT NULL
     );
     """
     refresh_task = RefreshTableOperator(

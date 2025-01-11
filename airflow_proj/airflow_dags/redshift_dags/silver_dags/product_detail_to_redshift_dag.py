@@ -41,11 +41,11 @@ with DAG(
     create_sql = f"""
     CREATE TABLE {DEFAULT_SILVER_SHCEMA}.{table} (
         platform VARCHAR(100) NOT NULL,
-        master_category_name VARCHAR(12),
-        small_category_name VARCHAR(30),
+        master_category_name VARCHAR(32),
+        small_category_name VARCHAR(50),
         product_id INT NOT NULL,
         img_url VARCHAR(1000),
-        product_name VARCHAR(100) NOT NULL,
+        product_name VARCHAR(512) NOT NULL,
         brand_name_kr VARCHAR(100) NOT NULL,
         brand_name_en VARCHAR(100),
         original_price INT,
@@ -54,9 +54,10 @@ with DAG(
         review_counting INT,
         review_avg_rating FLOAT,
         like_counting INT,
-        created_at TIMESTAMP NOT NULL
+        created_at DATE NOT NULL
     );
     """
+
     refresh_task = RefreshTableOperator(
         task_id="refresh_product_detail_table_task",
         drop_sql=drop_sql,

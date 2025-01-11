@@ -39,11 +39,11 @@ with DAG(
     create_sql = f"""
     CREATE TABLE {DEFAULT_SILVER_SHCEMA}.{table} (
         story_id VARCHAR(30) PRIMARY KEY,
-        content_type VARCHAR NOT NULL,
+        content_type VARCHAR(50) NOT NULL,
         aggregation_like_count INT NOT NULL,
         tags SUPER NOT NULL,
-        gender VARCHAR(5) NOT NULL,
-        created_at TIMESTAMP NOT NULL,
+        created_at DATE NOT NULL,
+        gender VARCHAR(8) NOT NULL
     );
     """
     refresh_task = RefreshTableOperator(

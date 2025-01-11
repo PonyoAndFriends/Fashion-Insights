@@ -45,7 +45,7 @@ def create_dag():
                 json.dump({"folders": folders}, f)
             """.format(
                 bucket_name=DEFAULT_S3_DICT["bucket_name"],
-                base_path=f"{datetime.now().strftime('%Y-%m-%d')}/ReviewData/",
+                base_path=f"{datetime.now().strftime('%Y-%m-%d')}/review_data/",
             ),
         ],
         is_delete_operator_pod=True,

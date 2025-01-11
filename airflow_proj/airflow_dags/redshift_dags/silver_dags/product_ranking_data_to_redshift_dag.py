@@ -40,10 +40,10 @@ with DAG(
     create_sql = f"""
     CREATE TABLE {DEFAULT_SILVER_SHCEMA}.{table} (
         platform VARCHAR(100) NOT NULL,
-        master_category_name VARCHAR(12) NOT NULL,
+        master_category_name VARCHAR(32) NOT NULL,
         product_id INT NOT NULL,
         ranking INT NOT NULL,
-        created_at DATETIME NOT NULL
+        created_at DATE NOT NULL
     );
     """
     refresh_task = RefreshTableOperator(

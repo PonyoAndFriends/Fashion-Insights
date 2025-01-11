@@ -38,16 +38,16 @@ with DAG(
     create_sql = """
     CREATE TABLE youtube_videos (
         video_id VARCHAR(20) PRIMARY KEY,
-        gender VARCHAR(2),
+        gender VARCHAR(8),
         category_name VARCHAR(100) NOT NULL,
         channel_title VARCHAR(200) NOT NULL,
         title VARCHAR(200) NOT NULL,
         img_url VARCHAR(1000) NOT NULL,
         duration_seconds INT NOT NULL,
-        published_at TIMESTAMP NOT NULL,
+        published_at DATE NOT NULL,
         view_count INT NOT NULL,
         like_count INT,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        created_at DATE
     );
     """
     refresh_task = RefreshTableOperator(

@@ -29,7 +29,7 @@ with DAG(
     # 기본적인 설정 정의
     now_string = NOW_STRING
     silver_bucket_url = DEFULAT_SILVER_BUCKET_URL
-    table = "naver_naver_shopping_kwd_tb"
+    table = "naver_shopping_kwd_tb"
     redshift_iam_role = Variable.get("redshift_iam_role")
 
     drop_sql = f"""
@@ -44,10 +44,10 @@ with DAG(
         category_name VARCHAR(100) NOT NULL,
         category_code VARCHAR(20) NOT NULL,
         keyword_name VARCHAR(100) NOT NULL,
-        gender VARCHAR(5),
+        gender VARCHAR(8),
         period DATE NOT NULL,
         ratio FLOAT NOT NULL,
-        created_at TIMESTAMP NOT NULL
+        created_at DATE NOT NULL
     );
     """
     refresh_task = RefreshTableOperator(
