@@ -87,7 +87,7 @@ with DAG(
         python_callable=submit_spark_application,
         op_args=[
             "cm29-ranking-silver-etl-spark",
-            "cm29/cm29_ranking_bronze_to_silver.py",
+            "cm29/cm29_product_bronze_to_silver.py",
             spark_args,
         ],
     )
