@@ -48,7 +48,7 @@ def el_productreview(s3_client, product_id_list, key):
                 data = response.json()["data"]
                 if data["total"] != 0:
                     s3_module.upload_json_to_s3(s3_client, bronze_bucket, s3_key, data)
-            except:
+            except Exception as e:
                 logging.error(f"Error: {e}")
                 continue
 
