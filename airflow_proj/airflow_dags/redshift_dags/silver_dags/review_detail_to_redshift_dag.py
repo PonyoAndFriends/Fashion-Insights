@@ -34,7 +34,7 @@ with DAG(
     redshift_iam_role = Variable.get("redshift_iam_role")
 
     for platform in platforms:
-        table = f"{platform}_product_review_detail_tb"
+        table = f"cm29_product_review_detail_tb"
         drop_sql = f"""
         DROP TABLE IF EXISTS {DEFAULT_SILVER_SHCEMA}.{table};
         """
