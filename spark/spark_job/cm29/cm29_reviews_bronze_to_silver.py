@@ -1,7 +1,7 @@
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import col, regexp_replace, substring, when
 from pyspark.sql.types import FloatType
-from datetime import datetime
+from datetime import datetime, timedelta
 import logging
 import os, sys
 
@@ -20,7 +20,7 @@ spark = (
     .getOrCreate()
 )
 
-today = datetime.now().strftime("%Y-%m-%d")
+today = (datetime.now() + timedelta(hours=9)).strftime("%Y-%m-%d")
 
 # JSON 데이터 경로
 review_data_path = f"s3a://{BUCKET_NAME}/bronze/{today}/29cm/29cm_reviews/*/*/*_reviews.json"

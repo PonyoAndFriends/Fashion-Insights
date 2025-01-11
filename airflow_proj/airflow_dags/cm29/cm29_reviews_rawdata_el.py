@@ -4,7 +4,7 @@ import requests
 import logging
 import boto3
 from airflow.models import Variable
-from datetime import datetime
+from datetime import datetime, timedelta
 
 # 로그 설정
 logging.basicConfig(
@@ -133,7 +133,8 @@ def fetch_and_save_reviews_from_all_files(file_key):
         return
 
     category_reviews = []
-    created_at = datetime.now().strftime("%Y-%m-%d")  # created_at 값 추가
+    now = datetime.now()
+    created_at = (now + timedelta(hours=9)).strftime("%Y-%m-%d")  # created_at 값 추가
 
     for product_id in product_ids:
         reviews = fetch_reviews_for_product(product_id, created_at)  # created_at 전달

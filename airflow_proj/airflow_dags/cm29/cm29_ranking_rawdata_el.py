@@ -78,7 +78,7 @@ def extract_product_data(product, rank):
             ]
         )
     )
-    created_at = (datetime.now() - timedelta(hours=9)).strftime("%Y-%m-%d")
+    created_at = (datetime.now() + timedelta(hours=9)).strftime("%Y-%m-%d")
     collection_platform = "29CM"
 
     img_url = "https://img.29cm.co.kr" + product["imageUrl"]
@@ -143,7 +143,7 @@ def fetch_and_save_data_to_s3(large_id, medium_id, small_id, s3_path, gender_fol
         ]
 
         # 오늘 날짜 폴더 경로 추가
-        today = (datetime.now() - timedelta(hours=9)).strftime("%Y-%m-%d")
+        today = (datetime.now() + timedelta(hours=9)).strftime("%Y-%m-%d")
 
         # 상품 데이터 저장 경로
         if any(category in s3_path for category in SHOES_CATEGORIES):

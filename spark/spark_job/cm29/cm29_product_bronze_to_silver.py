@@ -8,7 +8,7 @@ from pyspark.sql.functions import (
     when,
     concat_ws,
 )
-from datetime import datetime
+from datetime import datetime, timedelta
 import os, sys
 from functools import reduce
 from cm29_product_detail_mapping_table import depth_mapping
@@ -34,7 +34,7 @@ spark = (
     .getOrCreate()
 )
 
-today = datetime.now().strftime("%Y-%m-%d")
+today = (datetime.now() + timedelta(hours=9)).strftime("%Y-%m-%d")
 
 # S3 경로
 man_data_path = (
