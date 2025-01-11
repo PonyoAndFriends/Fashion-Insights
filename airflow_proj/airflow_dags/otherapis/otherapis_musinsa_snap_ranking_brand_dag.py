@@ -1,8 +1,9 @@
 from airflow import DAG
 from airflow.models import Variable
 from datetime import datetime, timedelta
+from airflow.operators.python import PythonOperator
 from otherapis.custom_operators.k8s_spark_job_submit_operator import (
-    SparkApplicationOperator,
+    submit_spark_application,
 )
 from otherapis.custom_operators.k8s_custom_python_pod_operator import (
     CustomKubernetesPodOperator,
@@ -89,13 +90,18 @@ with DAG(
         )
         fetch_snap_ranking_brand_data_tasks.append(fetch_snap_ranking_brand_data_task)
 
-    spark_job_submit_task = SparkApplicationOperator(
+    spark_args = [
+        make_s3_url(Variable("s3_bucket"), BRONZE_FILE_PATH),
+        make_s3_url(Variable("s3_bucket"), SILVER_FILE_PATH),
+    ]
+    
+    spark_job_submit_task = PythonOperator(
         task_id="musinsa_snap_ranking_brand_submit_spark_job_task",
-        name="musinsa_snap_ranking_brand_from_bronze_to_silver_data",
-        main_application_file=r"otherapis/bronze_to_silver/musinsa_snap_brand_ranking_to_silver.py",
-        application_args=[
-            make_s3_url(Variable("s3_bucket"), BRONZE_FILE_PATH),
-            make_s3_url(Variable("s3_bucket"), SILVER_FILE_PATH),
+        python_callable=submit_spark_application,
+        op_args=[
+            "musinsa-snap-ranking-brand-from-bronze-to-silver-data",
+            "otherapis/bronze_to_silver/musinsa_snap_brand_ranking_to_silver.py",
+            spark_args
         ],
     )
 

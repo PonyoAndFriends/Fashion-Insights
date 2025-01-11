@@ -1,7 +1,8 @@
 from airflow import DAG
 from airflow.operators.dummy import DummyOperator
+from airflow.operators.python import PythonOperator
 from musinsa.custom_operators.k8s_spark_job_submit_operator import (
-    SparkApplicationOperator,
+    submit_spark_application
 )
 from musinsa.custom_operators.k8s_custom_python_pod_operator import (
     CustomKubernetesPodOperator,
@@ -73,10 +74,14 @@ with DAG(
 
         wait_task >> raw_end
 
-    spark_submit_task = SparkApplicationOperator(
-        name="musinsa_product_detail_raw_data_spark_submit_task",
-        main_application_file="musinsa/musinsa_productdetail_silverdata_spark.py",
+    spark_submit_task = PythonOperator(
         task_id="musinsa_product_detail_data_spark_task",
+        python_callable=submit_spark_application,
+        op_args=[
+            "musinsa-product-detail-raw-data-spark-submit-application",
+            "musinsa/musinsa_productdetail_silverdata_spark.py",
+            None,
+        ],
     )
 
     raw_end >> spark_submit_task >> dag_end

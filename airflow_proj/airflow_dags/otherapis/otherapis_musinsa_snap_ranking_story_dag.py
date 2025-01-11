@@ -1,6 +1,7 @@
 from airflow import DAG
 from airflow.models import Variable
 from datetime import datetime, timedelta
+from airflow.operators.python import PythonOperator
 from otherapis.custom_operators.k8s_custom_python_pod_operator import (
     CustomKubernetesPodOperator,
 )
@@ -14,7 +15,7 @@ from otherapis.custom_operators.custom_modules.otherapis_dependencies import (
     OTHERAPI_DEFAULT_PYTHON_SCRIPT_PATH,
 )
 from otherapis.custom_operators.k8s_spark_job_submit_operator import (
-    SparkApplicationOperator,
+    submit_spark_application
 )
 from otherapis.custom_operators.custom_modules.s3_upload import (
     make_s3_url,
@@ -99,22 +100,27 @@ with DAG(
             )
 
     fetch_snap_ranking_story_data_spark_submit_tasks = []
-    for gender in ["MEN", "WOMEN"]:
+    for gender in ["남성", "여성"]:
         file_topic = f"musinsa_{gender}_ranking_story_group"
         file_path = f"{(datetime.now() +  + timedelta(hours=9)).strftime('%Y-%m-%d')}/otherapis/{file_topic}_raw_data/"
-        spark_job_submit_task = SparkApplicationOperator(
-            task_id=f"musinsa_snap_ranking_story_{gender}_submit_spark_job_task",
-            name=f"musinsa_snap_ranking_stroy_{gender}_from_bronze_to_silver_data",
-            main_application_file=r"otherapis/bronze_to_silver/musinsa_snap_ranking_story_to_silver.py",
-            application_args=[
+        spark_args = [
                 make_s3_url(Variable.get("s3_bucket"), BRONZE_FILE_PATH),
                 make_s3_url(Variable.get("s3_bucket"), SILVER_FILE_PATH),
                 gender,
             ],
+        spark_job_submit_task = PythonOperator(
+            task_id=f"musinsa_snap_ranking_story_{gender}_submit_spark_job_task",
+            python_callable=submit_spark_application,
+            op_args=[
+                f"musinsa-snap-ranking-stroy-{gender}-from-bronze-to-silver-data",
+                r"otherapis/bronze_to_silver/musinsa_snap_ranking_story_to_silver.py",
+                spark_args,
+            ],
         )
+        fetch_snap_ranking_story_data_spark_submit_tasks.append(spark_job_submit_task)
 
     (
         calculate_page_range_task
         >> fetch_snap_ranking_story_data_tasks
-        >> spark_job_submit_task
+        >> fetch_snap_ranking_story_data_spark_submit_tasks
     )

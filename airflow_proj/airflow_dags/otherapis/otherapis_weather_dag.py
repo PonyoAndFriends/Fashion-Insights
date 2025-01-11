@@ -1,5 +1,6 @@
 from airflow import DAG
 from airflow.models import Variable
+from airflow.operators.python import PythonOperator
 from otherapis.custom_operators.fetch_non_paged_data_operator import (
     FetchNonPagedDataOperator,
 )
@@ -8,7 +9,7 @@ from otherapis.custom_operators.custom_modules.otherapis_dependencies import (
     OTHERAPI_DEFAULT_ARGS,
 )
 from otherapis.custom_operators.k8s_spark_job_submit_operator import (
-    SparkApplicationOperator,
+    submit_spark_application
 )
 from otherapis.custom_operators.custom_modules.s3_upload import (
     make_s3_url,
@@ -55,13 +56,17 @@ with DAG(
         weather_fetch_task_list.append(fetch_weather_data_task)
         now -= one_day
 
-    spark_job_submit_task = SparkApplicationOperator(
-        task_id="weekly_weather_submit_spark_job_task",
-        name="weekly_weather_data_from_bronze_to_silver_task",
-        main_application_file=r"otherapis/bronze_to_silver/weekly_weather_data_to_silver.py",
-        application_args=[
+    spark_args=[
             make_s3_url(Variable.get("s3_bucket"), BRONZE_FILE_PATH),
             make_s3_url(Variable.get("s3_bucket"), SILVER_FILE_PATH),
+        ]
+    spark_job_submit_task = PythonOperator(
+        task_id="weekly_weather_submit_spark_job_task",
+        python_callable=submit_spark_application,
+        op_args=[
+            "weekly_weather_data_from_bronze_to_silver_task",
+            "otherapis/bronze_to_silver/weekly_weather_data_to_silver.py",
+            spark_args
         ],
     )
 
