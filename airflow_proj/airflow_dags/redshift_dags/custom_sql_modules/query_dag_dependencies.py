@@ -14,5 +14,5 @@ SILVER_LOAD_DEFAULT_ARGS = {
 
 DEFAULT_SILVER_SHCEMA = "retail_silver_layer"
 DEFAULT_GOLD_SHCEMA = "retail_gold_layer"
-DEFULAT_SILVER_BUCKET_URL = rf"s3://{Variable.get('s3_bucket')}/silver/"
+DEFULAT_SILVER_BUCKET_URL = rf"s3://{Variable.get('s3_bucket')}/silver"
 PLATFORMS = ["musinsa", "29cm", "ably"]
