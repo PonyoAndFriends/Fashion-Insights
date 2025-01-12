@@ -95,7 +95,7 @@ with DAG(
             task_id=f"youtube_category_videos_{task['task_gender']}_submit_spark_job_task",
             python_callable=submit_spark_application,
             op_args=[
-                f"youtube_category_videos_{task['task_gender']}_from_bronze_to_silver_data",
+                f"youtube-category-videos-{task['task_gender']}-from-bronze-to-silver-data-application",
                 r"otherapis/bronze_to_silver/youtube_data_to_silver.py",
                 spark_args,
             ],

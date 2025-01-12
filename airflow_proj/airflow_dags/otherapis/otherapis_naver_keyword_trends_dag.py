@@ -100,7 +100,7 @@ with DAG(
             task_id=f"naver_keywords_trend_{task['task_gender']}_submit_spark_job_task",
             python_callable=submit_spark_application,
             op_args=[
-                f"naveer_keywords_trend_{task['task_gender']}_from_bronze_to_silver_data",
+                f"naveer-keywords-trend-{task['task_gender']}-from-bronze-to-silver-data",
                 r"otherapis/bronze_to_silver/naver_keyword_trend_to_silver.py",
                 spark_args,
             ],

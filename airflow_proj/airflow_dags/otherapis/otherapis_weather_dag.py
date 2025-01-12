@@ -64,7 +64,7 @@ with DAG(
         task_id="weekly_weather_submit_spark_job_task",
         python_callable=submit_spark_application,
         op_args=[
-            "weekly_weather_data_from_bronze_to_silver_task",
+            "weekly-weather-data-from-bronze-to-silver-application",
             "otherapis/bronze_to_silver/weekly_weather_data_to_silver.py",
             spark_args,
         ],

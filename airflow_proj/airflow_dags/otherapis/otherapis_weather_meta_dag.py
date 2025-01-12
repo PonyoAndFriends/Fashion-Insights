@@ -54,7 +54,7 @@ with DAG(
         ],
     )
     spark_job_submit_task = PythonOperator(
-        task_id="weekly_weather_submit_spark_job_task",
+        task_id="weekly-weather-submit-spark-job-task",
         python_callable=submit_spark_application,
         op_args=[
             "weekly-weather-data-from-bronze-to-silver-task",
