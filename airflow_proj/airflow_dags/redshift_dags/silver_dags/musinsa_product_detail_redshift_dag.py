@@ -43,7 +43,7 @@ with DAG(
     for task_number, depth3code in enumerate(mapping_list):
         copy_query = f"""
         COPY {DEFAULT_SILVER_SHCEMA}.{table}
-        FROM '{silver_bucket_url}/{now_string}/{platform}/{platform}_product_detail_tb/{depth3code}/'
+        FROM '{silver_bucket_url}/{now_string}/{platform}/product_detail_tb/{depth3code}/'
         IAM_ROLE '{redshift_iam_role}'
         FORMAT AS PARQUET;
         """
