@@ -1,12 +1,12 @@
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import col, lit, to_date, array_join
 from pyspark.conf import SparkConf
-from datetime import datetime
+from datetime import datetime, timedelta
 import os
 import glob
 
 # 오늘 날짜
-TODAY_DATE = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+TODAY_DATE = (datetime.now() + timedelta(hours=9)).strftime("%Y-%m-%d %H:%M:%S")
 
 
 def create_spark_session():
@@ -65,13 +65,13 @@ def main():
     spark = create_spark_session()
 
     # 입력 JSON 경로 패턴
-    input_path_pattern = f"s3a://ablyrawdata/{TODAY_DATE}/Ably/ReviewData/**/*.json"
+    input_path_pattern = f"s3a://team3-2-s3/bronze/{TODAY_DATE}/ably/review_data/**/*.json"
 
     # 제외할 파일 이름
     exclude_file = "goods_sno_list.json"
 
     # 출력 Parquet 경로
-    output_parquet_path = f"s3a://silver/{TODAY_DATE}/ably/review_data/platform_product_review_detail_tb.parquet"
+    output_parquet_path = f"s3a://team3-2-s3/silver/{TODAY_DATE}/ably/review_data/platform_product_review_detail_tb.parquet"
 
     # 제외 파일을 제외한 입력 파일 리스트
     input_files = get_filtered_input_files(input_path_pattern, exclude_file)

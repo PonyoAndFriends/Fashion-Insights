@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from itertools import islice
 import os
 from ably_modules.ably_dependencies import (
@@ -147,8 +147,8 @@ class DataPipeline:
                 else:
                     raise ValueError(f"Invalid data type: {data_type}")
 
-                today_date = datetime.now().strftime("%Y-%m-%d")
-                s3_path = f"{today_date}/{folder_name}/{category_id}_{sub_category_id}/{file_name}.json"
+                today_date = (datetime.now() + timedelta(hours=9)).strftime("%Y-%m-%d")
+                s3_path = f"bronze/{today_date}/ably/{folder_name}/{category_id}_{sub_category_id}/{file_name}.json"
                 s3_client = boto3.client(
                     "s3",
                     aws_access_key_id=self.aws_access_key_id,

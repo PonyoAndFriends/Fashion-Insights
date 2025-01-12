@@ -1,13 +1,13 @@
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import to_date, col, lit
 from pyspark.conf import SparkConf
-from datetime import datetime
+from datetime import datetime, timedelta
 import os
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from ably_modules.ably_mapping_table import CATEGORY_PARAMS
 
 # 오늘 날짜
-TODAY_DATE = datetime.now().strftime("%Y-%m-%d")
+TODAY_DATE = (datetime.now() + timedelta(hours=9)).strftime("%Y-%m-%d")
 
 
 def create_spark_session():
@@ -58,11 +58,11 @@ def process_product_details(
         file_name = f"{category3depth}/{gender}_{category2depth}_{category3depth}_{category4depth}"
 
         # input - filepath 조합
-        input_path = f"s3a://ablyrawdata/{TODAY_DATE}/Ably/RankingData/*/*.json"
+        input_path = f"s3a://team3-2-s3/bronze/{TODAY_DATE}/ably/ranking_data/*/*.json"
 
         # output - filepath 조합
         table_output_path = (
-            f"s3a://silver/{TODAY_DATE}/ably/product_details/{file_name}.parquet"
+            f"s3a://team3-2-s3/silver/{TODAY_DATE}/ably/product_details/{file_name}.parquet"
         )
 
         master_category_name = f"{gender}-{category2depth}-{category3depth}"
