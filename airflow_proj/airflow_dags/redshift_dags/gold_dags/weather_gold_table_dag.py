@@ -29,19 +29,19 @@ with DAG(
     """
 
     create_sql = f"""
-    CREATE TABLE weather_summary AS
+    CREATE TABLE {DEFAULT_GOLD_SHCEMA}.{table} AS
     SELECT
-        wo.STN,
-        wo.TM,
-        wo.TA_AVG,
-        wo.TA_MAX,
-        wo.TA_MIN,
-        wo.RN_DAY
+        st.stn_ko AS 지역명,  -- weather_center_location_tb의 지역명
+        wd.TM AS 측정시간,   -- 측정 시간
+        wd.TA_AVG AS 평균온도, -- 평균 온도
+        wd.TA_MAX AS 최고온도, -- 최고 온도
+        wd.TA_MIN AS 최저온도, -- 최저 온도
+        wd.RN_DAY AS 일강수량  -- 하루 강수량
     FROM
         {DEFAULT_SILVER_SHCEMA}.weather_daily_tb wd
     JOIN
-        {DEFAULT_SILVER_SHCEMA}.weather_center_location_tb st 
-    ON wo.STN = st.STN_ID;
+        {DEFAULT_SILVER_SHCEMA}.weather_center_location_tb st
+    ON wd.STN = st.stn_id;
     """
 
     full_refresh_task = RefreshTableOperator(
