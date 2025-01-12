@@ -1,5 +1,5 @@
 from pyspark.sql import SparkSession
-from pyspark.sql.functions import lit, col
+from pyspark.sql.functions import lit, col, when
 from datetime import datetime, timedelta
 from ably_modules.ably_mapping_table import CATEGORY_PARAMS
 
@@ -20,11 +20,11 @@ def transform_data_to_product_detail(spark, json_path, category3depth, category4
         lit("ably").alias("platform"),
         lit(category3depth).alias("master_category_name"),
         lit(category4depth).alias("small_category_name"),
-        col("item.like.goods_sno").alias("product_id"),
+        when(col("item.like.goods_sno").isNotNull(), col("item.like.goods_sno")).otherwise(col("logging.analytics.GOODS_SNO")).alias("product_id"),
         col("item.image").alias("img_url"),
         col("logging.analytics.GOODS_NAME").alias("product_name"),
         col("logging.analytics.MARKET_NAME").alias("brand_name_kr"),
-        col("render.data.first_page_rendering.original_price").alias("original_price"),
+        col("item.first_page_rendering.original_price").alias("original_price"),
         col("logging.analytics.SALES_PRICE").alias("final_price"),
         col("logging.analytics.DISCOUNT_RATE").alias("discount_ratio"),
         col("logging.analytics.REVIEW_COUNT").alias("review_counting"),
