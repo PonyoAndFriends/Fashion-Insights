@@ -42,7 +42,7 @@ with DAG(
         create_sql = f"""
         CREATE TABLE {DEFAULT_SILVER_SHCEMA}.{table} (
             product_id INT NOT NULL,
-            review_content VARCHAR(4000),
+            review_content VARCHAR(8000),
             review_rating INT,
             review_date DATE,
             reviewer_height FLOAT,
