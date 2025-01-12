@@ -105,6 +105,10 @@ with DAG(
     )
 
     fetch_snap_ranking_story_data_spark_submit_tasks = []
+    gender_dict = {
+        "남성": "MEN",
+        "여성": "WOMEN",
+    }
     for gender in ["남성", "여성"]:
         file_topic = f"musinsa_{gender}_ranking_story_group"
         file_path = f"{(datetime.now() +  + timedelta(hours=9)).strftime('%Y-%m-%d')}/otherapis/{file_topic}_raw_data/"
@@ -116,10 +120,10 @@ with DAG(
             ],
         )
         spark_job_submit_task = PythonOperator(
-            task_id=f"musinsa_snap_ranking_story_{gender}_submit_spark_job_task",
+            task_id=f"musinsa_snap_ranking_story_{gender_dict[gender]}_submit_spark_job_task",
             python_callable=submit_spark_application,
             op_args=[
-                f"musinsa-snap-ranking-stroy-{gender}-from-bronze-to-silver-data",
+                f"musinsa-snap-ranking-stroy-{gender_dict[gender]}-from-bronze-to-silver-data",
                 r"otherapis/bronze_to_silver/musinsa_snap_ranking_story_to_silver.py",
                 spark_args,
             ],
