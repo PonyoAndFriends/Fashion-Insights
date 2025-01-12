@@ -56,9 +56,12 @@ def process_product_details(row):
             spark, input_path, row['category3depth'], row['category4depth'], TODAY_DATE
         )
 
-        # 데이터 저장
-        print(f"Writing data to: {output_path}")
-        cleaned_df.write.mode("overwrite").parquet(output_path)
+        # 데이터가 있을 경우에만 저장
+        if cleaned_df.limit(1).count() > 0:
+            print(f"Writing data to: {output_path}")
+            cleaned_df.write.mode("overwrite").parquet(output_path)
+        else:
+            print(f"No data found for: {row['category4depth']}. Skipping file creation.")
 
     except Exception as e:
         print(f"Error processing row {row['category4depth']}: {e}")  # 예외 로그 출력
