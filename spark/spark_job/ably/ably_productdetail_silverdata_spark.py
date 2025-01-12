@@ -20,7 +20,7 @@ def transform_data_to_product_detail(spark, json_path, category3depth, category4
         lit("ably").alias("platform"),
         lit(category3depth).alias("master_category_name"),
         lit(category4depth).alias("small_category_name"),
-        col("logging.analytics.GOODS_SNO").alias("product_id"),
+        col("item.like.goods_sno").alias("product_id"),
         col("item.image").alias("img_url"),
         col("logging.analytics.GOODS_NAME").alias("product_name"),
         col("logging.analytics.MARKET_NAME").alias("brand_name_kr"),
