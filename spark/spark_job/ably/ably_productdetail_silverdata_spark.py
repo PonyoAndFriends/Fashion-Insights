@@ -1,128 +1,97 @@
 from pyspark.sql import SparkSession
-from pyspark.sql.functions import to_date, col, lit
-from pyspark.conf import SparkConf
+from pyspark.sql.functions import col, lit
 from datetime import datetime, timedelta
-import os
-from concurrent.futures import ThreadPoolExecutor, as_completed
 from ably_modules.ably_mapping_table import CATEGORY_PARAMS
 
 # 오늘 날짜
 TODAY_DATE = (datetime.now() + timedelta(hours=9)).strftime("%Y-%m-%d")
 
-
+# SparkSession 생성
 def create_spark_session():
-    # SparkSession 생성
     spark = SparkSession.builder.getOrCreate()
     return spark
 
-
-def transform_data_to_product_detail(
-    spark, json_path, master_category_name, today_date
-):
+# 데이터를 변환하는 함수
+def transform_data_to_product_detail(spark, json_path, category3depth, category4depth, today_date):
     df = spark.read.json(json_path)
 
     # 필요한 데이터 추출 및 매핑
     extracted_df = df.select(
+        lit("ably").alias("platform"),
+        lit(category3depth).alias("master_category_name"),
+        lit(category4depth).alias("small_category_name"),
         col("item.logging.analytics.GOODS_SNO").alias("product_id"),
+        col("item.image").alias("img_url"),
         col("item.logging.analytics.GOODS_NAME").alias("product_name"),
         col("item.logging.analytics.MARKET_NAME").alias("brand_name_kr"),
+        col("item.first_page_rendering.original_price").alias("original_price"),
+        col("item.logging.analytics.SALES_PRICE").alias("final_price"),
         col("item.logging.analytics.DISCOUNT_RATE").alias("discount_ratio"),
-        col("item.logging.analytics.price").alias("final_price"),
-        col("item.logging.analytics.ORIGINAL_PRICE").alias("original_price"),
         col("item.logging.analytics.REVIEW_COUNT").alias("review_counting"),
         col("item.logging.analytics.REVIEW_RATING").alias("review_avg_rating"),
         col("item.logging.analytics.LIKES_COUNT").alias("like_counting"),
-        col("item.logging.analytics.CATEGORY_NAME").alias("small_category_name"),
-        col("item.logging.analytics.IMAGE_URL").alias("img_url"),
-    )
-
-    # 추가 컬럼 생성
-    final_df = (
-        extracted_df.withColumn("platform", lit("ably"))
-        .withColumn("master_category_name", lit(master_category_name))
-        .withColumn("brand_name_en", lit(None))
-        .withColumn("created_at", to_date(lit(today_date), "yyyy-MM-dd"))
+        lit(today_date).alias("created_at"),
     )
 
     # Parquet 크기를 1개 파일로 병합
-    final_df = final_df.coalesce(1)
-
+    final_df = extracted_df.coalesce(1)
     return final_df
 
+# Spark를 사용하여 분산 처리
+def process_product_details(spark, category_df):
+    def process_row(row):
+        try:
+            # 공통 path
+            file_name = f"{row.category3depth}/{row.gender}_{row.category2depth}_{row.category3depth}_{row.category4depth}"
 
-def process_product_details(
-    spark, category3depth, gender, category2depth, category4depth
-):
-    try:
-        # 공통 path
-        file_name = f"{category3depth}/{gender}_{category2depth}_{category3depth}_{category4depth}"
+            # input - filepath 조합
+            input_path = f"s3a://team3-2-s3/bronze/{TODAY_DATE}/ably/ranking_data/*/*.json"
 
-        # input - filepath 조합
-        input_path = f"s3a://team3-2-s3/bronze/{TODAY_DATE}/ably/ranking_data/*/*.json"
+            # output - filepath 조합
+            table_output_path = (
+                f"s3a://team3-2-s3/silver/{TODAY_DATE}/ably/product_details/{file_name}.parquet"
+            )
 
-        # output - filepath 조합
-        table_output_path = (
-            f"s3a://team3-2-s3/silver/{TODAY_DATE}/ably/product_details/{file_name}.parquet"
-        )
+            master_category_name = f"{row.gender}-{row.category2depth}-{row.category3depth}"
+            print(f"Processing product detail table for: {master_category_name}-{row.category4depth}")
 
-        master_category_name = f"{gender}-{category2depth}-{category3depth}"
-        print(
-            f"Processing product detail table for: {master_category_name}-{category4depth}"
-        )
-        cleaned_df = transform_data_to_product_detail(
-            spark, input_path, master_category_name, TODAY_DATE
-        )
+            # 데이터 변환
+            cleaned_df = transform_data_to_product_detail(
+                spark, input_path, row.category3depth, row.category4depth, TODAY_DATE
+            )
 
-        cleaned_df.write.mode("overwrite").parquet(table_output_path)
+            # 데이터 저장
+            cleaned_df.write.mode("overwrite").parquet(table_output_path)
+        except Exception as e:
+            print(f"Error processing product details for {row.category4depth}: {e}")
 
-    except Exception as e:
-        print(f"Error processing product details for {category4depth}: {e}")
+    # Spark DataFrame의 각 행을 처리
+    category_df.rdd.foreach(process_row)
 
-
+# 메인 함수
 def main():
     spark = create_spark_session()
 
-    with ThreadPoolExecutor(max_workers=10) as executor:  # 최대 10개의 스레드 사용
-        futures = []
+    # CATEGORY_PARAMS 데이터를 Spark DataFrame으로 변환
+    category_data = []
+    for gender_dct in CATEGORY_PARAMS:
+        gender = list(gender_dct["GENDER"].items())[0][1]
 
-        for gender_dct in CATEGORY_PARAMS:
-            # category1depth(성별) 추출
-            gender = list(gender_dct["GENDER"].items())[0][1]
+        for categorydepth in gender_dct["cat_2"]:
+            category2depth = categorydepth["name"]
 
-            # category2depth 추출
-            for categorydepth in gender_dct["cat_2"]:
-                category2depth = categorydepth["name"]  # name 값 추출 (cat_2의 name)
-                print(f"Category2 Depth Name: {category2depth}")
+            for category3 in categorydepth["cat_3"]:
+                category3depth = category3["name"]
 
-                # category3depth 추출
-                for category3 in categorydepth["cat_3"]:
-                    category3depth = category3["name"]  # name 값 추출 (cat_3의 name)
-                    print(f"  Category3 Depth Name: {category3depth}")
+                for category4 in category3["cat_4"]:
+                    for _, category4depth in category4.items():
+                        category_data.append((gender, category2depth, category3depth, category4depth))
 
-                    # category4depth 추출
-                    for category4 in category3["cat_4"]:
-                        for cat_key, category4depth in category4.items():
-                            print(
-                                f"    Category4 Depth Key: {cat_key}, Name: {category4depth}"
-                            )
+    category_columns = ["gender", "category2depth", "category3depth", "category4depth"]
+    category_df = spark.createDataFrame(category_data, category_columns)
 
-                            futures.append(
-                                executor.submit(
-                                    process_product_details,
-                                    spark,
-                                    category3depth,
-                                    gender,
-                                    category2depth,
-                                    category4depth,
-                                )
-                            )
-
-        for future in as_completed(futures):
-            try:
-                future.result()  # 작업 완료 대기
-            except Exception as e:
-                print(f"Error in thread execution: {e}")
-
+    # Spark 분산 처리를 통해 데이터 변환 및 저장
+    process_product_details(spark, category_df)
 
 if __name__ == "__main__":
     main()
