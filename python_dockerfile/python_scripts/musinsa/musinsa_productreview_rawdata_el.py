@@ -37,6 +37,7 @@ def el_productreview(s3_client, product_id_list, key):
     bronze_bucket = "team3-2-s3"
     for sort_method in SORT:
         PARAMS["sort"] = sort_method
+        time.sleep(120)
         for product_id in product_id_list:
             s3_key = key + f"{product_id}{sort_method}.json"
             PARAMS["goodsNo"] = product_id

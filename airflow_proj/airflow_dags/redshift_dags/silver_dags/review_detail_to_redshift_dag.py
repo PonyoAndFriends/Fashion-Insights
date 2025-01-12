@@ -47,7 +47,7 @@ with DAG(
             review_date DATE,
             reviewer_height FLOAT,
             reviewer_weight FLOAT,
-            selected_options VARCHAR(50),
+            selected_options VARCHAR(100),
             created_at DATE NOT NULL
         );
         """
