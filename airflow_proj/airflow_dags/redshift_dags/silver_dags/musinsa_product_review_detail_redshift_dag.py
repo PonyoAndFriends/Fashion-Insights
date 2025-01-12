@@ -60,7 +60,7 @@ with DAG(
         redshift_conn_id="redshift_default",
     )
 
-    for depth3code in mapping_list:
+    for task_number, depth3code in enumerate(mapping_list):
         copy_query = f"""
         COPY {DEFAULT_SILVER_SHCEMA}.{table}
         FROM '{silver_bucket_url}/{now_string}/{platform}/{platform}_product_review_detail_tb/{depth3code}/'
@@ -69,7 +69,7 @@ with DAG(
         """
         
         copy_task = RedshiftQueryOperator(
-            task_id=f"{platform}_{depth3code}_review_detail_copy_task",
+            task_id=f"{platform}_{task_number}_review_detail_copy_task",
             sql=copy_query,
         )
 
