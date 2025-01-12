@@ -41,7 +41,6 @@ schema = StructType(
 # 데이터 변환
 transformed_df = raw_json_df.select(
     col("data.list.id").alias("story_id"),
-    col("data.list.contentType").alias("content_type"),
     col("data.list.aggregations.likeCount").alias("aggregation_like_count"),
     col("data.list.tags.name").alias("tags"),
     col("data.list.displayedFrom").alias("created_at"),

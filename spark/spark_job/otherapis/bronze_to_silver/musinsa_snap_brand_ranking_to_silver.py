@@ -3,6 +3,7 @@ from pyspark.sql.functions import (
     col,
     explode,
     collect_list,
+    current_timestamp
 )
 from pyspark.sql.types import (
     StructType,
@@ -42,13 +43,11 @@ table_df = brands_df.select(
     col("id").alias("brand_id"),
     col("nickname").alias("brand_name"),
     col("profileImageUrl").alias("img_url"),
-    col("contentType").alias("content_type"),
     col("ranking.rank").alias("rank"),
     col("ranking.previousRank").alias("previous_rank"),
     col("followerCount").alias("follower_count"),
-    col("labels"),
-    col("createdAt").alias("created_at"),
-)
+    col("snaps.labels").alias("labels"),
+).withColumn("created_at", current_timestamp())
 
 # Labels 데이터 처리: name 필드만 리스트로 묶어서 저장
 labels_df = table_df.withColumn("label", explode("labels")).select(
