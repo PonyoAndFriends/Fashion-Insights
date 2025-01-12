@@ -82,7 +82,7 @@ schema = StructType(
 )
 
 # 스키마를 적용한 최종 DataFrame 생성
-final_df_with_schema = spark.createDataFrame(final_df.rdd, schema=schema)
+final_df_with_schema = spark.createDataFrame(final_df.rdd, schema=schema).repartition(1)
 
 # Parquet 형식으로 저장
 final_df_with_schema.write.mode("overwrite").parquet(target_path)

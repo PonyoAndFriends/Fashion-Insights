@@ -49,7 +49,7 @@ transformed_df = raw_json_df.select(
 ).withColumn("created_at", col("created_at").cast(TimestampType()))
 
 # 스키마 적용
-final_df = spark.createDataFrame(transformed_df.rdd, schema=schema)
+final_df = spark.createDataFrame(transformed_df.rdd, schema=schema).repartition(1)
 
 # 데이터 저장 예시 (Parquet 파일로 저장)
 final_df.write.mode("overwrite").parquet(target_path)

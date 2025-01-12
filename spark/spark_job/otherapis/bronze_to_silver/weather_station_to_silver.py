@@ -44,7 +44,7 @@ data_df = parsed_df.select(
 )
 
 # 스키마 적용 (데이터 검증)
-final_df = spark.createDataFrame(data_df.rdd, schema)
+final_df = spark.createDataFrame(data_df.rdd, schema).repartition(1)
 
 # 결과 저장
 final_df.write.mode("overwrite").parquet(target_path)

@@ -70,7 +70,7 @@ schema = StructType(
 )
 
 # 스키마 적용
-final_df = spark.createDataFrame(processed_df.rdd, schema=schema)
+final_df = spark.createDataFrame(processed_df.rdd, schema=schema).repartition(1)
 
 # 결과 저장
 final_df.write.mode("overwrite").parquet(target_path)

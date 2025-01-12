@@ -91,7 +91,7 @@ schema = StructType(
 # 스키마 적용
 final_table_with_schema = spark.createDataFrame(
     final_table_with_labels.rdd, schema=schema
-)
+).repartition(1)
 
 
 # 결과를 S3 대상 경로로 저장

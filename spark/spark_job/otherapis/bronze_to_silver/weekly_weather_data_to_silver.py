@@ -23,7 +23,7 @@ source_path = args[1] + "/*.txt"
 target_path = args[2]
 
 # 텍스트 파일 읽기
-raw_df = df = spark.read.csv(source_path, header=True, inferSchema=True)
+raw_df = spark.read.csv(source_path, header=True, inferSchema=True)
 
 # START7777과 END7777 사이의 데이터 필터링 (주석 및 빈 줄 제거)
 filtered_df = raw_df.filter(
@@ -77,7 +77,7 @@ data_df = split_df.select(
 )
 
 # 필요한 컬럼의 데이터 변환
-processed_df = data_df.withColumn("TM", col("TM").cast(DateType()))
+processed_df = data_df.withColumn("TM", col("TM").cast(DateType())).repartition(1)
 
 # 결과 저장
 processed_df.write.mode("overwrite").parquet(target_path)
