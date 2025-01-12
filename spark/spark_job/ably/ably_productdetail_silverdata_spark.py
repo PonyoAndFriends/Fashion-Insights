@@ -2,13 +2,16 @@ from pyspark.sql import SparkSession
 from pyspark.sql.functions import lit, col, when
 from datetime import datetime, timedelta
 from ably_modules.ably_mapping_table import CATEGORY_PARAMS
+from pyspark.sql.types import StringType, FloatType, IntegerType, DateType
 
 # 오늘 날짜
 TODAY_DATE = (datetime.now() + timedelta(hours=9)).strftime("%Y-%m-%d")
 
+
 def create_spark_session():
     spark = SparkSession.builder.getOrCreate()
     return spark
+
 
 def transform_data_to_product_detail(spark, json_path, category3depth, category4depth, today_date):
     # JSON 읽기 (PERMISSIVE 모드)
@@ -16,31 +19,36 @@ def transform_data_to_product_detail(spark, json_path, category3depth, category4
         .option("columnNameOfCorruptRecord", "_corrupt_record") \
         .json(json_path)
 
-    # 필요한 컬럼들
-    columns = df.columns
-    
-    required_columns = {
-        "platform": lit("ably"),
-        "master_category_name": lit(category3depth),
-        "small_category_name": lit(category4depth),
-        "product_id": when(col("item.like.goods_sno").isNotNull(), col("item.like.goods_sno"))
-        .otherwise(col("logging.analytics.GOODS_SNO")) if "item.like.goods_sno" in columns else lit(None),
-        "img_url": col("item.image") if "item.image" in columns else lit(None),
-        "product_name": col("logging.analytics.GOODS_NAME") if "logging.analytics.GOODS_NAME" in columns else lit(None),
-        "brand_name_kr": col("logging.analytics.MARKET_NAME") if "logging.analytics.MARKET_NAME" in columns else lit(None),
-        "original_price": col("item.first_page_rendering.original_price") if "item.first_page_rendering.original_price" in columns else lit(None),
-        "final_price": col("logging.analytics.SALES_PRICE") if "logging.analytics.SALES_PRICE" in columns else lit(None),
-        "discount_ratio": col("logging.analytics.DISCOUNT_RATE") if "logging.analytics.DISCOUNT_RATE" in columns else lit(None),
-        "review_counting": col("logging.analytics.REVIEW_COUNT") if "logging.analytics.REVIEW_COUNT" in columns else lit(None),
-        "review_avg_rating": col("logging.analytics.REVIEW_RATING") if "logging.analytics.REVIEW_RATING" in columns else lit(None),
-        "like_counting": col("logging.analytics.LIKES_COUNT") if "logging.analytics.LIKES_COUNT" in columns else lit(None),
-        "created_at": lit(today_date)
-    }
+    # 데이터 매핑 및 NULL 처리 보장
+    extracted_df = df.select(
+        lit("ably").alias("platform").cast(StringType()),
+        lit(category3depth).alias("master_category_name").cast(StringType()),
+        lit(category4depth).alias("small_category_name").cast(StringType()),
+        when(col("item.like.goods_sno").isNotNull(), col("item.like.goods_sno"))
+        .otherwise(col("logging.analytics.GOODS_SNO"))
+        .alias("product_id").cast(IntegerType()),
+        col("item.image").alias("img_url").cast(StringType()),
+        col("logging.analytics.GOODS_NAME").alias("product_name").cast(StringType()),  # 상품 이름
+        col("logging.analytics.MARKET_NAME").alias("brand_name_kr").cast(StringType()),  # 브랜드 이름
+        col("item.first_page_rendering.original_price").alias("original_price").cast(IntegerType()),  # 원가
+        col("logging.analytics.SALES_PRICE").alias("final_price").cast(IntegerType()),  # 판매 가격
+        col("logging.analytics.DISCOUNT_RATE").alias("discount_ratio").cast(IntegerType()),  # 할인율
+        col("logging.analytics.REVIEW_COUNT").alias("review_counting").cast(IntegerType()),  # 리뷰 수
+        col("logging.analytics.REVIEW_RATING").alias("review_avg_rating").cast(FloatType()),  # 리뷰 평균 점수
+        col("logging.analytics.LIKES_COUNT").alias("like_counting").cast(IntegerType()),  # 좋아요 수
+        lit(today_date).alias("created_at").cast(DateType())  # 수집 날짜
+    )
 
-    # 데이터 매핑 및 NULL 처리
-    extracted_df = df.select(*[required_columns[col_name].alias(col_name) for col_name in required_columns])
+    # 모든 행에 대해 NULL 허용 처리
+    extracted_df = extracted_df.fillna({
+        "product_id": None, "img_url": None, "product_name": None,
+        "brand_name_kr": None, "original_price": None, "final_price": None,
+        "discount_ratio": None, "review_counting": None, "review_avg_rating": None,
+        "like_counting": None
+    })
 
     return extracted_df
+
 
 def process_product_details(row):
     try:
@@ -57,15 +65,16 @@ def process_product_details(row):
             spark, input_path, row['category3depth'], row['category4depth'], TODAY_DATE
         )
 
-        # 데이터가 있을 경우에만 저장
-        if cleaned_df.limit(1).count() > 0:
+        # 데이터 저장 여부 확인
+        if cleaned_df.limit(1).count() > 0:  # 데이터가 비어 있지 않으면 저장
             print(f"Writing data to: {output_path}")
             cleaned_df.write.mode("overwrite").parquet(output_path)
         else:
-            print(f"No data found for: {row['category4depth']}. Skipping file creation.")
+            print(f"No data to write for: {row['category4depth']}")
 
     except Exception as e:
         print(f"Error processing row {row['category4depth']}: {e}")  # 예외 로그 출력
+
 
 def main():
     spark = create_spark_session()
@@ -89,6 +98,7 @@ def main():
     rows = category_df.collect()
     for row in rows:
         process_product_details(row.asDict())
+
 
 if __name__ == "__main__":
     main()
