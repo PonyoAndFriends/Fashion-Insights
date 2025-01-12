@@ -47,7 +47,7 @@ def el_productreview(s3_client, product_id_list, key):
                 try:
                     time.sleep(1.5)
                     response = requests.get(
-                        URL, headers=HEADERS, params=PARAMS
+                        URL, headers=Musinsa_Config.HEADERS, params=PARAMS
                     )
                     
                     if response.status_code != 200:

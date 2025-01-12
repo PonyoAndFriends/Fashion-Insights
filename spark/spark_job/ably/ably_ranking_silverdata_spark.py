@@ -96,7 +96,7 @@ def main():
 
     for gender_dct in CATEGORY_PARAMS:
         # category1depth(성별) 추출
-        gender = list(gender_dct["GENDER"].values())[1]
+        gender = list(gender_dct["GENDER"].values())[0]
 
         # category2depth 추출
         for categorydepth in gender_dct["cat_2"]:
