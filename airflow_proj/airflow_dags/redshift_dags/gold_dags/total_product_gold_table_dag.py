@@ -33,9 +33,9 @@ with DAG(
     CREATE TABLE {DEFAULT_GOLD_SHCEMA}.{table} AS
     SELECT
         r.platform, -- 수집 플랫폼
-        mc.cat_depth_1, -- 1차 카테고리
-        mc.cat_depth_2, -- 2차 카테고리
-        mc.cat_depth_3, -- 3차 카테고리
+        SPLIT_PART(p.master_category_name, '-', 1) AS cat_depth_1,
+        SPLIT_PART(p.master_category_name, '-', 2) AS cat_depth_2,
+        SPLIT_PART(p.master_category_name, '-', 3) AS cat_depth_3,
         p.small_category_name, -- 4차 카테고리
         r.product_id, -- 상품 ID
         p.product_name, -- 상품 이름
