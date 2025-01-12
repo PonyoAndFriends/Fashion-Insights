@@ -39,12 +39,14 @@ trend_df = raw_df.select(
     explode(col("results")).alias("result"),
 ).withColumn("trend_id", monotonically_increasing_id())
 
-# 기본값 생성: 과거 7일치 날짜와 ratio 0
-seven_days_data = [
-    {"period": date, "ratio": 0.0}
-    for date in spark.sql("SELECT sequence(date_sub(current_date(), 6), current_date()) as dates")
-    .selectExpr("inline(dates)").collect()
-]
+# 과거 7일치 날짜 생성
+dates_df = spark.sql("SELECT sequence(date_sub(current_date(), 6), current_date()) as dates")
+
+# explode를 사용하여 ARRAY<DATE>를 전개
+exploded_dates_df = dates_df.selectExpr("explode(dates) as period")
+
+# 기본값 데이터 생성
+seven_days_data = [{"period": row["period"], "ratio": 0.0} for row in exploded_dates_df.collect()]
 
 trend_df = trend_df.withColumn(
     "result.data",
