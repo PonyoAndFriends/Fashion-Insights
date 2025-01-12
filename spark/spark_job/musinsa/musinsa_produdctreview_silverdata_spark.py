@@ -79,6 +79,9 @@ def etl_productreview(spark, source_path, load_path):
         col("review.goodsOption").alias("selected_options"),
     )
 
+    # userHeight 및 userWeight를 float 타입으로 캐스팅
+    final_df = final_df.withColumn("reviewer_height", col("reviewer_height").cast(FloatType()))
+    final_df = final_df.withColumn("reviewer_weight", col("reviewer_weight").cast(FloatType()))
     final_df = final_df.withColumn(
         "review_date",
         to_date(to_timestamp(col("review_date"), "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")),

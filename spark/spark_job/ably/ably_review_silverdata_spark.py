@@ -10,20 +10,7 @@ TODAY_DATE = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
 
 def create_spark_session():
-    """
-    SparkSession 생성 함수
-    """
-    conf = SparkConf()
-    conf.set("spark.hadoop.mapreduce.fileoutputcommitter.algorithm.version", 2)
-    conf.set("spark.hadoop.fs.s3a.committer.magic.enabled", "true")
-    conf.set("fs.s3a.committer.name", "magic")
-    conf.set("spark.hadoop.fs.s3a.impl", "org.apache.hadoop.fs.s3a.S3AFileSystem")
-    conf.set("spark.hadoop.fs.s3a.access.key", os.getenv("AWS_ACCESS_KEY_ID"))
-    conf.set("spark.hadoop.fs.s3a.secret.key", os.getenv("AWS_SECRET_ACCESS_KEY"))
-    conf.set("spark.hadoop.fs.s3a.endpoint", "s3.ap-northeast-2.amazonaws.com")
-    conf.set("spark.sql.parquet.compression.codec", "snappy")
-
-    return SparkSession.builder.config(conf=conf).getOrCreate()
+    return SparkSession.builder.getOrCreate()
 
 
 def get_filtered_input_files(input_path_pattern, exclude_file):
@@ -84,7 +71,7 @@ def main():
     exclude_file = "goods_sno_list.json"
 
     # 출력 Parquet 경로
-    output_parquet_path = f"s3a://ablyrawdata/silver/{TODAY_DATE}/Ably/ReviewData/Platform_product_review_detail_tb.parquet"
+    output_parquet_path = f"s3a://silver/{TODAY_DATE}/ably/review_data/platform_product_review_detail_tb.parquet"
 
     # 제외 파일을 제외한 입력 파일 리스트
     input_files = get_filtered_input_files(input_path_pattern, exclude_file)

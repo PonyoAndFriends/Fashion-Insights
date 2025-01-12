@@ -54,6 +54,8 @@ def etl_productdetail(spark, source_path, load_path):
     # 필요한 열 선택
     final_df = parsed_df.select("json_data.*")
 
+    final_df = final_df.withColumnRenamed("image_src", "img_url")
+    final_df = final_df.withColumnRenamed("discount_rate", "discount_ratio")
     # type casting
     final_df = final_df.withColumn("product_id", col("product_id").cast(IntegerType()))
     final_df = final_df.withColumn(

@@ -26,17 +26,17 @@ gender = args[3]
 # JSON 데이터 로드
 raw_json_df = spark.read.json(source_path)
 
-# JSON 데이터 스키마 정의
-schema = StructType(
-    [
-        StructField("story_id", StringType(), False),
-        StructField("content_type", StringType(), False),
-        StructField("aggregation_like_count", IntegerType(), False),
-        StructField("tags", ArrayType(StringType()), False),
-        StructField("gender", StringType(), True),
-        StructField("created_at", TimestampType(), True),
-    ]
-)
+# # JSON 데이터 스키마 정의
+# schema = StructType(
+#     [
+#         StructField("story_id", StringType(), False),
+#         StructField("content_type", StringType(), False),
+#         StructField("aggregation_like_count", IntegerType(), False),
+#         StructField("tags", ArrayType(StringType()), False),
+#         StructField("gender", StringType(), True),
+#         StructField("created_at", TimestampType(), True),
+#     ]
+# )
 
 # 데이터 변환
 transformed_df = raw_json_df.select(

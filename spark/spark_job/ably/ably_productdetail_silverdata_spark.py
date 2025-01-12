@@ -11,30 +11,8 @@ TODAY_DATE = datetime.now().strftime("%Y-%m-%d")
 
 
 def create_spark_session():
-    conf = SparkConf()
-    conf.set("spark.hadoop.mapreduce.fileoutputcommitter.algorithm.version", 2)
-    conf.set("spark.hadoop.fs.s3a.committer.magic.enabled", "true")
-    conf.set("fs.s3a.committer.name", "magic")
-    conf.set("spark.hadoop.fs.s3a.impl", "org.apache.hadoop.fs.s3a.S3AFileSystem")
-    conf.set("spark.hadoop.fs.s3a.access.key", os.getenv("AWS_ACCESS_KEY_ID"))
-    conf.set("spark.hadoop.fs.s3a.secret.key", os.getenv("AWS_SECRET_ACCESS_KEY"))
-    conf.set("spark.hadoop.fs.s3a.endpoint", "s3.ap-northeast-2.amazonaws.com")
-    conf.set(
-        "spark.hadoop.fs.s3a.aws.credentials.provider",
-        "com.amazonaws.auth.DefaultAWSCredentialsProviderChain",
-    )
-    conf.set("spark.executor.memory", "4g")
-    conf.set("spark.driver.memory", "2g")
-    conf.set("spark.executor.cores", "2")
-    conf.set("spark.dynamicAllocation.enabled", "true")
-    conf.set("spark.dynamicAllocation.minExecutors", "2")
-    conf.set("spark.dynamicAllocation.maxExecutors", "10")
-    conf.set("spark.shuffle.service.enabled", "true")
-    conf.set("spark.sql.shuffle.partitions", "100")
-    conf.set("spark.sql.parquet.compression.codec", "snappy")
-
     # SparkSession 생성
-    spark = SparkSession.builder.config(conf=conf).getOrCreate()
+    spark = SparkSession.builder.getOrCreate()
     return spark
 
 
@@ -83,7 +61,7 @@ def process_product_details(
         input_path = f"s3a://ablyrawdata/{TODAY_DATE}/Ably/RankingData/*/*.json"
 
         # output - filepath 조합
-        table_output_path = f"s3a://ablyrawdata/silver/{TODAY_DATE}/Ably/ProductDetails/{file_name}.parquet"
+        table_output_path = f"s3a://silver/{TODAY_DATE}/ably/product_details/{file_name}.parquet"
 
         master_category_name = f"{gender}-{category2depth}-{category3depth}"
         print(
