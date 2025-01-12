@@ -66,7 +66,7 @@ category_names_grouped_df = category_names_df.groupBy("brand_id").agg(
 
 # Flattening the list without removing duplicates
 category_names_grouped_df = category_names_grouped_df.withColumn(
-    "category_names", flatten(col("name"))
+    "label_names", flatten(col("name"))
 )
 
 # Join with the original table
