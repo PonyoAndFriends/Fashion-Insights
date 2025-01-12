@@ -24,9 +24,9 @@ def transform_data_to_product_detail(
     # 필요한 데이터 추출 및 매핑
     extracted_df = df.select(
         col("item.logging.analytics.GOODS_SNO").alias("product_id"),
-        col("item.logging.analytics.goods_name").alias("product_name"),
+        col("item.logging.analytics.GOODS_NAME").alias("product_name"),
         col("item.logging.analytics.MARKET_NAME").alias("brand_name_kr"),
-        col("item.logging.analytics.discount_rate").alias("discount_ratio"),
+        col("item.logging.analytics.DISCOUNT_RATE").alias("discount_ratio"),
         col("item.logging.analytics.price").alias("final_price"),
         col("item.logging.analytics.ORIGINAL_PRICE").alias("original_price"),
         col("item.logging.analytics.REVIEW_COUNT").alias("review_counting"),

@@ -183,7 +183,7 @@ def main():
 
         for category4depth in category3depth[1].values():
             silver_bucket = "team3-2-s3"
-            read_file_path = f"silver/{TODAY_DATE}/musinsa/ranking_data/{category3depth[0]}/{sexual_data[1]}_{category2depth}_{category3depth[0]}_{category4depth}.parquet"
+            read_file_path = f"silver/{TODAY_DATE}/musinsa/ranking_tb/{category3depth[0]}/{sexual_data[1]}_{category2depth}_{category3depth[0]}_{category4depth}.parquet"
             file_path = f"{silver_bucket}/{read_file_path}"
             product_lists = s3_module.get_product_ids(file_path)
 

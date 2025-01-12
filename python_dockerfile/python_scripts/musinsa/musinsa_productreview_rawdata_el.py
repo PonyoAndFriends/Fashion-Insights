@@ -70,7 +70,7 @@ def main():
 
     # product_id list 불러오기
     silver_bucket = "team3-2-s3"
-    file_key = f"/silver/{TODAY_DATE}/musinsa/ranking_data/{category3depth}/"
+    file_key = f"/silver/{TODAY_DATE}/musinsa/ranking_tb/{category3depth}/"
 
     try:
         s3 = s3_module.connect_s3fs()

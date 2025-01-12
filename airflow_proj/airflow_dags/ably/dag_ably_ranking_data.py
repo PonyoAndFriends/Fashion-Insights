@@ -5,7 +5,6 @@ from airflow.operators.trigger_dagrun import TriggerDagRunOperator
 from ably.ably_modules.ably_dependencies import (
     ABLYAPI_DEFAULT_ARGS,
 )
-from ably.ably_modules.k8s_spark_job_submit_operator import submit_spark_application
 import logging
 
 
