@@ -24,7 +24,7 @@ target_path = args[2]
 gender = args[3]
 
 # JSON 데이터 로드
-raw_json_df = s3_spark_module.read_and_partition_s3_data(spark, source_path, "json")
+raw_json_df = spark.read.json(source_path)
 
 # JSON 데이터 스키마 정의
 schema = StructType(

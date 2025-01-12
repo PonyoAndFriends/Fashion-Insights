@@ -25,7 +25,7 @@ target_path = args[2]
 gender = args[3]  # gender 값을 명시적으로 전달받음
 
 # JSON 파일 읽기
-raw_df = s3_spark_module.read_and_partition_s3_data(spark, source_path, "json")
+raw_df = spark.read.json(source_path)
 
 # 기본 컬럼 변환
 trend_df = raw_df.select(

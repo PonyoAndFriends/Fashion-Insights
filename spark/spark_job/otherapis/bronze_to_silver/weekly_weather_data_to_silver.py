@@ -23,7 +23,7 @@ source_path = args[1] + "/*.txt"
 target_path = args[2]
 
 # 텍스트 파일 읽기
-raw_df = s3_spark_module.read_and_partition_s3_data(spark, source_path, "txt")
+raw_df = df = spark.read.csv(source_path, header=True, inferSchema=True)
 
 # START7777과 END7777 사이의 데이터 필터링 (주석 및 빈 줄 제거)
 filtered_df = raw_df.filter(

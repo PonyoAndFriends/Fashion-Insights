@@ -25,7 +25,7 @@ target_path = args[2]
 gender = args[3] if len(args) > 3 else None
 
 # JSON 데이터 읽기
-raw_df = s3_spark_module.read_and_partition_s3_data(spark, source_path, "json")
+raw_df = spark.read.json(source_path)
 
 # 모든 카테고리 추출 및 동적 처리
 categories = raw_df.columns
