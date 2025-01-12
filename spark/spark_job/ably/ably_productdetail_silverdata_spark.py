@@ -1,17 +1,16 @@
 from pyspark.sql import SparkSession
-from pyspark.sql.functions import col, lit
+from pyspark.sql.functions import lit, col
 from datetime import datetime, timedelta
-from ably_modules.ably_mapping_table import CATEGORY_PARAMS
 
 # 오늘 날짜
 TODAY_DATE = (datetime.now() + timedelta(hours=9)).strftime("%Y-%m-%d")
 
-# SparkSession 생성
+
 def create_spark_session():
     spark = SparkSession.builder.getOrCreate()
     return spark
 
-# 데이터를 변환하는 함수
+
 def transform_data_to_product_detail(spark, json_path, category3depth, category4depth, today_date):
     df = spark.read.json(json_path)
 
@@ -37,38 +36,34 @@ def transform_data_to_product_detail(spark, json_path, category3depth, category4
     final_df = extracted_df.coalesce(1)
     return final_df
 
-# Spark를 사용하여 분산 처리
-def process_product_details(spark, category_df):
-    def process_row(row):
-        try:
-            # 공통 path
-            file_name = f"{row.category3depth}/{row.gender}_{row.category2depth}_{row.category3depth}_{row.category4depth}"
 
-            # input - filepath 조합
-            input_path = f"s3a://team3-2-s3/bronze/{TODAY_DATE}/ably/ranking_data/*/*.json"
+def process_product_details(row):
+    try:
+        # 공통 path
+        file_name = f"{row['category3depth']}/{row['gender']}_{row['category2depth']}_{row['category3depth']}_{row['category4depth']}"
 
-            # output - filepath 조합
-            table_output_path = (
-                f"s3a://team3-2-s3/silver/{TODAY_DATE}/ably/product_details/{file_name}.parquet"
-            )
+        # input - filepath 조합
+        input_path = f"s3a://team3-2-s3/bronze/{TODAY_DATE}/ably/ranking_data/*/*.json"
 
-            master_category_name = f"{row.gender}-{row.category2depth}-{row.category3depth}"
-            print(f"Processing product detail table for: {master_category_name}-{row.category4depth}")
+        # output - filepath 조합
+        table_output_path = f"s3a://team3-2-s3/silver/{TODAY_DATE}/ably/product_details/{file_name}.parquet"
 
-            # 데이터 변환
-            cleaned_df = transform_data_to_product_detail(
-                spark, input_path, row.category3depth, row.category4depth, TODAY_DATE
-            )
+        print(f"Processing product detail table for: {row['gender']}-{row['category2depth']}-{row['category3depth']}-{row['category4depth']}")
 
-            # 데이터 저장
-            cleaned_df.write.mode("overwrite").parquet(table_output_path)
-        except Exception as e:
-            print(f"Error processing product details for {row.category4depth}: {e}")
+        # SparkSession을 드라이버에서 생성
+        spark = create_spark_session()
 
-    # Spark DataFrame의 각 행을 처리
-    category_df.rdd.foreach(process_row)
+        # 데이터 변환
+        cleaned_df = transform_data_to_product_detail(
+            spark, input_path, row['category3depth'], row['category4depth'], TODAY_DATE
+        )
 
-# 메인 함수
+        # 데이터 저장
+        cleaned_df.write.mode("overwrite").parquet(table_output_path)
+    except Exception as e:
+        print(f"Error processing product details for {row['category4depth']}: {e}")
+
+
 def main():
     spark = create_spark_session()
 
@@ -90,8 +85,11 @@ def main():
     category_columns = ["gender", "category2depth", "category3depth", "category4depth"]
     category_df = spark.createDataFrame(category_data, category_columns)
 
-    # Spark 분산 처리를 통해 데이터 변환 및 저장
-    process_product_details(spark, category_df)
+    # DataFrame을 Pandas로 변환 후 작업 분산 처리
+    rows = category_df.collect()  # 드라이버에서 데이터 수집
+    for row in rows:
+        process_product_details(row.asDict())  # 각 행을 처리
+
 
 if __name__ == "__main__":
     main()
