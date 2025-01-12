@@ -4,6 +4,7 @@ from pyspark.sql.functions import (
     explode,
     collect_list,
     current_timestamp,
+    flatten,
     count,
     desc,
     row_number
@@ -55,12 +56,17 @@ table_df = brands_df.select(
 
 # Extracting categoryName from labels
 category_names_df = table_df.withColumn("label", explode("labels")).select(
-    col("brand_id"), col("label.categoryName").alias("category_name")
+    col("brand_id"), col("label.name").alias("name")
 )
 
 # Grouping category names into a single list per brand_id
 category_names_grouped_df = category_names_df.groupBy("brand_id").agg(
-    collect_list("category_name").alias("category_names")
+    collect_list("name").alias("name")
+)
+
+# Flattening the list without removing duplicates
+category_names_grouped_df = category_names_grouped_df.withColumn(
+    "category_names", flatten(col("name"))
 )
 
 # Join with the original table
@@ -71,7 +77,7 @@ table_with_categories = table_df.join(category_names_grouped_df, "brand_id", "le
     "rank",
     "previous_rank",
     "follower_count",
-    "category_names",
+    "label_names",
     "created_at",
 )
 
@@ -84,7 +90,7 @@ schema = StructType(
         StructField("rank", IntegerType(), True),
         StructField("previous_rank", IntegerType(), True),
         StructField("follower_count", IntegerType(), True),
-        StructField("category_names", ArrayType(StringType()), True),
+        StructField("label_names", ArrayType(StringType()), True),
         StructField("created_at", TimestampType(), True),
     ]
 )
