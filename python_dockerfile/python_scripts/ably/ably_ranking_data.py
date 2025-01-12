@@ -111,12 +111,12 @@ class DataPipeline:
 
                 items = collected_items[:50]
                 if data_type == "ranking":
-                    folder_name = "RankingData"
+                    folder_name = "ranking_data"
                     file_name = f"{category_id}_{sub_category_id}"
                     content = json.dumps(items, ensure_ascii=False, indent=4)
 
                 elif data_type == "goods_sno":
-                    folder_name = "ReviewData"
+                    folder_name = "review_data"
                     goods_sno_list = []
 
                     for element in items:
