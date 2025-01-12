@@ -39,12 +39,22 @@ trend_df = raw_df.select(
     explode(col("results")).alias("result"),
 ).withColumn("trend_id", monotonically_increasing_id())
 
+# 기본값 생성: 과거 7일치 날짜와 ratio 0
+seven_days_data = [
+    {"period": date, "ratio": 0.0}
+    for date in spark.sql("SELECT sequence(date_sub(current_date(), 6), current_date()) as dates")
+    .selectExpr("inline(dates)").collect()
+]
+
 trend_df = trend_df.withColumn(
     "result.data",
-    when((col("result.data").isNull()) | (col("result.data") == lit([])), [{"period": None, "ratio": None}])
-    .otherwise(col("result.data"))
+    when(
+        (col("result.data").isNull()) | (col("result.data") == lit([])),
+        lit(seven_days_data)
+    ).otherwise(col("result.data"))
 )
 
+# 순차적 ID 부여
 window_spec = Window.orderBy(lit(1))  # 특정 정렬 기준(예: 전체 데이터)에 따라 순서 부여
 trend_df = trend_df.withColumn("trend_id", row_number().over(window_spec))
 
@@ -58,10 +68,6 @@ result_df = trend_df.select(
     col("result.keyword").getItem(0).alias("keyword_name"),  # 첫 번째 keyword 가져오기
     explode(col("result.data")).alias("data"),  # data 리스트 explode
 )
-
-
-
-
 
 # data 컬럼 데이터 변환 및 추가 컬럼 설정
 final_df = result_df.select(
@@ -77,24 +83,6 @@ final_df = result_df.select(
     lit("50000000").alias("category_code"),  # 고정 코드 추가
     current_date().alias("created_at"),  # 데이터 수집 시간
 )
-
-# 스키마 정의
-# schema = StructType(
-#     [
-#         StructField("trend_id", IntegerType(), True),
-#         StructField("start_date", DateType(), False),
-#         StructField("end_date", DateType(), False),
-#         StructField("time_unit", StringType(), False),
-#         StructField("gender", StringType(), False),
-#         StructField("title", StringType(), False),
-#         StructField("keyword_name", StringType(), False),
-#         StructField("period", DateType(), False),
-#         StructField("ratio", FloatType(), False),
-#         StructField("category_name", StringType(), False),
-#         StructField("category_code", StringType(), False),
-#         StructField("created_at", DateType(), False),
-#     ]
-# )
 
 # 스키마를 적용한 최종 DataFrame 생성
 final_df = final_df.repartition(1)
