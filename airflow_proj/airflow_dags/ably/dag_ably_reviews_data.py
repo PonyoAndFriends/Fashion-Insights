@@ -8,7 +8,7 @@ from ably.ably_modules.ably_dependencies import ABLYAPI_DEFAULT_ARGS
 
 
 def sleep_time():
-    time.sleep(60 * 15)
+    time.sleep(60 * 1)
     return "kiki"
 
 

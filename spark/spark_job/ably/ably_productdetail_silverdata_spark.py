@@ -1,6 +1,7 @@
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import lit, col
 from datetime import datetime, timedelta
+from ably_modules.ably_mapping_table import CATEGORY_PARAMS
 
 # 오늘 날짜
 TODAY_DATE = (datetime.now() + timedelta(hours=9)).strftime("%Y-%m-%d")

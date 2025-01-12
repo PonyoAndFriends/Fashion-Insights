@@ -39,7 +39,7 @@ def el_productreview(s3_client, product_id_list, key):
     
     for sort_method in SORT:
         PARAMS["sort"] = sort_method
-        time.sleep(60)  # 정렬 방식 변경 간 대기
+        time.sleep(30)  # 정렬 방식 변경 간 대기
         
         for product_id in product_id_list:
             s3_key = key + f"{product_id}_{sort_method}.json"
