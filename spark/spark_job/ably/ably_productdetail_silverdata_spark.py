@@ -18,6 +18,7 @@ def transform_data_to_product_detail(spark, json_path, category3depth, category4
 
     # 필요한 컬럼들
     columns = df.columns
+    
     required_columns = {
         "platform": lit("ably"),
         "master_category_name": lit(category3depth),
