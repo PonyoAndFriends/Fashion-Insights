@@ -60,7 +60,9 @@ def process_category(spark, category3depth, gender, category2depth, category4dep
         input_path = f"s3a://ablyrawdata/{TODAY_DATE}/Ably/RankingData/*/*.json"
 
         # output - filepath 조합
-        table_output_path = f"s3a://silver/{TODAY_DATE}/ably/ranking_data/{file_name}.parquet"
+        table_output_path = (
+            f"s3a://silver/{TODAY_DATE}/ably/ranking_data/{file_name}.parquet"
+        )
 
         master_category_code = f"{gender}-{category2depth}-{category3depth}"
         print(f"Processing {master_category_code}-{category4depth}")

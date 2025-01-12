@@ -7,7 +7,7 @@ from pyspark.sql.functions import (
     flatten,
     count,
     desc,
-    row_number
+    row_number,
 )
 from pyspark.sql.types import (
     StructType,
@@ -70,7 +70,9 @@ category_names_grouped_df = category_names_grouped_df.withColumn(
 )
 
 # Join with the original table
-table_with_categories = table_df.join(category_names_grouped_df, "brand_id", "left").select(
+table_with_categories = table_df.join(
+    category_names_grouped_df, "brand_id", "left"
+).select(
     "brand_id",
     "brand_name",
     "img_url",

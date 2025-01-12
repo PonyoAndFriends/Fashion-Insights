@@ -61,7 +61,9 @@ def process_product_details(
         input_path = f"s3a://ablyrawdata/{TODAY_DATE}/Ably/RankingData/*/*.json"
 
         # output - filepath 조합
-        table_output_path = f"s3a://silver/{TODAY_DATE}/ably/product_details/{file_name}.parquet"
+        table_output_path = (
+            f"s3a://silver/{TODAY_DATE}/ably/product_details/{file_name}.parquet"
+        )
 
         master_category_name = f"{gender}-{category2depth}-{category3depth}"
         print(
