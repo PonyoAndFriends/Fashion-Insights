@@ -25,7 +25,7 @@ with DAG(
     table = "weather_gold_tb"
 
     drop_sql = f"""
-    DROP TABLE IF EXIST {DEFAULT_GOLD_SHCEMA}.{table};
+    DROP TABLE IF EXISTS {DEFAULT_GOLD_SHCEMA}.{table};
     """
 
     create_sql = f"""

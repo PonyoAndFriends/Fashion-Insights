@@ -27,7 +27,7 @@ with DAG(
     redshift_iam_role = Variable.get("redshift_iam_role")
 
     drop_sql = f"""
-    DROP TABLE IF EXIST {DEFAULT_GOLD_SHCEMA}.{table};
+    DROP TABLE IF EXISTS {DEFAULT_GOLD_SHCEMA}.{table};
     """
 
     create_sql = f"""

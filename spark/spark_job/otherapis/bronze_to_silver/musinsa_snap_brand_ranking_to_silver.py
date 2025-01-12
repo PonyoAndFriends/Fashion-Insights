@@ -91,7 +91,7 @@ schema = StructType(
         StructField("rank", IntegerType(), False),
         StructField("previous_rank", IntegerType(), False),
         StructField("follower_count", IntegerType(), False),
-        StructField("top_label_names", ArrayType(StringType()), False),
+        StructField("top_label_names", ArrayType(StringType()), True),
         StructField("created_at", TimestampType(), True),
     ]
 )
