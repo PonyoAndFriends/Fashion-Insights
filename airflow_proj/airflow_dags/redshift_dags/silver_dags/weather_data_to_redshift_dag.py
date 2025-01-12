@@ -37,8 +37,8 @@ with DAG(
     """
     create_sql = f"""
     CREATE TABLE {DEFAULT_SILVER_SHCEMA}.{table} (
-        STN INT NOT NULL,
         TM DATE NOT NULL,
+        STN INT NOT NULL,
         WS_AVG FLOAT,
         WS_MAX FLOAT,
         TA_AVG FLOAT,
@@ -52,9 +52,10 @@ with DAG(
         RN_DUR FLOAT,
         RN_60M_MAX FLOAT,
         RN_POW_MAX FLOAT,
-        PRIMARY KEY (STN, TM)
+        PRIMARY KEY (TM, STN)
     );
     """
+
     refresh_task = RefreshTableOperator(
         task_id="weekly_weather_refresh_table_task",
         drop_sql=drop_sql,
