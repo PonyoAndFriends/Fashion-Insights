@@ -103,7 +103,7 @@ def main():
             for category4depth in category4depths:
                 print(category3depth, category4depth)
                 source_path = f"s3a://team3-2-s3/bronze/{TODAY_DATE}/musinsa/product_review_data/{category3depth}/{category4depth}/*.json"
-                load_path = f"s3a://team3-2-s3/silver/{TODAY_DATE}/musinsa/product_review_data/{category3depth}/{category4depth}.parquet"
+                load_path = f"s3a://team3-2-s3/silver/{TODAY_DATE}/musinsa/musinsa_product_review_detail_tb/{category3depth}/{category4depth}.parquet"
                 etl_productreview(spark, source_path, load_path)
 
 
