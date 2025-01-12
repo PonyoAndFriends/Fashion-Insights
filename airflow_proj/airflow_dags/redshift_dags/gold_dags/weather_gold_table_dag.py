@@ -33,10 +33,10 @@ with DAG(
     SELECT
         st.stn_ko AS 지역명,  -- weather_center_location_tb의 지역명
         wd.TM AS 측정시간,   -- 측정 시간
-        wd.TA_AVG AS 평균온도, -- 평균 온도
-        wd.TA_MAX AS 최고온도, -- 최고 온도
-        wd.TA_MIN AS 최저온도, -- 최저 온도
-        wd.RN_DAY AS 일강수량  -- 하루 강수량
+        ROUND(wd.TA_AVG, 1) AS 평균온도,
+        ROUND(wd.TA_MAX, 1) AS 최고온도,
+        ROUND(wd.TA_MIN, 1) AS 최저온도,
+        ROUND(wd.RN_DAY, 1) AS 일강수량
     FROM
         {DEFAULT_SILVER_SHCEMA}.weather_daily_tb wd
     JOIN
