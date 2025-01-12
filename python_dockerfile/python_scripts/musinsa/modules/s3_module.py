@@ -70,7 +70,7 @@ def validate_and_upload_s3_file(
     s3_key,
     json_data,
 ):
-    if check_file_exists(bucket_name, s3_key):
+    if check_file_exists(s3_client, bucket_name, s3_key):
         logging.info(f"{s3_key} already exists in {bucket_name}")
         s3_client.delete_object(Bucket=bucket_name, Key=s3_key)
         logging.info(f"File {s3_key} deleted successfully.")
