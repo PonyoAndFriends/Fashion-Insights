@@ -16,52 +16,52 @@ def transform_data_to_product_detail(spark, json_path, category3depth, category4
         .option("columnNameOfCorruptRecord", "_corrupt_record") \
         .json(json_path)
 
-    # 데이터 매핑 및 NULL 처리 보장
-    extracted_df = df.select(
-        lit("ably").alias("platform"),
-        lit(category3depth).alias("master_category_name"),
-        lit(category4depth).alias("small_category_name"),
-        when(col("item.like.goods_sno").isNotNull(), col("item.like.goods_sno"))
-        .otherwise(col("logging.analytics.GOODS_SNO")).alias("product_id"),  # 상품 ID
-        col("item.image").alias("img_url"),  # 이미지 URL
-        col("logging.analytics.GOODS_NAME").alias("product_name"),  # 상품 이름
-        col("logging.analytics.MARKET_NAME").alias("brand_name_kr"),  # 브랜드 이름
-        col("item.first_page_rendering.original_price").alias("original_price"),  # 원가
-        col("logging.analytics.SALES_PRICE").alias("final_price"),  # 판매 가격
-        col("logging.analytics.DISCOUNT_RATE").alias("discount_ratio"),  # 할인율
-        col("logging.analytics.REVIEW_COUNT").alias("review_counting"),  # 리뷰 수
-        col("logging.analytics.REVIEW_RATING").alias("review_avg_rating"),  # 리뷰 평균 점수
-        col("logging.analytics.LIKES_COUNT").alias("like_counting"),  # 좋아요 수
-        lit(today_date).alias("created_at")  # 수집 날짜
-    )
+    # 필요한 컬럼들
+    columns = df.columns
+    required_columns = {
+        "platform": lit("ably"),
+        "master_category_name": lit(category3depth),
+        "small_category_name": lit(category4depth),
+        "product_id": when(col("item.like.goods_sno").isNotNull(), col("item.like.goods_sno"))
+        .otherwise(col("logging.analytics.GOODS_SNO")) if "item.like.goods_sno" in columns else lit(None),
+        "img_url": col("item.image") if "item.image" in columns else lit(None),
+        "product_name": col("logging.analytics.GOODS_NAME") if "logging.analytics.GOODS_NAME" in columns else lit(None),
+        "brand_name_kr": col("logging.analytics.MARKET_NAME") if "logging.analytics.MARKET_NAME" in columns else lit(None),
+        "original_price": col("item.first_page_rendering.original_price") if "item.first_page_rendering.original_price" in columns else lit(None),
+        "final_price": col("logging.analytics.SALES_PRICE") if "logging.analytics.SALES_PRICE" in columns else lit(None),
+        "discount_ratio": col("logging.analytics.DISCOUNT_RATE") if "logging.analytics.DISCOUNT_RATE" in columns else lit(None),
+        "review_counting": col("logging.analytics.REVIEW_COUNT") if "logging.analytics.REVIEW_COUNT" in columns else lit(None),
+        "review_avg_rating": col("logging.analytics.REVIEW_RATING") if "logging.analytics.REVIEW_RATING" in columns else lit(None),
+        "like_counting": col("logging.analytics.LIKES_COUNT") if "logging.analytics.LIKES_COUNT" in columns else lit(None),
+        "created_at": lit(today_date)
+    }
 
-    # 모든 행에 대해 NULL 허용 처리
-    extracted_df = extracted_df.fillna({
-        "product_id": None, "img_url": None, "product_name": None,
-        "brand_name_kr": None, "original_price": None, "final_price": None,
-        "discount_ratio": None, "review_counting": None, "review_avg_rating": None,
-        "like_counting": None
-    })
+    # 데이터 매핑 및 NULL 처리
+    extracted_df = df.select(*[required_columns[col_name].alias(col_name) for col_name in required_columns])
 
     return extracted_df
 
 def process_product_details(row):
-    # 경로 설정
-    file_name = f"{row['category3depth']}/{row['gender']}_{row['category2depth']}_{row['category3depth']}_{row['category4depth']}"
-    input_path = f"s3a://team3-2-s3/bronze/{TODAY_DATE}/ably/ranking_data/*/*.json"
-    output_path = f"s3a://team3-2-s3/silver/{TODAY_DATE}/ably/product_details/{file_name}.parquet"
+    try:
+        # 경로 설정
+        file_name = f"{row['category3depth']}/{row['gender']}_{row['category2depth']}_{row['category3depth']}_{row['category4depth']}"
+        input_path = f"s3a://team3-2-s3/bronze/{TODAY_DATE}/ably/ranking_data/*/*.json"
+        output_path = f"s3a://team3-2-s3/silver/{TODAY_DATE}/ably/product_details/{file_name}.parquet"
 
-    print(f"Processing product detail for: {row['category4depth']}")
+        print(f"Processing product detail for: {row['category4depth']}")
 
-    # SparkSession 생성 및 데이터 변환
-    spark = create_spark_session()
-    cleaned_df = transform_data_to_product_detail(
-        spark, input_path, row['category3depth'], row['category4depth'], TODAY_DATE
-    )
+        # SparkSession 생성 및 데이터 변환
+        spark = create_spark_session()
+        cleaned_df = transform_data_to_product_detail(
+            spark, input_path, row['category3depth'], row['category4depth'], TODAY_DATE
+        )
 
-    # 데이터 저장
-    print(f"Writing data to: {output_path}")
-    cleaned_df.write.mode("overwrite").parquet(output_path)
+        # 데이터 저장
+        print(f"Writing data to: {output_path}")
+        cleaned_df.write.mode("overwrite").parquet(output_path)
+
+    except Exception as e:
+        print(f"Error processing row {row['category4depth']}: {e}")  # 예외 로그 출력
 
 def main():
     spark = create_spark_session()
