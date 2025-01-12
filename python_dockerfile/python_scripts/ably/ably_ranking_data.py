@@ -1,6 +1,6 @@
 from datetime import datetime
 from itertools import islice
-from ably_modules.ably_dependencies import (
+from ably.ably_modules.ably_dependencies import (
     DEFAULT_S3_DICT,
     ABLY_HEADER,
     ABLY_NEXT_TOKEN,

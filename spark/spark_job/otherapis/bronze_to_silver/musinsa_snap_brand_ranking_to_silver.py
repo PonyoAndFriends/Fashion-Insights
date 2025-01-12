@@ -3,7 +3,10 @@ from pyspark.sql.functions import (
     col,
     explode,
     collect_list,
-    current_timestamp
+    current_timestamp,
+    count,
+    desc,
+    row_number
 )
 from pyspark.sql.types import (
     StructType,
@@ -13,6 +16,7 @@ from pyspark.sql.types import (
     ArrayType,
     TimestampType,
 )
+from pyspark.sql.window import Window
 from custom_modules import s3_spark_module
 import sys
 import logging
@@ -49,25 +53,32 @@ table_df = brands_df.select(
     col("snaps.labels").alias("labels"),
 ).withColumn("created_at", current_timestamp())
 
-# Labels 데이터 처리: name 필드만 리스트로 묶어서 저장
+# Labels 데이터 처리: name 필드만 추출하고 등장 횟수를 카운팅
 labels_df = table_df.withColumn("label", explode("labels")).select(
     col("brand_id"), col("label.name").alias("name")
 )
 
-# brand_id별 name 리스트 생성
-label_names_df = labels_df.groupBy("brand_id").agg(
-    collect_list("name").alias("label_names")
+# brand_id별 name 등장 횟수 계산
+label_counts_df = labels_df.groupBy("brand_id", "name").agg(
+    count("name").alias("count")
+)
+
+# 상위 2개의 name 선택 (윈도우 함수 사용)
+window_spec = Window.partitionBy("brand_id").orderBy(desc("count"))
+top_labels_df = label_counts_df.withColumn("rank", row_number().over(window_spec))
+filtered_labels_df = top_labels_df.filter(col("rank") <= 2).groupBy("brand_id").agg(
+    collect_list("name").alias("top_label_names")
 )
 
 # 원본 테이블과 결합
-final_table_with_labels = table_df.join(label_names_df, "brand_id", "left").select(
+table_with_top_labels = table_df.join(filtered_labels_df, "brand_id", "left").select(
     "brand_id",
     "brand_name",
     "img_url",
     "rank",
     "previous_rank",
     "follower_count",
-    "label_names",
+    "top_label_names",
     "created_at",
 )
 
@@ -79,17 +90,16 @@ schema = StructType(
         StructField("img_url", StringType(), False),
         StructField("rank", IntegerType(), False),
         StructField("previous_rank", IntegerType(), False),
-        StructField("follwer_count", IntegerType(), False),
-        StructField("label_names", ArrayType(StringType()), False),
+        StructField("follower_count", IntegerType(), False),
+        StructField("top_label_names", ArrayType(StringType()), False),
         StructField("created_at", TimestampType(), True),
     ]
 )
 
 # 스키마 적용
 final_table_with_schema = spark.createDataFrame(
-    final_table_with_labels.rdd, schema=schema
+    table_with_top_labels.rdd, schema=schema
 ).repartition(1)
-
 
 # 결과를 S3 대상 경로로 저장
 final_table_with_schema.write.mode("overwrite").parquet(target_path)
