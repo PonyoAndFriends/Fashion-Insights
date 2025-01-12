@@ -25,7 +25,7 @@ with DAG(
     schedule_interval=None,
     start_date=datetime(2023, 1, 1),
     catchup=False,
-    concurrency=1
+    concurrency=1,
 ) as dag:
     
     start = DummyOperator(
@@ -40,16 +40,16 @@ with DAG(
     platform = "musinsa"
     table = "product_detail_tb"
     
-    for depth3code in mapping_list:
+    for task_number, depth3code in enumerate(mapping_list):
         copy_query = f"""
         COPY {DEFAULT_SILVER_SHCEMA}.{table}
-        FROM '{silver_bucket_url}/{now_string}/{platform}/product_detail_tb/{depth3code}/'
+        FROM '{silver_bucket_url}/{now_string}/{platform}/{platform}_product_review_detail_tb/{depth3code}/'
         IAM_ROLE '{redshift_iam_role}'
         FORMAT AS PARQUET;
         """
         
         copy_task = RedshiftQueryOperator(
-            task_id=f"{platform}_{depth3code}_product_detail_copy_task",
+            task_id=f"{platform}_{task_number}_review_detail_copy_task",
             sql=copy_query,
         )
 

@@ -43,7 +43,7 @@ def sort_by_weekly_ratio(url, headers, keywords, gender):
     logger.info(f"url: {url}")
     logger.info(f"headers: {headers}")
     logger.info(f"body: {body}")
-    time.sleep(0.5)
+    time.sleep(2)
     response = requests.post(url, headers=headers, json=body)
     response.raise_for_status()
 
