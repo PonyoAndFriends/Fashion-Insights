@@ -40,8 +40,6 @@ schema = StructType(
 # 데이터를 스키마에 맞게 매핑
 data_df = parsed_df.select(
     col("columns")[0].cast(IntegerType()).alias("STN_ID"),  # STN_ID
-    col("columns")[1].cast(FloatType()).alias("LON"),
-    col("columns")[2].cast(FloatType()).alias("LAT"),
     col("columns")[10].alias("STN_KO"),                    # STN_KO
 )
 
