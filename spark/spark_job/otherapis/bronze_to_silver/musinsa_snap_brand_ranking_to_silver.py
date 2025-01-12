@@ -29,7 +29,7 @@ logger.info(f"source_path: {source_path}")
 logger.info(f"target_path: {target_path}")
 
 # S3에서 모든 JSON 파일 읽기
-raw_json_df = s3_spark_module.read_and_partition_s3_data(spark, source_path, "json")
+raw_json_df = spark.read.json(source_path)
 
 # JSON 처리 - 필요한 컬럼 추출 및 테이블 스키마에 맞게 변환
 brands_df = (
