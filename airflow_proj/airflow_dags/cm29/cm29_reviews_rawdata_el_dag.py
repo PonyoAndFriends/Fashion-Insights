@@ -69,3 +69,13 @@ with DAG(
             None,
         ],
     )
+
+    past_task = None
+    for task_group in task_group_list:
+        if not past_task:
+            past_task = task_group
+        else:
+            past_task >> task_group
+            past_task = task_group
+    
+    past_task >> spark_application_task
