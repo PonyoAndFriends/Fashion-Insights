@@ -91,15 +91,17 @@ schema = StructType(
         StructField("rank", IntegerType(), False),
         StructField("previous_rank", IntegerType(), False),
         StructField("follower_count", IntegerType(), False),
-        StructField("top_label_names", ArrayType(StringType()), True),
-        StructField("created_at", TimestampType(), True),
+        StructField("top_label_names", ArrayType(StringType()), False),
+        StructField("created_at", TimestampType(), False),
     ]
 )
 
 # 스키마 적용
-final_table_with_schema = spark.createDataFrame(
-    table_with_top_labels.rdd, schema=schema
-).repartition(1)
+# final_table_with_schema = spark.createDataFrame(
+#     table_with_top_labels.rdd, schema=schema
+# ).repartition(1)
+
+final_table_with_schema = table_df.repartition(1)
 
 # 결과를 S3 대상 경로로 저장
 final_table_with_schema.write.mode("overwrite").parquet(target_path)
