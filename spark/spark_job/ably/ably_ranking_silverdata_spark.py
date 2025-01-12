@@ -2,7 +2,6 @@ from pyspark.sql import SparkSession
 from pyspark.sql.functions import to_date, col, lit, row_number
 from pyspark.sql.window import Window
 from datetime import datetime, timedelta
-from concurrent.futures import ThreadPoolExecutor, as_completed
 from ably_modules.ably_mapping_table import CATEGORY_PARAMS
 
 # 오늘 날짜 - 날짜 path
@@ -24,23 +23,31 @@ def making_ranking_table(
     category2depth,
     category3depth,
 ):
+    # JSON 데이터 읽기
     df = spark.read.json(json_path)
 
-    # `logging.analytics.GOODS_SNO`와 기타 데이터를 추출
+    # 필요한 데이터 추출 및 컬럼 추가
     extracted_df = df.select(
-        col("item.logging.analytics.GOODS_SNO").alias("product_id")
+        lit("ably").alias("platform"),
+        lit(f"{gender}-{category2depth}-{category3depth}").alias("master_category_name"),
+        col("logging.analytics.GOODS_SNO").cast("int").alias("product_id")
     )
 
-    # JSON 순서를 기반으로 `ranking` 추가
-    ranking_window = Window.orderBy(lit(1))  # 고정값으로 정렬하여 순서 유지
+    # ranking 컬럼 추가
+    ranking_window = Window.orderBy(lit(1))
     ranked_df = extracted_df.withColumn("ranking", row_number().over(ranking_window))
 
-    # master_category_name 생성
-    master_category_name = f"{gender}-{category2depth}-{category3depth}"
+    # created_at 컬럼 추가
     final_df = (
-        ranked_df.withColumn("master_category_name", lit(master_category_name))
-        .withColumn("platform", lit("ably"))
+        ranked_df
         .withColumn("created_at", to_date(lit(today_date), "yyyy-MM-dd"))
+        .select(
+            "platform",
+            "master_category_name",
+            "product_id",
+            "ranking",
+            "created_at"
+        )  # 컬럼 순서 보장
     )
 
     # Parquet 크기를 1개 파일로 병합
@@ -62,8 +69,11 @@ def process_category(spark, category3depth, gender, category2depth, category4dep
             f"s3a://team3-2-s3/silver/{TODAY_DATE}/ably/ranking_data/{file_name}.parquet"
         )
 
+        # master_category_code 생성
         master_category_code = f"{gender}-{category2depth}-{category3depth}"
         print(f"Processing {master_category_code}-{category4depth}")
+
+        # 데이터 처리
         cleaned_df = making_ranking_table(
             spark,
             input_path,
@@ -74,6 +84,7 @@ def process_category(spark, category3depth, gender, category2depth, category4dep
             category3depth,
         )
 
+        # 결과 저장
         cleaned_df.write.mode("overwrite").parquet(table_output_path)
 
     except Exception as e:
@@ -83,46 +94,28 @@ def process_category(spark, category3depth, gender, category2depth, category4dep
 def main():
     spark = create_spark_session()
 
-    with ThreadPoolExecutor(max_workers=10) as executor:  # 최대 10개의 스레드 사용
-        futures = []
+    for gender_dct in CATEGORY_PARAMS:
+        # category1depth(성별) 추출
+        gender = list(gender_dct["GENDER"].values())[1]
 
-        for gender_dct in CATEGORY_PARAMS:
-            # category1depth(성별) 추출
-            gender = list(gender_dct["GENDER"].items())[0][1]
+        # category2depth 추출
+        for categorydepth in gender_dct["cat_2"]:
+            category2depth = categorydepth["name"]  # name 값 추출
 
-            # category2depth 추출
-            for categorydepth in gender_dct["cat_2"]:
-                category2depth = categorydepth["name"]  # name 값 추출 (cat_2의 name)
-                print(f"Category2 Depth Name: {category2depth}")
+            # category3depth 추출
+            for category3 in categorydepth["cat_3"]:
+                category3depth = category3["name"]
 
-                # category3depth 추출
-                for category3 in categorydepth["cat_3"]:
-                    category3depth = category3["name"]  # name 값 추출 (cat_3의 name)
-                    print(f"  Category3 Depth Name: {category3depth}")
-
-                    # category4depth 추출
-                    for category4 in category3["cat_4"]:
-                        for cat_key, category4depth in category4.items():
-                            print(
-                                f"    Category4 Depth Key: {cat_key}, Name: {category4depth}"
-                            )
-
-                            futures.append(
-                                executor.submit(
-                                    process_category,
-                                    spark,
-                                    category3depth,
-                                    gender,
-                                    category2depth,
-                                    category4depth,
-                                )
-                            )
-
-        for future in as_completed(futures):
-            try:
-                future.result()  # 작업 완료 대기
-            except Exception as e:
-                print(f"Error in thread execution: {e}")
+                # category4depth 추출
+                for category4 in category3["cat_4"]:
+                    for _, category4depth in category4.items():
+                        process_category(
+                            spark,
+                            category3depth,
+                            gender,
+                            category2depth,
+                            category4depth,
+                        )
 
 
 if __name__ == "__main__":

@@ -1,17 +1,14 @@
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import col, lit, to_date, array_join
-from pyspark.conf import SparkConf
 from datetime import datetime, timedelta
-import os
 import glob
+from ably_modules.ably_mapping_table import CATEGORY_PARAMS
 
 # 오늘 날짜
-TODAY_DATE = (datetime.now() + timedelta(hours=9)).strftime("%Y-%m-%d %H:%M:%S")
-
+TODAY_DATE = (datetime.now() + timedelta(hours=9)).strftime("%Y-%m-%d")
 
 def create_spark_session():
     return SparkSession.builder.getOrCreate()
-
 
 def get_filtered_input_files(input_path_pattern, exclude_file):
     """
@@ -25,7 +22,6 @@ def get_filtered_input_files(input_path_pattern, exclude_file):
     all_files = glob.glob(input_path_pattern, recursive=True)
     filtered_files = [file for file in all_files if exclude_file not in file]
     return filtered_files
-
 
 def transform_to_product_review_detail(
     spark, input_files, output_path, platform_name="ably"
@@ -48,17 +44,27 @@ def transform_to_product_review_detail(
             col("contents").alias("review_content"),
             col("eval").alias("review_rating"),
             to_date(col("created_at")).alias("review_date"),
-            col("height").alias("reviewer_height"),
-            col("weight").alias("reviewer_weight"),
+            col("height").cast("float").alias("reviewer_height"),
+            col("weight").cast("float").alias("reviewer_weight"),
             array_join(col("goods_option"), ", ").alias("selected_options"),
         )
-        .withColumn("created_at", lit(TODAY_DATE))
-        .withColumn("platform", lit(platform_name))
+        .withColumn("created_at", to_date(lit(TODAY_DATE), "yyyy-MM-dd"))
+    )
+
+    # 컬럼 순서를 보장
+    final_df = transformed_df.select(
+        "product_id",
+        "review_content",
+        "review_rating",
+        "review_date",
+        "reviewer_height",
+        "reviewer_weight",
+        "selected_options",
+        "created_at"
     )
 
     # Parquet 저장
-    transformed_df.write.mode("overwrite").parquet(output_path)
-
+    final_df.write.mode("overwrite").parquet(output_path)
 
 def main():
     # SparkSession 생성
@@ -76,11 +82,14 @@ def main():
     # 제외 파일을 제외한 입력 파일 리스트
     input_files = get_filtered_input_files(input_path_pattern, exclude_file)
 
+    if not input_files:
+        print("No input files found. Exiting.")
+        return
+
     # 데이터 변환 및 저장
     transform_to_product_review_detail(spark, input_files, output_parquet_path)
 
     print(f"Data successfully saved to {output_parquet_path}")
-
 
 if __name__ == "__main__":
     main()
