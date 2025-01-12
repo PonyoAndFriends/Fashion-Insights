@@ -13,7 +13,11 @@ def create_spark_session():
 
 
 def transform_data_to_product_detail(spark, json_path, category3depth, category4depth, today_date):
-    df = spark.read.json(json_path)
+    df = spark.read.option("mode", "PERMISSIVE") \
+        .option("columnNameOfCorruptRecord", "_corrupt_record") \
+        .json(json_path)
+
+    df.show()
 
     # 필요한 데이터 추출 및 매핑
     extracted_df = df.select(
@@ -32,6 +36,8 @@ def transform_data_to_product_detail(spark, json_path, category3depth, category4
         col("logging.analytics.LIKES_COUNT").alias("like_counting"),
         lit(today_date).alias("created_at"),
     )
+
+    extracted_df.show()
 
     # Parquet 크기를 1개 파일로 병합
     final_df = extracted_df.coalesce(1)

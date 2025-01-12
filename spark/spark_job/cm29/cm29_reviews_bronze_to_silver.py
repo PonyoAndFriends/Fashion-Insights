@@ -43,7 +43,7 @@ transformed_data = raw_data.select(
 )
 
 # 저장 경로
-output_path = f"s3a://{BUCKET_NAME}/silver/{today}/29cm/29cm_review_detail_tb/"
+output_path = f"s3a://{BUCKET_NAME}/silver/{today}/29cm/29cm_product_review_detail_tb/"
 
 try:
     transformed_data.write.mode("overwrite").parquet(output_path)
