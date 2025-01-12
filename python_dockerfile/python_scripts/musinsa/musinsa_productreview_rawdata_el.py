@@ -11,7 +11,7 @@ from modules.config import Musinsa_Config
 
 import modules.s3_module as s3_module
 
-LIST_SIZE = 30
+LIST_SIZE = 40
 
 URL = "https://goods.musinsa.com/api2/review/v1/view/list"
 
@@ -21,9 +21,8 @@ PARAMS = {
     "myFilter": "false",
     "hasPhoto": "false",
     "isExperience": "false",
+    "sort" : "new"
 }
-
-SORT = ["goods_est_desc", "goods_est_asc"]
 
 TODAY_DATE = Musinsa_Config.TODAY_DATE
 
@@ -36,45 +35,45 @@ def porductid_list_iterable(iterable):
 def el_productreview(s3_client, product_id_list, key):
     bronze_bucket = "team3-2-s3"
     max_retries = 3  # 최대 재시도 횟수
-    for sort_method in SORT:
-        PARAMS["sort"] = sort_method
-        retries = 0
-        for product_id in product_id_list:
-            s3_key = key + f"{product_id}_{sort_method}.json"
-            PARAMS["goodsNo"] = product_id
+    retries = 0
+    for product_id in product_id_list:
+        s3_key = key + f"{product_id}.json"
+        PARAMS["goodsNo"] = product_id
             
-            while retries < max_retries:
-                try:
-                    time.sleep(1.5)
-                    response = requests.get(
-                        URL, headers=Musinsa_Config.HEADERS, params=PARAMS
-                    )
+        while retries < max_retries:
+            try:
+                time.sleep(1.5)
+                response = requests.get(
+                    URL, headers=Musinsa_Config.HEADERS, params=PARAMS
+                )
+                
+                if response.status_code == 403:
+                    raise ValueError("HTTP error: 403 Forbidden")
+                elif response.status_code != 200:
+                    raise ValueError(f"HTTP error: {response.status_code}")
                     
-                    if response.status_code != 200:
-                        raise ValueError(f"HTTP error: {response.status_code}")
+                data = response.json()["data"]
+                print(product_id, data)
                     
-                    data = response.json()["data"]
-                    print(product_id, data)
+                if data['total'] != 0:
+                    s3_module.upload_json_to_s3(s3_client, bronze_bucket, s3_key, data)
+                    break
+                elif data['total'] == 0:
+                    break
                     
-                    if data['total'] != 0:
-                        s3_module.upload_json_to_s3(s3_client, bronze_bucket, s3_key, data)
-                        break
-                    elif data['total'] == 0:
-                        break
+            except (json.JSONDecodeError, KeyError, ValueError) as e:
+                logging.error(f"Error with product_id {product_id}: {e}")
+                retries += 1
+                if retries < max_retries:
+                    logging.info(f"Retrying product_id {product_id} (Attempt {retries})")
+                    time.sleep(120)  # 재시도 전 대기
+                else:
+                    logging.error(f"Skipping product_id {product_id} after {max_retries} attempts.")
+                    break  # 최대 재시도 횟수 초과 시 루프 종료
                     
-                except (json.JSONDecodeError, KeyError, ValueError) as e:
-                    logging.error(f"Error with product_id {product_id}: {e}")
-                    retries += 1
-                    if retries < max_retries:
-                        logging.info(f"Retrying product_id {product_id} (Attempt {retries})")
-                        time.sleep(120)  # 재시도 전 대기
-                    else:
-                        logging.error(f"Skipping product_id {product_id} after {max_retries} attempts.")
-                        break  # 최대 재시도 횟수 초과 시 루프 종료
-                    
-                except Exception as e:
-                    logging.error(f"Unexpected error with product_id {product_id}: {e}")
-                    break  # 예기치 못한 에러 시 종료
+            except Exception as e:
+                logging.error(f"Unexpected error with product_id {product_id}: {e}")
+                break  # 예기치 못한 에러 시 종료
 
 
 def main():
