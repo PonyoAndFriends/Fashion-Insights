@@ -10,6 +10,7 @@ from pyspark.sql.types import (
 )
 import logging
 import sys
+from datetime import datetime
 
 logger = logging.getLogger(__name__)
 
@@ -59,7 +60,7 @@ schema = StructType(
 # 필요한 컬럼만 추출 및 변환
 data_rdd = split_rdd.map(
     lambda row: (
-        row[0],  # TM
+        datetime.strptime(row[0], "%Y%m%d").strftime("%Y-%m-%d") if row[0] else None,  # TM
         int(row[1]),  # STN
         float(row[2]),  # WS_AVG
         float(row[5]),  # WS_MAX

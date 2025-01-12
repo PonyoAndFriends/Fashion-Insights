@@ -35,41 +35,42 @@ def porductid_list_iterable(iterable):
 
 def el_productreview(s3_client, product_id_list, key):
     bronze_bucket = "team3-2-s3"
-    max_retries = 2  # 최대 재시도 횟수
-    
+    max_retries = 3  # 최대 재시도 횟수
     for sort_method in SORT:
         PARAMS["sort"] = sort_method
-        time.sleep(30)  # 정렬 방식 변경 간 대기
-        
+        retries = 0
         for product_id in product_id_list:
             s3_key = key + f"{product_id}_{sort_method}.json"
             PARAMS["goodsNo"] = product_id
-            retries = 0
             
             while retries < max_retries:
                 try:
+                    time.sleep(1.5)
                     response = requests.get(
-                        URL, headers=Musinsa_Config.HEADERS, params=PARAMS
+                        URL, headers=HEADERS, params=PARAMS
                     )
                     
                     if response.status_code != 200:
                         raise ValueError(f"HTTP error: {response.status_code}")
                     
-                    data = response.json().get("data", {})
+                    data = response.json()["data"]
+                    print(product_id, data)
                     
-                    if data.get("total", 0) > 0:
+                    if data['total'] != 0:
                         s3_module.upload_json_to_s3(s3_client, bronze_bucket, s3_key, data)
-                        break  # 성공 시 루프 종료
+                        break
+                    elif data['total'] == 0:
+                        break
                     
                 except (json.JSONDecodeError, KeyError, ValueError) as e:
                     logging.error(f"Error with product_id {product_id}: {e}")
                     retries += 1
                     if retries < max_retries:
                         logging.info(f"Retrying product_id {product_id} (Attempt {retries})")
-                        time.sleep(120) 
+                        time.sleep(120)  # 재시도 전 대기
                     else:
                         logging.error(f"Skipping product_id {product_id} after {max_retries} attempts.")
-                        break
+                        break  # 최대 재시도 횟수 초과 시 루프 종료
                     
                 except Exception as e:
                     logging.error(f"Unexpected error with product_id {product_id}: {e}")
