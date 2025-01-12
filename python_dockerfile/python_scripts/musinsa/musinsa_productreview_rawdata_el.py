@@ -11,7 +11,7 @@ from modules.config import Musinsa_Config
 
 import modules.s3_module as s3_module
 
-LIST_SIZE = 40
+LIST_SIZE = 50
 
 URL = "https://goods.musinsa.com/api2/review/v1/view/list"
 
@@ -45,7 +45,7 @@ def el_productreview(s3_client, product_id_list, key):
                 response = requests.get(
                     URL, headers=Musinsa_Config.HEADERS, params=PARAMS
                 )
-                time.sleep(1.5)
+                time.sleep(2)
                 data = response.json()["data"]
                 print(f"res.json(): {response.json()}")
                 if data["total"] != 0:

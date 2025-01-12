@@ -1,7 +1,7 @@
 from pyspark.sql import SparkSession
 from pyspark.sql.window import Window
 
-from pyspark.sql.functions import col, lit, current_timestamp, explode, monotonically_increasing_id, row_number
+from pyspark.sql.functions import col, lit, current_date, explode, monotonically_increasing_id, row_number, when
 from pyspark.sql.types import (
     FloatType,
     DateType,
@@ -39,6 +39,12 @@ trend_df = raw_df.select(
     explode(col("results")).alias("result"),
 ).withColumn("trend_id", monotonically_increasing_id())
 
+trend_df = trend_df.withColumn(
+    "result.data",
+    when((col("result.data").isNull()) | (col("result.data") == lit([])), [{"period": None, "ratio": None}])
+    .otherwise(col("result.data"))
+)
+
 window_spec = Window.orderBy(lit(1))  # 특정 정렬 기준(예: 전체 데이터)에 따라 순서 부여
 trend_df = trend_df.withColumn("trend_id", row_number().over(window_spec))
 
@@ -55,6 +61,8 @@ result_df = trend_df.select(
 
 
 
+
+
 # data 컬럼 데이터 변환 및 추가 컬럼 설정
 final_df = result_df.select(
     col("trend_id"),
@@ -67,31 +75,31 @@ final_df = result_df.select(
     col("data.ratio").cast(FloatType()).alias("ratio"),  # 비율 변환
     lit("패션의류").alias("category_name"),  # 고정 값 추가
     lit("50000000").alias("category_code"),  # 고정 코드 추가
-    current_timestamp().alias("created_at"),  # 데이터 수집 시간
+    current_date().alias("created_at"),  # 데이터 수집 시간
 )
 
 # 스키마 정의
-schema = StructType(
-    [
-        StructField("trend_id", IntegerType(), True),
-        StructField("start_date", DateType(), False),
-        StructField("end_date", DateType(), False),
-        StructField("time_unit", StringType(), False),
-        StructField("gender", StringType(), False),
-        StructField("title", StringType(), False),
-        StructField("keyword_name", StringType(), False),
-        StructField("period", DateType(), False),
-        StructField("ratio", FloatType(), False),
-        StructField("category_name", StringType(), False),
-        StructField("category_code", StringType(), False),
-        StructField("created_at", DateType(), False),
-    ]
-)
+# schema = StructType(
+#     [
+#         StructField("trend_id", IntegerType(), True),
+#         StructField("start_date", DateType(), False),
+#         StructField("end_date", DateType(), False),
+#         StructField("time_unit", StringType(), False),
+#         StructField("gender", StringType(), False),
+#         StructField("title", StringType(), False),
+#         StructField("keyword_name", StringType(), False),
+#         StructField("period", DateType(), False),
+#         StructField("ratio", FloatType(), False),
+#         StructField("category_name", StringType(), False),
+#         StructField("category_code", StringType(), False),
+#         StructField("created_at", DateType(), False),
+#     ]
+# )
 
 # 스키마를 적용한 최종 DataFrame 생성
-final_df_with_schema = spark.createDataFrame(final_df.rdd, schema=schema).repartition(1)
+final_df = final_df.repartition(1)
 
 # Parquet 형식으로 저장
-final_df_with_schema.write.mode("overwrite").parquet(target_path)
+final_df.write.mode("overwrite").parquet(target_path)
 
 logger.info(f"Processed data saved to: {target_path}")

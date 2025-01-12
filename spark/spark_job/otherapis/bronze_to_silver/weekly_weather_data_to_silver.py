@@ -27,7 +27,7 @@ raw_df = spark.read.csv(source_path, header=True, inferSchema=True)
 
 # START7777과 END7777 사이의 데이터 필터링 (주석 및 빈 줄 제거)
 filtered_df = raw_df.filter(
-    (col("value").strip() != "")  # 빈 줄 제거
+    (trim(col("value")) != "")
     & (~col("value").startswith("#"))  # 주석 제거
     & (~col("value").startswith("START7777"))  # START 제거
     & (~col("value").startswith("END7777"))  # END 제거

@@ -12,7 +12,7 @@ import modules.s3_module as s3_module
 
 TODAY_DATE = Musinsa_Config.TODAY_DATE
 
-LIST_SIZE = 40
+LIST_SIZE = 50
 
 
 def porductid_list_iterable(iterable):
@@ -45,7 +45,7 @@ def et_product1_detail(product_id):
 
     response = requests.get(url, headers=Musinsa_Config.HEADERS)
 
-    time.sleep(1.2)
+    time.sleep(2)
     soup = BeautifulSoup(response.text, features="html.parser")
 
     title_text = soup.find("title").text
