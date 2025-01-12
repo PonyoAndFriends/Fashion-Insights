@@ -7,9 +7,6 @@ from ably_modules.ably_dependencies import (
     ABLY_NEXT_TOKEN,
     ABLY_CATEGORY,
 )
-from ably_modules.aws_info import (
-    AWS_S3_CONFIG,
-)
 import threading
 import logging
 import json
