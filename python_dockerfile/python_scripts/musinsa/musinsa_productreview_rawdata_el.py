@@ -11,7 +11,7 @@ from modules.config import Musinsa_Config
 
 import modules.s3_module as s3_module
 
-LIST_SIZE = 50
+LIST_SIZE = 30
 
 URL = "https://goods.musinsa.com/api2/review/v1/view/list"
 
@@ -35,24 +35,45 @@ def porductid_list_iterable(iterable):
 
 def el_productreview(s3_client, product_id_list, key):
     bronze_bucket = "team3-2-s3"
+    max_retries = 2  # 최대 재시도 횟수
+    
     for sort_method in SORT:
         PARAMS["sort"] = sort_method
-        time.sleep(120)
+        time.sleep(60)  # 정렬 방식 변경 간 대기
+        
         for product_id in product_id_list:
-            s3_key = key + f"{product_id}{sort_method}.json"
+            s3_key = key + f"{product_id}_{sort_method}.json"
             PARAMS["goodsNo"] = product_id
-            try:
-                response = requests.get(
-                    URL, headers=Musinsa_Config.HEADERS, params=PARAMS
-                )
-                time.sleep(2)
-                data = response.json()["data"]
-                print(f"res.json(): {response.json()}")
-                if data["total"] != 0:
-                    s3_module.upload_json_to_s3(s3_client, bronze_bucket, s3_key, data)
-            except Exception as e:
-                logging.error(f"Error: {e}")
-                continue
+            retries = 0
+            
+            while retries < max_retries:
+                try:
+                    response = requests.get(
+                        URL, headers=Musinsa_Config.HEADERS, params=PARAMS
+                    )
+                    
+                    if response.status_code != 200:
+                        raise ValueError(f"HTTP error: {response.status_code}")
+                    
+                    data = response.json().get("data", {})
+                    
+                    if data.get("total", 0) > 0:
+                        s3_module.upload_json_to_s3(s3_client, bronze_bucket, s3_key, data)
+                        break  # 성공 시 루프 종료
+                    
+                except (json.JSONDecodeError, KeyError, ValueError) as e:
+                    logging.error(f"Error with product_id {product_id}: {e}")
+                    retries += 1
+                    if retries < max_retries:
+                        logging.info(f"Retrying product_id {product_id} (Attempt {retries})")
+                        time.sleep(120) 
+                    else:
+                        logging.error(f"Skipping product_id {product_id} after {max_retries} attempts.")
+                        break
+                    
+                except Exception as e:
+                    logging.error(f"Unexpected error with product_id {product_id}: {e}")
+                    break  # 예기치 못한 에러 시 종료
 
 
 def main():
