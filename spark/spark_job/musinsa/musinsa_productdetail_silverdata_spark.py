@@ -65,7 +65,7 @@ def etl_productdetail(spark, source_path, load_path):
         "final_price", col("final_price").cast(IntegerType())
     )
     final_df = final_df.withColumn(
-        "discount_rate", col("discount_rate").cast(IntegerType())
+        "discount_ratio", col("discount_ratio").cast(IntegerType())
     )
     final_df = final_df.withColumn(
         "review_count", col("review_count").cast(IntegerType())

@@ -47,12 +47,12 @@ with DAG(
         content_type="plain/text",
     )
 
-    spark_args = (
+    spark_args = \
         [
             make_s3_url(Variable.get("s3_bucket"), BRONZE_FILE_PATH),
             make_s3_url(Variable.get("s3_bucket"), SILVER_FILE_PATH),
-        ],
-    )
+        ]
+
     spark_job_submit_task = PythonOperator(
         task_id="weekly-weather-submit-spark-job-task",
         python_callable=submit_spark_application,
