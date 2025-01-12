@@ -1,5 +1,7 @@
 from pyspark.sql import SparkSession
-from pyspark.sql.functions import col, lit, current_timestamp, explode
+from pyspark.sql.window import Window
+
+from pyspark.sql.functions import col, lit, current_timestamp, explode, monotonically_increasing_id, row_number
 from pyspark.sql.types import (
     FloatType,
     DateType,
@@ -7,7 +9,7 @@ from pyspark.sql.types import (
     StringType,
     StructType,
     StructField,
-    TimestampType,
+    DateType,
 )
 from custom_modules import s3_spark_module
 import sys
@@ -35,7 +37,10 @@ trend_df = raw_df.select(
     col("timeUnit").alias("time_unit"),
     lit(gender).alias("gender"),  # gender 값 전달받아 추가
     explode(col("results")).alias("result"),
-)
+).withColumn("trend_id", monotonically_increasing_id())
+
+window_spec = Window.orderBy(lit(1))  # 특정 정렬 기준(예: 전체 데이터)에 따라 순서 부여
+trend_df = trend_df.withColumn("trend_id", row_number().over(window_spec))
 
 # results 컬럼 데이터 변환
 result_df = trend_df.select(
@@ -47,6 +52,8 @@ result_df = trend_df.select(
     col("result.keyword").getItem(0).alias("keyword_name"),  # 첫 번째 keyword 가져오기
     explode(col("result.data")).alias("data"),  # data 리스트 explode
 )
+
+
 
 # data 컬럼 데이터 변환 및 추가 컬럼 설정
 final_df = result_df.select(
@@ -77,7 +84,7 @@ schema = StructType(
         StructField("ratio", FloatType(), False),
         StructField("category_name", StringType(), False),
         StructField("category_code", StringType(), False),
-        StructField("created_at", TimestampType(), False),
+        StructField("created_at", DateType(), False),
     ]
 )
 

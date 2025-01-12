@@ -3,7 +3,7 @@ from pyspark.sql.functions import (
     col,
     explode,
     collect_list,
-    current_timestamp,
+    current_date,
     flatten,
     count,
     desc,
@@ -15,7 +15,7 @@ from pyspark.sql.types import (
     StringType,
     IntegerType,
     ArrayType,
-    TimestampType,
+    DateType,
 )
 from pyspark.sql.window import Window
 from custom_modules import s3_spark_module
@@ -52,7 +52,7 @@ table_df = brands_df.select(
     col("ranking.previousRank").alias("previous_rank"),
     col("followerCount").alias("follower_count"),
     col("snaps.labels").alias("labels"),
-).withColumn("created_at", current_timestamp())
+).withColumn("created_at", current_date())
 
 # Extracting categoryName from labels
 category_names_df = table_df.withColumn("label", explode("labels")).select(
@@ -93,7 +93,7 @@ schema = StructType(
         StructField("previous_rank", IntegerType(), True),
         StructField("follower_count", IntegerType(), True),
         StructField("label_names", ArrayType(StringType()), True),
-        StructField("created_at", TimestampType(), True),
+        StructField("created_at", DateType(), True),
     ]
 )
 

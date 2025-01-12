@@ -30,7 +30,7 @@ with DAG(
     # 기본적인 설정 정의
     now_string = NOW_STRING
     silver_bucket_url = DEFULAT_SILVER_BUCKET_URL
-    platforms = ["29cm"]
+    platforms = ["29cm", "musinsa"]
     table = "ranking_tb"
     redshift_iam_role = Variable.get("redshift_iam_role")
 

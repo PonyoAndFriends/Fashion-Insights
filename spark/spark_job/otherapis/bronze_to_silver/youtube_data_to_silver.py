@@ -1,13 +1,12 @@
 from pyspark.sql import SparkSession
-from pyspark.sql.functions import col, explode, lit, current_timestamp
+from pyspark.sql.functions import col, explode, lit, current_date
 from pyspark.sql.types import (
     StructType,
     StructField,
     StringType,
     IntegerType,
-    TimestampType,
+    DateType,
 )
-from custom_modules import s3_spark_module
 import sys
 import logging
 
@@ -46,10 +45,10 @@ processed_df = exploded_df.select(
     col("video_data.title"),
     col("video_data.thumbnailUrl").alias("img_url"),
     col("video_data.duration").alias("duration_seconds"),
-    col("video_data.publishedAt").cast(TimestampType()).alias("published_at"),
+    col("video_data.publishedAt").cast(DateType()).alias("published_at"),
     col("video_data.viewCount").cast(IntegerType()).alias("view_count"),
     col("video_data.likeCount").cast(IntegerType()).alias("like_count"),
-    current_timestamp().alias("created_at"),
+    current_date().alias("created_at"),
 )
 
 # 스키마 정의
@@ -62,10 +61,10 @@ schema = StructType(
         StructField("title", StringType(), False),
         StructField("img_url", StringType(), False),
         StructField("duration_seconds", IntegerType(), False),
-        StructField("published_at", TimestampType(), False),
+        StructField("published_at", DateType(), False),
         StructField("view_count", IntegerType(), False),
         StructField("like_count", IntegerType(), True),
-        StructField("created_at", TimestampType(), False),
+        StructField("created_at", DateType(), False),
     ]
 )
 

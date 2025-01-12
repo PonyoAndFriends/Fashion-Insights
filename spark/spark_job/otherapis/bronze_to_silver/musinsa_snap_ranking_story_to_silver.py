@@ -5,7 +5,7 @@ from pyspark.sql.types import (
     StringType,
     IntegerType,
     ArrayType,
-    TimestampType,
+    DateType,
 )
 from pyspark.sql.functions import col, lit
 from custom_modules import s3_spark_module
@@ -26,18 +26,6 @@ gender = args[3]
 # JSON 데이터 로드
 raw_json_df = spark.read.json(source_path)
 
-# # JSON 데이터 스키마 정의
-# schema = StructType(
-#     [
-#         StructField("story_id", StringType(), False),
-#         StructField("content_type", StringType(), False),
-#         StructField("aggregation_like_count", IntegerType(), False),
-#         StructField("tags", ArrayType(StringType()), False),
-#         StructField("gender", StringType(), True),
-#         StructField("created_at", TimestampType(), True),
-#     ]
-# )
-
 # 데이터 변환
 transformed_df = raw_json_df.select(
     col("data.list.id").alias("story_id"),
@@ -45,10 +33,10 @@ transformed_df = raw_json_df.select(
     col("data.list.tags.name").alias("tags"),
     col("data.list.displayedFrom").alias("created_at"),
     lit("남성" if gender == "MEN" else "여성").alias("gender"),
-).withColumn("created_at", col("created_at").cast(TimestampType()))
+).withColumn("data.list.snaps.createdAt", col("created_at").cast(DateType()))
 
 # 스키마 적용
-final_df = spark.createDataFrame(transformed_df.rdd, schema=schema).repartition(1)
+final_df = transformed_df.repartition(1)
 
 # 데이터 저장 예시 (Parquet 파일로 저장)
 final_df.write.mode("overwrite").parquet(target_path)

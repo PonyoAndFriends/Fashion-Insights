@@ -30,7 +30,7 @@ with DAG(
     now_string = NOW_STRING
     silver_bucket_url = DEFULAT_SILVER_BUCKET_URL
     # platforms = ["musinsa", "29cm", "ably"]
-    platforms = ["29cm"]
+    platforms = ["29cm", "musinsa"]
     table = "product_detail_tb"
     redshift_iam_role = Variable.get("redshift_iam_role")
 

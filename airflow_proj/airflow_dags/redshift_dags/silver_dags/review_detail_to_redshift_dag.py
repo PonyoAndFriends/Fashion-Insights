@@ -30,11 +30,11 @@ with DAG(
     # 기본적인 설정 정의
     now_string = NOW_STRING
     silver_bucket_url = DEFULAT_SILVER_BUCKET_URL
-    platforms = ["29cm"]
+    platforms = ["29cm", "musinsa"]
     redshift_iam_role = Variable.get("redshift_iam_role")
 
     for platform in platforms:
-        table = f"cm29_product_review_detail_tb"
+        table = f"{platform}_product_review_detail_tb" if platform != "29cm" else "cm29"
         drop_sql = f"""
         DROP TABLE IF EXISTS {DEFAULT_SILVER_SHCEMA}.{table};
         """
@@ -60,7 +60,7 @@ with DAG(
 
         copy_query = f"""
             COPY {DEFAULT_SILVER_SHCEMA}.{table}
-            FROM '{silver_bucket_url}/{now_string}/{platform}/29cm_review_detail_tb/'
+            FROM '{silver_bucket_url}/{now_string}/{platform}/{platform}_review_detail_tb/'
             IAM_ROLE '{redshift_iam_role}'
             FORMAT AS PARQUET;
             """

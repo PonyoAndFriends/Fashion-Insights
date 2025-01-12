@@ -41,7 +41,7 @@ with DAG(
         gender VARCHAR(8),
         category_name VARCHAR(100) NOT NULL,
         channel_title VARCHAR(200) NOT NULL,
-        title VARCHAR(200) NOT NULL,
+        title VARCHAR(1000) NOT NULL,
         img_url VARCHAR(1000) NOT NULL,
         duration_seconds INT NOT NULL,
         published_at DATE NOT NULL,
@@ -50,6 +50,7 @@ with DAG(
         created_at DATE
     );
     """
+
     refresh_task = RefreshTableOperator(
         task_id="youtube_data_refresh_table_task",
         drop_sql=drop_sql,
