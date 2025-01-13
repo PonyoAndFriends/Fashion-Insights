@@ -80,7 +80,7 @@ with DAG(
             task["task_gender"],
         ]
         spark_job_submit_task = PythonOperator(
-            task_id=f"youtube_category_videos_{task['task_gender']}_submit_spark_job_task",
+            task_id=f"youtube_{task['task_gender']}_spark_job_task",
             python_callable=submit_spark_application,
             op_args=[
                 f"youtube-category-videos-{task['task_gender']}-from-bronze-to-silver-data-application",
