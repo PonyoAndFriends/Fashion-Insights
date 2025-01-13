@@ -144,7 +144,7 @@ def et_product2_detail(product_id):
             response = response.json()
             
             like_counting = response["data"]["contents"]["items"][0]["count"]
-        
+            break
         except (json.JSONDecodeError, KeyError, ValueError) as e:
             logging.error(f"Error with product_id {product_id}: {e}")
             retries += 1
@@ -174,7 +174,7 @@ def et_product_detail(s3_client, master_category, depth4category, product_id_lis
     for product_id in product_id_list:
         bronze_bucket = "team3-2-s3"
         s3_key = key + f"{product_id}.json"
-        time.sleep(1.2)
+        time.sleep(1.5)
 
         print(f"product_id : {product_id}")
 
