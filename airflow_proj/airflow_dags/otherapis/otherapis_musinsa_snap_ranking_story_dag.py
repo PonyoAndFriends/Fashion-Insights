@@ -36,10 +36,10 @@ PAGE_SIZE = math.ceil(TOTAL_DATA_COUNT / (PARALLEL_POD_NUM * PARALLEL_THREAD_NUM
 # 파일 경로 설정
 FILE_TOPIC = "musinsa_snap_story_ranking"
 BRONZE_FILE_PATH = (
-    f"bronze/{datetime.now().strftime('%Y-%m-%d')}/otherapis/{FILE_TOPIC}_raw_data/"
+    f"bronze/{(datetime.now() + timedelta(hours=9)).strftime('%Y-%m-%d')}/otherapis/{FILE_TOPIC}_raw_data/"
 )
 SILVER_FILE_PATH = (
-    f"silver/{datetime.now().strftime('%Y-%m-%d')}/otherapis/{FILE_TOPIC}_raw_data/"
+    f"silver/{datetime.now() + timedelta(hours=9).strftime('%Y-%m-%d')}/otherapis/{FILE_TOPIC}_raw_data/"
 )
 
 # other api 대그들
