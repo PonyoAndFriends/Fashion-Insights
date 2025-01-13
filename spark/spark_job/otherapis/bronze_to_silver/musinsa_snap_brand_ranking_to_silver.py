@@ -5,8 +5,8 @@ from pyspark.sql.functions import (
     collect_list,
     current_date,
     flatten,
-    lit,
     when,
+    lit,
 )
 from pyspark.sql.types import (
     StructType,
@@ -46,7 +46,10 @@ table_df = brands_df.select(
     col("nickname").alias("brand_name"),
     col("profileImageUrl").alias("img_url"),
     col("ranking.rank").alias("rank"),
-    when(col("ranking.previousRank").isNull(), lit(None)).otherwise(col("ranking.previousRank").cast("int")).alias("previous_rank"),
+    when(col("ranking.previousRank").isNull(), lit(0))
+    .otherwise(col("ranking.previousRank"))
+    .cast("int")
+    .alias("previous_rank"),
     col("followerCount").alias("follower_count"),
     col("snaps.labels").alias("labels"),
 ).withColumn("created_at", current_date())
@@ -80,19 +83,19 @@ table_with_categories = table_df.join(
     "created_at",
 )
 
-# JSON 데이터 스키마 정의
 schema = StructType(
     [
-        StructField("brand_id", StringType(), True),
-        StructField("brand_name", StringType(), True),
+        StructField("brand_id", StringType(), False),
+        StructField("brand_name", StringType(), False),
         StructField("img_url", StringType(), True),
-        StructField("rank", IntegerType(), True),
-        StructField("previous_rank", IntegerType(), True),  # 여전히 INT로 유지
+        StructField("rank", IntegerType(), False),
+        StructField("previous_rank", IntegerType(), True),
         StructField("follower_count", IntegerType(), True),
         StructField("label_names", ArrayType(StringType()), True),
-        StructField("created_at", DateType(), True),
+        StructField("created_at", DateType(), False),
     ]
 )
+
 
 # 스키마 적용
 final_table_with_schema = spark.createDataFrame(
