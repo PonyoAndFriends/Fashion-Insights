@@ -110,12 +110,12 @@ with DAG(
         "여성": "WOMEN",
     }
     for gender in ["남성", "여성"]:
-        file_topic = f"musinsa_{gender_dict[gender]}_ranking_story_group" 
+        file_topic = f"musinsa_{gender_dict[gender]}_ranking_story_group"
         file_path = f"{(datetime.now() + timedelta(hours=9)).strftime('%Y-%m-%d')}/otherapis/{file_topic}_raw_data/"
         spark_args = \
             [
-                make_s3_url(Variable.get("s3_bucket"), BRONZE_FILE_PATH),
-                make_s3_url(Variable.get("s3_bucket"), SILVER_FILE_PATH),
+                make_s3_url(Variable.get("s3_bucket"), 'bronze/' + file_path),
+                make_s3_url(Variable.get("s3_bucket"), 'silver/' + file_path),
                 gender,
             ]
 

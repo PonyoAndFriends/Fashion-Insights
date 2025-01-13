@@ -61,4 +61,4 @@ ranking_and_detail_spark_submit_task = PythonOperator(
     ],
 )
 
-raking_goods_data_task >> trigger_task >> goods_no_data_task >> ranking_and_detail_spark_submit_task
+raking_goods_data_task >> goods_no_data_task >> ranking_and_detail_spark_submit_task
