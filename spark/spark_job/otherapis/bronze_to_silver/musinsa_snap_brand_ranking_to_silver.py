@@ -5,9 +5,8 @@ from pyspark.sql.functions import (
     collect_list,
     current_date,
     flatten,
-    count,
-    desc,
-    row_number,
+    lit,
+    when,
 )
 from pyspark.sql.types import (
     StructType,
@@ -17,8 +16,6 @@ from pyspark.sql.types import (
     ArrayType,
     DateType,
 )
-from pyspark.sql.window import Window
-from custom_modules import s3_spark_module
 import sys
 import logging
 
@@ -49,7 +46,7 @@ table_df = brands_df.select(
     col("nickname").alias("brand_name"),
     col("profileImageUrl").alias("img_url"),
     col("ranking.rank").alias("rank"),
-    col("ranking.previousRank").alias("previous_rank"),
+    when(col("ranking.previousRank").isNull(), lit(None)).otherwise(col("ranking.previousRank").cast("int")).alias("previous_rank"),
     col("followerCount").alias("follower_count"),
     col("snaps.labels").alias("labels"),
 ).withColumn("created_at", current_date())
@@ -90,7 +87,7 @@ schema = StructType(
         StructField("brand_name", StringType(), True),
         StructField("img_url", StringType(), True),
         StructField("rank", IntegerType(), True),
-        StructField("previous_rank", IntegerType(), True),
+        StructField("previous_rank", IntegerType(), True),  # 여전히 INT로 유지
         StructField("follower_count", IntegerType(), True),
         StructField("label_names", ArrayType(StringType()), True),
         StructField("created_at", DateType(), True),

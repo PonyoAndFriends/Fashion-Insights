@@ -56,6 +56,7 @@ class ReviewProcessor:
         self.retries = retries
 
     def fetch_reviews(self, product_id):
+        "https://api.a-bly.com/webview/goods/33882115/reviews"
         url = f"{self.api_url}/{product_id}/reviews/"
         reviews = []
 
