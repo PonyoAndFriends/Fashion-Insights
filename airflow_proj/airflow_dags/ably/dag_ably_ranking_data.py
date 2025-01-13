@@ -38,12 +38,6 @@ raking_goods_data_task = CustomKubernetesPodOperator(
     dag=dag,
 )
 
-trigger_task = TriggerDagRunOperator(
-    task_id="trigger_ably_reviews_dags",
-    trigger_dag_id="fetch_and_save_ably_product_reviews_split",
-    dag=dag,
-)
-
 goods_no_data_task = CustomKubernetesPodOperator(
     task_id=f"ably_goodsno_data_task",
     dag=dag,
