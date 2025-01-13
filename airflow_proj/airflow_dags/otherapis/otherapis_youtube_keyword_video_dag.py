@@ -83,7 +83,7 @@ with DAG(
             task_id=f"youtube_{task['task_gender']}_spark_job_task",
             python_callable=submit_spark_application,
             op_args=[
-                f"youtube-category-videos-{task['task_gender']}-from-bronze-to-silver-data-application",
+                f"youtube-{task['task_gender']}-spark-application",
                 r"otherapis/bronze_to_silver/youtube_data_to_silver.py",
                 spark_args,
             ],
