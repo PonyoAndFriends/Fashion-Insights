@@ -39,7 +39,7 @@ BRONZE_FILE_PATH = (
     f"bronze/{(datetime.now() + timedelta(hours=9)).strftime('%Y-%m-%d')}/otherapis/{FILE_TOPIC}_raw_data/"
 )
 SILVER_FILE_PATH = (
-    f"silver/{datetime.now() + timedelta(hours=9).strftime('%Y-%m-%d')}/otherapis/{FILE_TOPIC}_raw_data/"
+    f"silver/{(datetime.now() + timedelta(hours=9)).strftime('%Y-%m-%d')}/otherapis/{FILE_TOPIC}_raw_data/"
 )
 
 # other api 대그들
