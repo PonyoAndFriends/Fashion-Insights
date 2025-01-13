@@ -106,6 +106,7 @@ if __name__ == "__main__":
 
     s3_handler = S3Handler(bucket_name)
     folders = s3_handler.list_folders()
+    logger.info("I'm working man!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
 
     processor = ReviewProcessor(api_url, headers, s3_handler.s3_client, bucket_name)
 
