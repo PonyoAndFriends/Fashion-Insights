@@ -31,37 +31,20 @@ raking_goods_data_task = CustomKubernetesPodOperator(
     get_logs=True,
 )
 
-sleep_task_1 = PythonOperator(
+sleep_task = PythonOperator(
     task_id="sleep_task_1",
     python_callable=sleep_time,
     dag=dag,
 )
 
-sleep_task_2 = PythonOperator(
-    task_id="sleep_task_2",
-    python_callable=sleep_time,
-    dag=dag,
-)
-
 # 디테일 -> 랭킹 -> 리뷰
-detail_spark_submit_task = PythonOperator(
-    task_id="ably_product_detail_data_spark_task",
+ranking_and_detail_spark_submit_task = PythonOperator(
+    task_id="ably_ranking_and_detail_data_spark_task",
     python_callable=submit_spark_application,
     dag=dag,
     op_args=[
         "ably-product-detail-raw-data-spark-submit-task",
-        "ably/ably_productdetail_silverdata_spark.py",
-        None,
-    ],
-)
-
-ranking_spark_submit_task = PythonOperator(
-    task_id="ably_product_ranking_data_spark_task",
-    python_callable=submit_spark_application,
-    dag=dag,
-    op_args=[
-        "ably-product-ranking-raw-data-spark-submit-task",
-        "ably/ably_ranking_silverdata_spark.py",
+        "ably/ably_ranking_and_product_detail_spark.py",
         None,
     ],
 )
@@ -79,9 +62,7 @@ review_spark_submit_task = PythonOperator(
 
 (
     raking_goods_data_task
-    >> detail_spark_submit_task
-    >> sleep_task_1
-    >> ranking_spark_submit_task
-    >> sleep_task_2
+    >> ranking_and_detail_spark_submit_task
+    >> sleep_task
     >> review_spark_submit_task
 )

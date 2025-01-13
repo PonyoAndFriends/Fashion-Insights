@@ -35,8 +35,8 @@ with DAG(
     drop_sql = f"""
     DROP TABLE IF EXISTS {DEFAULT_SILVER_SHCEMA}.{table};
     """
-    create_sql = """
-    CREATE TABLE youtube_videos (
+    create_sql = f"""
+    CREATE TABLE {DEFAULT_SILVER_SHCEMA}.{table} (
         video_id VARCHAR(20) PRIMARY KEY,
         gender VARCHAR(8),
         category_name VARCHAR(100) NOT NULL,
