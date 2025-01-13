@@ -7,7 +7,7 @@ from pyspark.sql.types import (
     ArrayType,
     DateType,
 )
-from pyspark.sql.functions import col, lit, explode, expr
+from pyspark.sql.functions import col, lit, expr, to_date
 import logging
 import sys
 
@@ -47,9 +47,9 @@ transformed_df = exploded_df.select(
     col("list_item.aggregations.likeCount").alias("aggregation_like_count"),
     # tags 배열에서 각 태그의 name 필드 추출
     expr("transform(list_item.tags, tag -> tag.name)").alias("tags"),
-    col("list_item.displayedFrom").alias("created_at"),
+    to_date(col("list_item.displayedFrom"), "yyyy-MM-dd").alias("created_at"),  # 날짜 형식 변환
     lit("남성" if gender == "MEN" else "여성").alias("gender"),
-).withColumn("created_at", col("created_at").cast(DateType()))
+)
 
 # 스키마 적용
 final_df = spark.createDataFrame(transformed_df.rdd, schema=schema)

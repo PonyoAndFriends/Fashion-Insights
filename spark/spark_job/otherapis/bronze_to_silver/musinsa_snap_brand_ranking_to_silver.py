@@ -4,10 +4,11 @@ from pyspark.sql.functions import (
     explode,
     collect_list,
     current_date,
-    flatten,
+    row_number,
     to_json,
     lit,
     when,
+    desc
 )
 from pyspark.sql.types import (
     StructType,
@@ -16,6 +17,7 @@ from pyspark.sql.types import (
     IntegerType,
     DateType,
 )
+from pyspark.sql.window import Window
 import sys
 import logging
 
@@ -59,14 +61,38 @@ category_names_df = table_df.withColumn("label", explode("labels")).select(
     col("brand_id"), col("label.name").alias("name")
 )
 
-# Grouping category names into a single list per brand_id
-category_names_grouped_df = category_names_df.groupBy("brand_id").agg(
-    collect_list("name").alias("name")
+# Grouping category names into a single list per brand_id and counting the occurrences
+category_names_with_counts_df = category_names_df.groupBy("brand_id", "name").count()
+
+# Rank the labels by count for each brand_id and select top 3
+window_spec = Window.partitionBy("brand_id").orderBy(desc("count"))
+
+top_3_labels_df = category_names_with_counts_df.withColumn(
+    "rank", row_number().over(window_spec)
+).filter(col("rank") <= 3)
+
+# Grouping the top 3 labels into a list
+top_3_labels_grouped_df = top_3_labels_df.groupBy("brand_id").agg(
+    collect_list("name").alias("top_labels")
 )
 
-# Flattening the list without limiting it to 3 items
-category_names_grouped_df = category_names_grouped_df.withColumn(
-    "label_names", to_json(flatten(col("name")))  # 전체 배열을 JSON으로 변환
+# Convert the list of top labels into JSON format
+top_3_labels_grouped_df = top_3_labels_grouped_df.withColumn(
+    "label_names", to_json(col("top_labels"))
+)
+
+# Join with the original table to include the top 3 labels in the final dataset
+table_with_top_labels = table_df.join(
+    top_3_labels_grouped_df, "brand_id", "left"
+).select(
+    "brand_id",
+    "brand_name",
+    "img_url",
+    "rank",
+    "previous_rank",
+    "follower_count",
+    "label_names",
+    "created_at",
 )
 
 # JSON 데이터 스키마 정의
@@ -85,7 +111,7 @@ schema = StructType(
 
 # 스키마 적용
 final_table_with_schema = spark.createDataFrame(
-    table_with_categories.rdd, schema=schema
+    table_with_top_labels.rdd, schema=schema
 ).repartition(1)
 
 # 결과를 S3 대상 경로로 저장
