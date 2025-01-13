@@ -23,7 +23,7 @@ with DAG(
 ) as dag:
 
     # 기본적인 설정 정의
-    table = "product_ranking_detail_gold_tb"
+    table = "total_product_gold_tb"
     redshift_iam_role = Variable.get("redshift_iam_role")
 
     drop_sql = f"""
@@ -51,7 +51,7 @@ with DAG(
         p.like_counting,
         r.created_at
     FROM 
-        {DEFAULT_SILVER_SHCEMA}.{table} r
+        {DEFAULT_SILVER_SHCEMA}.ranking_tb r
     JOIN 
         retail_silver_layer.product_detail_tb p
     ON 
