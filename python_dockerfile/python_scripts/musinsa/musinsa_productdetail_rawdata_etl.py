@@ -92,6 +92,7 @@ def et_product1_detail(product_id):
                 review_avg_rating = None
 
             image_tag = get_content_or_none(soup.find("meta", attrs={"property": "og:image"}))
+            
             break
         except (json.JSONDecodeError, KeyError, ValueError) as e:
             logging.error(f"Error with product_id {product_id}: {e}")
@@ -104,7 +105,11 @@ def et_product1_detail(product_id):
                 break  # 최대 재시도 횟수 초과 시 루프 종료
         except Exception as e:
             logging.error(f"Error with product_id {product_id}: {e}")
-            break
+            retries += 1
+            if retries < max_retries:
+                time.sleep(120)  # 재시도 전 대기
+            else:
+                break
         
     return (
         product_name,
@@ -137,6 +142,7 @@ def et_product2_detail(product_id):
                 raise ValueError(f"{product_id}HTTP error : {response.status_code}")
             
             like_counting = response["data"]["contents"]["items"][0]["count"]
+        
         except (json.JSONDecodeError, KeyError, ValueError) as e:
             logging.error(f"Error with product_id {product_id}: {e}")
             retries += 1
@@ -147,10 +153,16 @@ def et_product2_detail(product_id):
                 logging.error(f"Skipping product_id {product_id} after {max_retries} attempts.")
                 like_counting = None
                 break  # 최대 재시도 횟수 초과 시 루프 종료
+        
         except Exception as e:
             logging.error(f"Error with product_id {product_id}: {e}")
-            like_counting = None
-            break
+            retries += 1
+            if retries < max_retries:
+                time.sleep(120)
+            else:
+                logging.error(f"Skipping product_id {product_id} after {max_retries} attempts.")
+                like_counting = None
+                break
         
     return like_counting
 
