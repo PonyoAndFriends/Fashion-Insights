@@ -4,6 +4,7 @@ import requests
 import re
 import json
 import threading
+import logging
 
 from bs4 import BeautifulSoup
 
@@ -41,51 +42,70 @@ def get_content_or_none(element):
 
 
 def et_product1_detail(product_id):
-    url = f"https://www.musinsa.com/products/{product_id}"
+    max_retries = 3
+    retries = 0
+    while retries < max_retries:
+        try:
+            url = f"https://www.musinsa.com/products/{product_id}"
 
-    response = requests.get(url, headers=Musinsa_Config.HEADERS)
+            response = requests.get(url, headers=Musinsa_Config.HEADERS)
 
-    time.sleep(2)
-    soup = BeautifulSoup(response.text, features="html.parser")
+            if response.status_code == 403:
+                raise ValueError(f"{product_id}HTTP error : 403 Forbidden")
+            elif response.status_code != 200:
+                raise ValueError(f"{product_id}HTTP error : {response.status_code}")
+            
+            soup = BeautifulSoup(response.text, features="html.parser")
+            title_text = soup.find("title").text
+            product_name = re.sub(r" - 사이즈 & 후기.*", "", title_text)
+            
+            # brand naeme_kr, brand name_en
+            brand_name_kr = get_content_or_none(
+                soup.find("meta", {"property": "product:brand"})
+            )
+            brand_name_en = soup.find("div", class_="sc-11x022e-0 hzZrPp")
+            brand_name_en = (
+                brand_name_en.find("a", href=True)["href"].split("brand/")[1]
+                if brand_name_en
+                else None
+            )
+            
+            original_price = get_content_or_none(
+                soup.find("meta", {"property": "product:price:normal_price"})
+            )
+            final_price = get_content_or_none(
+                soup.find("meta", {"property": "product:price:amount"})
+            )
+            discount_rate = get_content_or_none(
+                soup.find("meta", {"property": "product:price:sale_rate"})
+            )
+            try:
+                # review_count, review_avg_ratin
+                json_data = json.loads(
+                    soup.find("script", {"type": "application/ld+json"}).string
+                )
+                # ratingValue와 reviewCount 값 추출
+                review_count = json_data["aggregateRating"]["reviewCount"]
+                review_avg_rating = json_data["aggregateRating"]["ratingValue"]
+            except:
+                review_count = None
+                review_avg_rating = None
 
-    title_text = soup.find("title").text
-    product_name = re.sub(r" - 사이즈 & 후기.*", "", title_text)
-
-    # brand naeme_kr, brand name_en
-    brand_name_kr = get_content_or_none(
-        soup.find("meta", {"property": "product:brand"})
-    )
-    brand_name_en = soup.find("div", class_="sc-11x022e-0 hzZrPp")
-    brand_name_en = (
-        brand_name_en.find("a", href=True)["href"].split("brand/")[1]
-        if brand_name_en
-        else None
-    )
-
-    original_price = get_content_or_none(
-        soup.find("meta", {"property": "product:price:normal_price"})
-    )
-    final_price = get_content_or_none(
-        soup.find("meta", {"property": "product:price:amount"})
-    )
-    discount_rate = get_content_or_none(
-        soup.find("meta", {"property": "product:price:sale_rate"})
-    )
-
-    try:
-        # review_count, review_avg_ratin
-        json_data = json.loads(
-            soup.find("script", {"type": "application/ld+json"}).string
-        )
-        # ratingValue와 reviewCount 값 추출
-        review_count = json_data["aggregateRating"]["reviewCount"]
-        review_avg_rating = json_data["aggregateRating"]["ratingValue"]
-    except:
-        review_count = None
-        review_avg_rating = None
-
-    image_tag = get_content_or_none(soup.find("meta", attrs={"property": "og:image"}))
-
+            image_tag = get_content_or_none(soup.find("meta", attrs={"property": "og:image"}))
+            break
+        except (json.JSONDecodeError, KeyError, ValueError):
+            logging.error(f"Error with product_id {product_id}: {e}")
+            retries += 1
+            if retries < max_retries:
+                logging.info(f"Retrying product_id {product_id} (Attempt {retries})")
+                time.sleep(120)  # 재시도 전 대기
+            else:
+                logging.error(f"Skipping product_id {product_id} after {max_retries} attempts.")
+                break  # 최대 재시도 횟수 초과 시 루프 종료
+        except Exception as e:
+            logging.error(f"Error with product_id {product_id}: {e}")
+            break
+        
     return (
         product_name,
         brand_name_kr,
@@ -96,23 +116,41 @@ def et_product1_detail(product_id):
         review_count,
         review_avg_rating,
         image_tag,
-    )
-
+    )  
 
 def et_product2_detail(product_id):
     url = "https://like.musinsa.com/like/api/v2/liketypes/goods/counts"
 
     payload = {"relationIds": [product_id]}
 
-    try:
-        response = requests.post(
-            url, headers=Musinsa_Config.HEADERS, json=payload
-        ).json()
-
-        like_counting = response["data"]["contents"]["items"][0]["count"]
-    except:
-        like_counting = None
-
+    max_retries = 3
+    retries = 0
+    while retries < max_retries:
+        try:
+            response = requests.post(
+                url, headers=Musinsa_Config.HEADERS, json=payload
+            ).json()
+            
+            if response.status_code == 403:
+                raise ValueError(f"{product_id}HTTP error : 403 Forbidden")
+            elif response.status_code != 200:
+                raise ValueError(f"{product_id}HTTP error : {response.status_code}")
+            
+            like_counting = response["data"]["contents"]["items"][0]["count"]
+        except (json.JSONDecodeError, KeyError, ValueError):
+            logging.error(f"Error with product_id {product_id}: {e}")
+            retries += 1
+            if retries < max_retries:
+                logging.info(f"Retrying product_id {product_id} (Attempt {retries})")
+                time.sleep(120)  # 재시도 전 대기
+            else:
+                logging.error(f"Skipping product_id {product_id} after {max_retries} attempts.")
+                like_counting = None
+                break  # 최대 재시도 횟수 초과 시 루프 종료
+        except Exception as e:
+            like_counting = None
+            break
+        
     return like_counting
 
 
