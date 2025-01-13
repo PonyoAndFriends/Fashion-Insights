@@ -91,6 +91,7 @@ def etl_productreview(spark, source_path, load_path):
         to_date(to_timestamp(col("review_date"), "yyyy-MM-dd'T'HH:mm:ss.SSSXXX")),
     )
     final_df = final_df.withColumn("create_at", to_date(lit(TODAY_DATE), "yyyy-MM-dd"))
+    final_df = final_df.withColumnRenamed("create_at", "created_at")
 
     final_df = final_df.distinct()
     final_df = final_df.coalesce(1)
