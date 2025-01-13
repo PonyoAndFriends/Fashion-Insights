@@ -22,6 +22,7 @@ class S3Handler:
         self.bucket_name = bucket_name
         self.date_prefix = 'bronze/' + (datetime.now() + timedelta(hours=9)).strftime('%Y-%m-%d')
         self.base_path = f"{self.date_prefix}/ably/review_data/"
+        logger.info(f"base_path: {self.base_path}")
 
     def list_folders(self):
         try:

@@ -1,4 +1,6 @@
 from airflow import DAG
+from airflow.operators.python import PythonOperator
+from ably.ably_modules.k8s_spark_job_submit_operator import submit_spark_application
 from ably.ably_modules.k8s_custom_python_pod_operator import CustomKubernetesPodOperator
 from datetime import datetime
 from airflow.operators.trigger_dagrun import TriggerDagRunOperator
@@ -42,4 +44,27 @@ trigger_task = TriggerDagRunOperator(
     dag=dag,
 )
 
-raking_goods_data_task >> trigger_task
+goods_no_data_task = CustomKubernetesPodOperator(
+    task_id=f"ably_goodsno_data_task",
+    dag=dag,
+    namespace="airflow",
+    script_path="/python_scripts/ably/ably_goods_no_data.py",
+    cpu_limit="1000m",
+    memory_limit="1Gi",
+    is_delete_operator_pod=True,
+    get_logs=True,
+)
+
+# 디테일 -> 랭킹 -> 리뷰
+ranking_and_detail_spark_submit_task = PythonOperator(
+    task_id="ably_ranking_and_detail_data_spark_task",
+    python_callable=submit_spark_application,
+    dag=dag,
+    op_args=[
+        "ably-product-detail-raw-data-spark-submit-task",
+        "ably/ably_ranking_and_product_detail_spark.py",
+        None,
+    ],
+)
+
+raking_goods_data_task >> trigger_task >> goods_no_data_task >> ranking_and_detail_spark_submit_task
