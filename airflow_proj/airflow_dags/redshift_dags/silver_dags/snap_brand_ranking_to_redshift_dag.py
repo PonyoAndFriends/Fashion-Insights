@@ -37,9 +37,9 @@ with DAG(
     """
     create_sql = f"""
     CREATE TABLE {DEFAULT_SILVER_SHCEMA}.{table} (
-        brand_id VARCHAR(30) PRIMARY KEY,
-        brand_name VARCHAR(30) NOT NULL,
-        img_url VARCHAR(1000),
+        brand_id VARCHAR(100) PRIMARY KEY,
+        brand_name VARCHAR(100) NOT NULL,
+        img_url VARCHAR(3000),
         rank INT NOT NULL,
         previous_rank INT,
         follower_count INT,
