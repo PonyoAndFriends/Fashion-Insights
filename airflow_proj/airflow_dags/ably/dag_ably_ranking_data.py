@@ -55,7 +55,7 @@ goods_no_data_task = CustomKubernetesPodOperator(
     get_logs=True,
 )
 
-# 디테일 -> 랭킹 -> 리뷰
+# 디테일, 랭킹
 ranking_and_detail_spark_submit_task = PythonOperator(
     task_id="ably_ranking_and_detail_data_spark_task",
     python_callable=submit_spark_application,
