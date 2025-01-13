@@ -3,6 +3,11 @@ from pyspark.sql.functions import (
     col,
     explode,
     collect_list,
+    current_date,
+    flatten,
+    count,
+    desc,
+    row_number,
 )
 from pyspark.sql.types import (
     StructType,
@@ -12,6 +17,7 @@ from pyspark.sql.types import (
     ArrayType,
     DateType,
 )
+from pyspark.sql.window import Window
 from custom_modules import s3_spark_module
 import sys
 import logging
@@ -19,19 +25,17 @@ import logging
 logger = logging.getLogger(__name__)
 
 # 스파크 세션 생성
-spark = SparkSession.builder.appName(
-    "musinsa_snap_brand_ranking_to_silver_s3"
-).getOrCreate()
+spark = SparkSession.builder.getOrCreate()
 
 # 실행 시 전달받은 인자
 args = sys.argv
-source_path = args[1]
+source_path = args[1] + "/*.json"
 target_path = args[2]
 logger.info(f"source_path: {source_path}")
 logger.info(f"target_path: {target_path}")
 
 # S3에서 모든 JSON 파일 읽기
-raw_json_df = s3_spark_module.read_and_partition_s3_data(spark, source_path, "json")
+raw_json_df = spark.read.json(source_path)
 
 # JSON 처리 - 필요한 컬럼 추출 및 테이블 스키마에 맞게 변환
 brands_df = (
@@ -47,22 +51,28 @@ table_df = brands_df.select(
     col("ranking.rank").alias("rank"),
     col("ranking.previousRank").alias("previous_rank"),
     col("followerCount").alias("follower_count"),
-    col("labels"),
-    col("createdAt").alias("created_at"),
-)
+    col("snaps.labels").alias("labels"),
+).withColumn("created_at", current_date())
 
-# Labels 데이터 처리: name 필드만 리스트로 묶어서 저장
-labels_df = table_df.withColumn("label", explode("labels")).select(
+# Extracting categoryName from labels
+category_names_df = table_df.withColumn("label", explode("labels")).select(
     col("brand_id"), col("label.name").alias("name")
 )
 
-# brand_id별 name 리스트 생성
-label_names_df = labels_df.groupBy("brand_id").agg(
-    collect_list("name").alias("label_names")
+# Grouping category names into a single list per brand_id
+category_names_grouped_df = category_names_df.groupBy("brand_id").agg(
+    collect_list("name").alias("name")
 )
 
-# 원본 테이블과 결합
-final_table_with_labels = table_df.join(label_names_df, "brand_id", "left").select(
+# Flattening the list without removing duplicates
+category_names_grouped_df = category_names_grouped_df.withColumn(
+    "label_names", flatten(col("name"))
+)
+
+# Join with the original table
+table_with_categories = table_df.join(
+    category_names_grouped_df, "brand_id", "left"
+).select(
     "brand_id",
     "brand_name",
     "img_url",
@@ -76,12 +86,12 @@ final_table_with_labels = table_df.join(label_names_df, "brand_id", "left").sele
 # JSON 데이터 스키마 정의
 schema = StructType(
     [
-        StructField("brand_id", StringType(), False),
-        StructField("brand_name", StringType(), False),
-        StructField("img_url", StringType(), False),
-        StructField("rank", IntegerType(), False),
+        StructField("brand_id", StringType(), True),
+        StructField("brand_name", StringType(), True),
+        StructField("img_url", StringType(), True),
+        StructField("rank", IntegerType(), True),
         StructField("previous_rank", IntegerType(), True),
-        StructField("follower_count", IntegerType(), False),
+        StructField("follower_count", IntegerType(), True),
         StructField("label_names", ArrayType(StringType()), True),
         StructField("created_at", DateType(), True),
     ]
@@ -89,9 +99,8 @@ schema = StructType(
 
 # 스키마 적용
 final_table_with_schema = spark.createDataFrame(
-    final_table_with_labels.rdd, schema=schema
-)
-
+    table_with_categories.rdd, schema=schema
+).repartition(1)
 
 # 결과를 S3 대상 경로로 저장
 final_table_with_schema.write.mode("overwrite").parquet(target_path)
