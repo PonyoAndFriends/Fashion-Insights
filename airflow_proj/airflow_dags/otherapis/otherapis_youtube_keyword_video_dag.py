@@ -53,17 +53,10 @@ with DAG(
         {"gender": "남성", "category_list": MALE_CATEGORY_LIST, "task_gender": "male"},
     ]
 
-    category_list_tasks = []
     fetch_keyword_data_tasks = []
     spark_submit_tasks = []
 
     for task in tasks_config:
-        gender_category_list_task = CategoryDictionaryMergeAndExplodeOperator(
-            task_id=f"making_{task['task_gender']}_category_list_task",
-            dict_list=task["category_list"],
-        )
-        category_list_tasks.append(gender_category_list_task)
-
         gender_fetch_youtube_data_task = CustomKubernetesPodOperator(
             task_id=f"fetch_{task['task_gender']}_yotubue_data_task",
             name=f"pod_for_{task['task_gender']}_category_yotubue_data_task",
@@ -100,7 +93,7 @@ with DAG(
         )
         spark_submit_tasks.append(spark_job_submit_task)
 
-    for list_task, fetch_task, spark_submit_task in zip(
-        category_list_tasks, fetch_keyword_data_tasks, spark_submit_tasks
+    for fetch_task, spark_submit_task in zip(
+        fetch_keyword_data_tasks, spark_submit_tasks
     ):
-        list_task >> fetch_task >> spark_submit_task
+        fetch_task >> spark_submit_task
