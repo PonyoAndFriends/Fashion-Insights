@@ -94,7 +94,7 @@ def etl_productreview(spark, source_path, load_path):
 
     final_df = final_df.distinct()
     final_df = final_df.coalesce(1)
-    final_df = final_df.select("product_id", "review_content", "review_rating", "review_date", "review_height", "review_weight", "selected_options", "created_at")
+    final_df = final_df.select("product_id", "review_content", "review_rating", "review_date", "reviewer_height", "reviewer_weight", "selected_options", "created_at")
     final_df.write.mode("overwrite").parquet(load_path)
 
 
