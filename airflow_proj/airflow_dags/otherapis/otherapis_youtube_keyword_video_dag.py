@@ -17,9 +17,6 @@ from otherapis.custom_operators.k8s_spark_job_submit_operator import (
 from otherapis.custom_operators.k8s_custom_python_pod_operator import (
     CustomKubernetesPodOperator,
 )
-from otherapis.custom_operators.keyword_dictionary_process_oprerator import (
-    CategoryDictionaryMergeAndExplodeOperator,
-)
 from otherapis.custom_operators.custom_modules.s3_upload import (
     make_s3_url,
 )
