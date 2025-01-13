@@ -93,7 +93,7 @@ def create_ranking_tb(transformed_data):
         col("master_category_name").cast(StringType()),
         col("product_id").cast(IntegerType()),
         col("ranking").cast(IntegerType()),
-        col("created_at"),
+        col("created_at").cast(DateType()),
     )
 
     return ranking_tb

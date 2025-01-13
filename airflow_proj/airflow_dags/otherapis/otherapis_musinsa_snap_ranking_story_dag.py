@@ -123,7 +123,7 @@ with DAG(
             task_id=f"musinsa_snap_ranking_story_{gender_dict[gender]}_submit_spark_job_task",
             python_callable=submit_spark_application,
             op_args=[
-                f"musinsa-snap-ranking-stroy-{gender_dict[gender]}-from-bronze-to-silver-data",
+                f"snap-ranking-stroy-{gender_dict[gender].lower()}-silver-data",
                 r"otherapis/bronze_to_silver/musinsa_snap_ranking_story_to_silver.py",
                 spark_args,
             ],
