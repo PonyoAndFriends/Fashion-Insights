@@ -91,7 +91,7 @@ def main():
                     cleaned_df = making_ranking_table(
                         spark, input_path, master_category_code, TODAY_DATE
                     )
-
+                    cleaned_df = cleaned_df.select("platform", "master_category_name", "product_id", "ranking", "created_at")
                     cleaned_df.write.mode("overwrite").parquet(table_output_path)
 
 
