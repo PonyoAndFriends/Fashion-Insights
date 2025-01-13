@@ -12,7 +12,7 @@ from pyspark.sql.types import (
     DateType,
 )
 from custom_modules import s3_spark_module
-import sys
+import sys, json
 import logging
 
 logger = logging.getLogger(__name__)
@@ -48,11 +48,13 @@ exploded_dates_df = dates_df.selectExpr("explode(dates) as period")
 # 기본값 데이터 생성
 seven_days_data = [{"period": row["period"], "ratio": 0.0} for row in exploded_dates_df.collect()]
 
+seven_days_data_json = json.dumps(seven_days_data)
+
 trend_df = trend_df.withColumn(
     "result.data",
     when(
         (col("result.data").isNull()) | (col("result.data") == lit([])),
-        lit(seven_days_data)
+        lit(seven_days_data_json)  # JSON 문자열로 사용
     ).otherwise(col("result.data"))
 )
 
