@@ -4,7 +4,7 @@ import time
 import requests
 import logging
 from datetime import datetime, timedelta
-from otherapis.script_modules.gender_category_list import FEMALE_CATEGORY_LIST, MALE_CATEGORY_LIST
+from script_modules.gender_category_list import FEMALE_CATEGORY_LIST, MALE_CATEGORY_LIST
 from script_modules import s3_upload
 from zoneinfo import ZoneInfo
 
@@ -104,7 +104,7 @@ def fetch_final_data(url, headers, s3_dict, top_5_keywords, gender):
         "gender": "f" if gender == "여성" else "m",
     }
 
-    time.sleep(0.2)
+    time.sleep(1)
     response = requests.post(url, headers=headers, json=body)
     response.raise_for_status()
 
