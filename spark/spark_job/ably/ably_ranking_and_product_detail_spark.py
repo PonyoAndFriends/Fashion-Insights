@@ -9,7 +9,7 @@ from pyspark.sql.functions import (
 )
 from functools import reduce
 from pyspark.sql.types import StringType, IntegerType, FloatType, DateType
-from ably_mapping_table import CATEGORY_PARAMS
+from ably_modules.ably_mapping_table import CATEGORY_PARAMS
 from datetime import datetime, timedelta
 
 # 로깅 설정
