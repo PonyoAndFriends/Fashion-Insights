@@ -31,9 +31,6 @@ review_detail_data_task = CustomKubernetesPodOperator(
     get_logs=True,
 )
 
-
-
-
 review_spark_submit_task = PythonOperator(
     task_id="ably_product_review_data_spark_task",
     python_callable=submit_spark_application,
