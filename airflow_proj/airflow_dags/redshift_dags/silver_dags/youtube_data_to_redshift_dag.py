@@ -44,7 +44,7 @@ with DAG(
         title VARCHAR(1000) NOT NULL,
         img_url VARCHAR(1000) NOT NULL,
         duration_seconds INT NOT NULL,
-        published_at DATE NOT NULL,
+        published_at TIMESTAMP NOT NULL,
         view_count INT NOT NULL,
         like_count INT,
         created_at DATE
