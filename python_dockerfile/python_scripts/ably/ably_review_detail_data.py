@@ -61,6 +61,7 @@ class ReviewProcessor:
 
         for attempt in range(self.retries):
             try:
+                time.sleep(3)
                 response = requests.get(url, headers=self.headers)
                 if response.status_code == 200:
                     data = response.json().get("reviews", [])
