@@ -14,7 +14,7 @@ import sys
 logger = logging.getLogger(__name__)
 
 # SparkSession 생성
-spark = SparkSession.builder.appName("snap_ranking_story_to_silver_s3").getOrCreate()
+spark = SparkSession.builder.getOrCreate()
 
 # 실행 시 전달받은 인자
 args = sys.argv
