@@ -56,8 +56,9 @@ class ReviewProcessor:
         self.retries = retries
 
     def fetch_reviews(self, product_id):
-        "https://api.a-bly.com/webview/goods/33882115/reviews"
         url = f"{self.api_url}/{product_id}/reviews/"
+        logger.info(f"fetchgin from url: {url}")
+        logger.info(f"fetchgin using headers: {headers}")
         reviews = []
 
         for attempt in range(self.retries):
