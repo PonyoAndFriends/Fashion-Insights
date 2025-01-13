@@ -9,7 +9,7 @@ from script_modules import run_func_multi_thread
 from datetime import datetime
 from zoneinfo import ZoneInfo
 from collections import defaultdict
-from otherapis.script_modules.gender_category_list import FEMALE_CATEGORY_LIST, MALE_CATEGORY_LIST
+from script_modules.gender_category_list import FEMALE_CATEGORY_LIST, MALE_CATEGORY_LIST
 
 
 logger = logging.getLogger(__name__)
