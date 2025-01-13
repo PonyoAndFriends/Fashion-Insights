@@ -110,7 +110,7 @@ with DAG(
         "여성": "WOMEN",
     }
     for gender in ["남성", "여성"]:
-        file_topic = f"musinsa_{gender}_ranking_story_group"
+        file_topic = f"musinsa_{gender_dict[gender]}_ranking_story_group" 
         file_path = f"{(datetime.now() + timedelta(hours=9)).strftime('%Y-%m-%d')}/otherapis/{file_topic}_raw_data/"
         spark_args = \
             [
