@@ -64,14 +64,9 @@ category_names_grouped_df = category_names_df.groupBy("brand_id").agg(
     collect_list("name").alias("name")
 )
 
-# Flattening the list without removing duplicates
+# Flattening the list without limiting it to 3 items
 category_names_grouped_df = category_names_grouped_df.withColumn(
-    "label_names", flatten(col("name"))
-)
-
-# JSON 문자열로 변환
-category_names_grouped_df = category_names_grouped_df.withColumn(
-    "label_names", to_json(col("label_names"))
+    "label_names", to_json(flatten(col("name")))  # 전체 배열을 JSON으로 변환
 )
 
 # Join with the original table
