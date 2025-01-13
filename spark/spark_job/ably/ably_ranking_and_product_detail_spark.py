@@ -9,7 +9,7 @@ from pyspark.sql.functions import (
 )
 from functools import reduce
 from pyspark.sql.types import StringType, IntegerType, FloatType, DateType
-from ably_modules.ably_mapping_table import CATEGORY_PARAMS
+from ably_mapping_table import CATEGORY_PARAMS
 from datetime import datetime, timedelta
 
 # 로깅 설정
@@ -85,20 +85,20 @@ transformed_data = raw_data.select(
 )
 
 # ranking_tb 생성
-def create_ranking_tb(transformed_data):
+def create_ranking_tb(raw_data):
 
     # ranking_tb 생성
-    ranking_tb = transformed_data.select(
-        col("platform").cast(StringType()),
+    ranking_tb = raw_data.select(
+        lit("ably").alias("platform").cast(StringType()),
         col("master_category_name").cast(StringType()),
-        col("product_id").cast(IntegerType()),
-        col("ranking").cast(IntegerType()),
-        col("created_at").cast(DateType()),
+        col("item.like.goods_sno").alias("product_id").cast(IntegerType()),
+        col("item.ranking").alias("ranking").cast(IntegerType()),
+        lit(today).alias("created_at").cast(DateType()),
     )
 
     return ranking_tb
 
-ranking_tb = create_ranking_tb(transformed_data)
+ranking_tb = create_ranking_tb(raw_data)
 
 # ranking_tb 저장
 try:
