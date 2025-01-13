@@ -32,7 +32,7 @@ with DAG(
         "S3",
         "K8S",
     ],
-    concurrency=5,
+    concurrency=3,
     max_active_runs=1,
 ) as dag:
 

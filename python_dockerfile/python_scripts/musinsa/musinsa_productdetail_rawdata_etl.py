@@ -134,12 +134,14 @@ def et_product2_detail(product_id):
         try:
             response = requests.post(
                 url, headers=Musinsa_Config.HEADERS, json=payload
-            ).json()
+            )
             
             if response.status_code == 403:
                 raise ValueError(f"{product_id}HTTP error : 403 Forbidden")
             elif response.status_code != 200:
                 raise ValueError(f"{product_id}HTTP error : {response.status_code}")
+            
+            response = response.json()
             
             like_counting = response["data"]["contents"]["items"][0]["count"]
         

@@ -20,8 +20,6 @@ dag = DAG(
     catchup=False,
 )
 
-
-
 review_detail_data_task = CustomKubernetesPodOperator(
     task_id=f"ably_reviews_detail_data_task",
     dag=dag,
