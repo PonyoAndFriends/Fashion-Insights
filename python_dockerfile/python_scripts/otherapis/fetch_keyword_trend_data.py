@@ -44,7 +44,7 @@ def sort_by_weekly_ratio(url, headers, keywords, gender):
     logger.info(f"url: {url}")
     logger.info(f"headers: {headers}")
     logger.info(f"body: {body}")
-    time.sleep(2)
+    time.sleep(4)
     response = requests.post(url, headers=headers, json=body)
     response.raise_for_status()
 
@@ -104,7 +104,7 @@ def fetch_final_data(url, headers, s3_dict, top_5_keywords, gender):
         "gender": "f" if gender == "여성" else "m",
     }
 
-    time.sleep(1)
+    time.sleep(4)
     response = requests.post(url, headers=headers, json=body)
     response.raise_for_status()
 
