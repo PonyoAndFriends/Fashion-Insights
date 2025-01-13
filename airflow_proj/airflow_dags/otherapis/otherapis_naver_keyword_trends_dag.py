@@ -14,9 +14,6 @@ from otherapis.custom_operators.custom_modules.otherapis_dependencies import (
 from otherapis.custom_operators.k8s_custom_python_pod_operator import (
     CustomKubernetesPodOperator,
 )
-from otherapis.custom_operators.keyword_dictionary_process_oprerator import (
-    CategoryDictionaryMergeAndExplodeOperator,
-)
 from otherapis.custom_operators.k8s_spark_job_submit_operator import (
     submit_spark_application,
 )
