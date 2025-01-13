@@ -20,11 +20,22 @@ dag = DAG(
     catchup=False,
 )
 
-raking_goods_data_task = CustomKubernetesPodOperator(
-    task_id=f"alby_reviews_data_task",
+goods_no_data_task = CustomKubernetesPodOperator(
+    task_id=f"ably_goodsno_data_task",
     dag=dag,
     namespace="airflow",
-    script_path="/python_scripts/ably/ably_review_data.py",
+    script_path="/python_scripts/ably/ably_goods_no_data.py",
+    cpu_limit="1000m",
+    memory_limit="1Gi",
+    is_delete_operator_pod=True,
+    get_logs=True,
+)
+
+review_detail_data_task = CustomKubernetesPodOperator(
+    task_id=f"ably_reviews_detail_data_task",
+    dag=dag,
+    namespace="airflow",
+    script_path="/python_scripts/ably/ably_review_detail_data.py",
     cpu_limit="1000m",
     memory_limit="1Gi",
     is_delete_operator_pod=True,
@@ -61,8 +72,9 @@ review_spark_submit_task = PythonOperator(
 )
 
 (
-    raking_goods_data_task
-    >> ranking_and_detail_spark_submit_task
+    goods_no_data_task
+    >> review_detail_data_task
     >> sleep_task
+    >> ranking_and_detail_spark_submit_task
     >> review_spark_submit_task
 )

@@ -6,10 +6,9 @@ from pyspark.sql.functions import (
     regexp_extract,
     input_file_name,
     when,
-    row_number
 )
-from pyspark.sql.window import Window
 from functools import reduce
+from pyspark.sql.types import StringType, IntegerType, FloatType, DateType
 from ably_modules.ably_mapping_table import CATEGORY_PARAMS
 from datetime import datetime, timedelta
 
@@ -68,35 +67,33 @@ raw_data = reduce(
 
 # 결과 데이터 구성
 transformed_data = raw_data.select(
-    lit("ably").alias("platform"),
-    col("master_category_name"),
-    col("small_category_name"),
-    col("item.like.goods_sno").alias("product_id"),
-    col("item.image").alias("img_url"),
-    col("logging.analytics.GOODS_NAME").alias("product_name"),
-    col("logging.analytics.MARKET_NAME").alias("brand_name_kr"),
-    lit("").alias("brand_name_en"),
-    col("item.first_page_rendering.original_price").alias("original_price"),
-    col("logging.analytics.SALES_PRICE").alias("final_price"),
-    col("logging.analytics.DISCOUNT_RATE").alias("discount_ratio"),
-    col("logging.analytics.REVIEW_COUNT").alias("review_counting"),
-    col("logging.analytics.REVIEW_RATING").alias("review_avg_rating"),
-    col("logging.analytics.LIKES_COUNT").alias("like_counting"),
-    lit(today).alias("created_at"),
+    lit("ably").alias("platform").cast(StringType()),
+    col("master_category_name").cast(StringType()),
+    col("small_category_name").cast(StringType()),
+    col("item.like.goods_sno").alias("product_id").cast(IntegerType()),
+    col("item.image").alias("img_url").cast(StringType()),
+    col("logging.analytics.GOODS_NAME").alias("product_name").cast(StringType()),
+    col("logging.analytics.MARKET_NAME").alias("brand_name_kr").cast(StringType()),
+    lit("").alias("brand_name_en").cast(StringType()),
+    col("item.first_page_rendering.original_price").alias("original_price").cast(IntegerType()),
+    col("logging.analytics.SALES_PRICE").alias("final_price").cast(IntegerType()),
+    col("logging.analytics.DISCOUNT_RATE").alias("discount_ratio").cast(IntegerType()),
+    col("logging.analytics.REVIEW_COUNT").alias("review_counting").cast(IntegerType()),
+    col("logging.analytics.REVIEW_RATING").alias("review_avg_rating").cast(FloatType()),
+    col("logging.analytics.LIKES_COUNT").alias("like_counting").cast(IntegerType()),
+    lit(today).alias("created_at").cast(DateType()),
 )
 
 # ranking_tb 생성
 def create_ranking_tb(transformed_data):
-    # Window 함수 정의
-    window_spec = Window.partitionBy("master_category_name").orderBy(col("final_price").asc())
 
     # ranking_tb 생성
     ranking_tb = transformed_data.select(
-        col("platform"),
-        col("master_category_name"),
-        col("product_id"),
-        row_number().over(window_spec).alias("ranking"),
-        col("created_at")
+        col("platform").cast(StringType()),
+        col("master_category_name").cast(StringType()),
+        col("product_id").cast(IntegerType()),
+        col("ranking").cast(IntegerType()),
+        col("created_at"),
     )
 
     return ranking_tb
