@@ -5,7 +5,7 @@ import boto3
 import logging
 import threading
 from queue import Queue
-from datetime import datetime
+from datetime import datetime, timedelta
 from ably_modules.ably_dependencies import ABLY_HEADER, DEFAULT_S3_DICT
 from ably_modules.aws_info import AWS_S3_CONFIG
 
@@ -33,8 +33,8 @@ class S3Handler:
             aws_secret_access_key=AWS_S3_CONFIG.get("aws_secret_access_key")
         )
         self.bucket_name = bucket_name
-        self.date_prefix = datetime.now().strftime('%Y-%m-%d')
-        self.base_path = f"{self.date_prefix}/ReviewData/"
+        self.date_prefix = 'bronze/' + (datetime.now() + timedelta(hours=9)).strftime('%Y-%m-%d')
+        self.base_path = f"{self.date_prefix}/ably/review_data/"
 
     def list_folders(self):
         """
