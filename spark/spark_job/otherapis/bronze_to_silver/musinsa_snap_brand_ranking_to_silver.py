@@ -69,31 +69,17 @@ category_names_grouped_df = category_names_grouped_df.withColumn(
     "label_names", to_json(flatten(col("name")))  # 전체 배열을 JSON으로 변환
 )
 
-# Join with the original table
-table_with_categories = table_df.join(
-    category_names_grouped_df, "brand_id", "left"
-).select(
-    "brand_id",
-    "brand_name",
-    "img_url",
-    "rank",
-    "previous_rank",
-    "follower_count",
-    "label_names",
-    "created_at",
-)
-
 # JSON 데이터 스키마 정의
 schema = StructType(
     [
-        StructField("brand_id", StringType(), False),
-        StructField("brand_name", StringType(), False),
+        StructField("brand_id", StringType(), True),
+        StructField("brand_name", StringType(), True),
         StructField("img_url", StringType(), True),
-        StructField("rank", IntegerType(), False),
+        StructField("rank", IntegerType(), True),
         StructField("previous_rank", IntegerType(), True),
         StructField("follower_count", IntegerType(), True),
         StructField("label_names", StringType(), True),
-        StructField("created_at", DateType(), False),
+        StructField("created_at", DateType(), True),
     ]
 )
 

@@ -38,13 +38,13 @@ with DAG(
     create_sql = f"""
     CREATE TABLE {DEFAULT_SILVER_SHCEMA}.{table} (
         brand_id VARCHAR(100) PRIMARY KEY,
-        brand_name VARCHAR(100) NOT NULL,
+        brand_name VARCHAR(100),
         img_url VARCHAR(3000),
-        rank INT NOT NULL,
+        rank INT,
         previous_rank INT,
         follower_count INT,
         label_names SUPER,
-        created_at DATE NOT NULL
+        created_at DATE
     );
     """
     refresh_task = RefreshTableOperator(
