@@ -4,6 +4,7 @@ import time
 import requests
 import logging
 from datetime import datetime, timedelta
+from otherapis.script_modules.gender_category_list import FEMALE_CATEGORY_LIST, MALE_CATEGORY_LIST
 from script_modules import s3_upload
 from zoneinfo import ZoneInfo
 
@@ -126,7 +127,6 @@ def main():
     )
     parser.add_argument("--url", required=True, help="API endpoint URL")
     parser.add_argument("--headers", required=True, help="API headers as JSON string")
-    parser.add_argument("--all_keywords", required=True, help="List of all keywords")
     parser.add_argument(
         "--gender", required=True, help="Gender of current category list"
     )
@@ -138,8 +138,12 @@ def main():
         url = args.url
         headers = json.loads(args.headers)
         gender = args.gender
-        all_keywords = json.loads(args.all_keywords)
         s3_dict = json.loads(args.s3_dict)
+
+        if gender == "남성":
+            all_keywords = MALE_CATEGORY_LIST
+        else:
+            all_keywords = FEMALE_CATEGORY_LIST
 
         logger.info("Parsed arguments and started processing.")
 

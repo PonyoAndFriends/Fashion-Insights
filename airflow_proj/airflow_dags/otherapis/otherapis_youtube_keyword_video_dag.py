@@ -70,9 +70,7 @@ with DAG(
             script_path=f"{OTHERAPI_DEFAULT_PYTHON_SCRIPT_PATH}/fetch_and_load_youtube_data_to_s3.py",
             required_args={
                 "youtube_api_key": youtube_api_key,
-                "category_list": "{{ task_instance.xcom_pull(task_ids='making_"
-                + task["task_gender"]
-                + "_category_list_task') | tojson }}",
+                "list_choice": "f" if task["gender"] == "여성" else "m",
                 "max_threads": MAX_THREAD,
                 "s3_dict": DEFAULT_S3_DICT,
                 "file_topic": "youtoube_videos_by_categories",

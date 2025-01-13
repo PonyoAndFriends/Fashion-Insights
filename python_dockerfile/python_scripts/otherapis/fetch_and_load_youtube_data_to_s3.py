@@ -9,6 +9,7 @@ from script_modules import run_func_multi_thread
 from datetime import datetime
 from zoneinfo import ZoneInfo
 from collections import defaultdict
+from otherapis.script_modules.gender_category_list import FEMALE_CATEGORY_LIST, MALE_CATEGORY_LIST
 
 
 logger = logging.getLogger(__name__)
@@ -131,7 +132,7 @@ if __name__ == "__main__":
     parser.add_argument("--youtube_api_key", required=True, help="Youtube API key")
     parser.add_argument("--file_topic", required=True, help="Topic of data")
     parser.add_argument(
-        "--category_list", required=True, help="JSON string of keywords"
+        "--list_choice", required=True, help="string for choice of gender"
     )
     parser.add_argument(
         "--max_threads", type=int, default=8, help="Maximum number of threads"
@@ -143,9 +144,14 @@ if __name__ == "__main__":
 
         api_key = args.youtube_api_key
         file_topic = args.file_topic
-        category_list = json.loads(args.category_list)
         max_threads = args.max_threads
         s3_dict = json.loads(args.s3_dict)
+        list_choice = args.list_choice
+
+        if list_choice == "f":
+            category_list = FEMALE_CATEGORY_LIST
+        else:
+            category_list = MALE_CATEGORY_LIST
 
         logger.info(
             f"Parsed arguments: API key provided, File topic: {file_topic}, Max threads: {max_threads}"

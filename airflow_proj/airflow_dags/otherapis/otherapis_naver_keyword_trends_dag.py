@@ -73,9 +73,6 @@ with DAG(
             required_args={
                 "url": url,
                 "headers": headers,
-                "all_keywords": "{{ task_instance.xcom_pull(task_ids='making_"
-                + f"{task['task_gender']}"
-                + "_keywords_list_task') | tojson }}",
                 "gender": task["gender"],
                 "s3_dict": DEFAULT_S3_DICT,
             },
