@@ -22,7 +22,7 @@ class FetchNonPagedDataOperator(BaseOperator):
     """
 
     def __init__(
-        self, url, file_topic, content_type, params=None, headers=None, *args, **kwargs
+        self, url, file_topic, content_type, params=None, headers=None, flag=(False, 0), *args, **kwargs
     ):
         super().__init__(*args, **kwargs)
         self.url = url
@@ -30,6 +30,7 @@ class FetchNonPagedDataOperator(BaseOperator):
         self.headers = headers
         self.content_type = content_type
         self.file_topic = file_topic
+        self.flag = flag
 
     def execute(self, context):
         """페이지가 없는 API에서 데이터를 가져오는 함수"""
@@ -52,7 +53,12 @@ class FetchNonPagedDataOperator(BaseOperator):
                 data_file = json.dumps(response.json(), ensure_ascii=False)
             else:
                 data_file = response.text
-            file_path = f"bronze/{now_string}/otherapis/{self.file_topic}_raw_data/{self.file_topic}.{file_ext[self.content_type]}"
+
+            if self.flag[0]:
+                file_path = f"bronze/{now_string}/otherapis/{self.file_topic}_raw_data/{self.file_topic}_{self.flag[1]}.{file_ext[self.content_type]}"
+            else:
+                file_path = f"bronze/{now_string}/otherapis/{self.file_topic}_raw_data/{self.file_topic}.{file_ext[self.content_type]}"
+
             # S3 업로드를 위한 딕셔너리 준비
             s3_dict = {
                 "data_file": data_file,
