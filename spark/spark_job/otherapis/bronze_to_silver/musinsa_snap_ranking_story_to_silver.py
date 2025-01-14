@@ -40,18 +40,19 @@ schema = StructType(
 # JSON 배열을 explode로 변환
 exploded_df = raw_json_df.selectExpr("explode(data.list) as list_item")
 
-# 데이터 변환
-# 데이터 변환
+
 transformed_df = exploded_df.select(
     col("list_item.id").alias("story_id"),
     col("list_item.contentType").alias("content_type"),
     col("list_item.aggregations.likeCount").alias("aggregation_like_count"),
-    expr("transform(list_item.tags, tag -> tag.name)").alias("tags"),
-    lit("남성" if gender == "MEN" else "여성").alias("gender"),
+    expr("transform(list_item.tags, tag -> tag.name)").alias("tags"),  # ARRAY로 변환
+    lit("남성").alias("gender"),
 ).withColumn("created_at", current_date())
 
-# 컬럼 순서 지정
-transformed_df = transformed_df.select(
+# tags 열을 JSON 문자열로 변환
+transformed_df = transformed_df.withColumn("tags", to_json(col("tags")))
+
+final_df = transformed_df.select(
     "story_id",
     "content_type",
     "aggregation_like_count",
@@ -59,9 +60,6 @@ transformed_df = transformed_df.select(
     "created_at",
     "gender"
 )
-
-# 스키마 적용
-final_df = spark.createDataFrame(transformed_df.rdd, schema=schema)
 
 # 데이터 저장 (Parquet 파일로 저장)
 final_df.write.mode("overwrite").parquet(target_path)
