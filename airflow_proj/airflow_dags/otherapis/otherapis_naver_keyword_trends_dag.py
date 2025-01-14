@@ -82,7 +82,7 @@ with DAG(
         spark_args = [
             make_s3_url(Variable.get("s3_bucket"), bronze_file_path),
             make_s3_url(Variable.get("s3_bucket"), silver_file_path),
-            task["gender"],
+            task["task_gender"],
         ]
         spark_job_submit_task = PythonOperator(
             task_id=f"naver_keywords_trend_{task['task_gender']}_submit_spark_job_task",

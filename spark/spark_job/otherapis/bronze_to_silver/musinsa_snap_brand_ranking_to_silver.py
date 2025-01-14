@@ -2,7 +2,6 @@ from pyspark.sql import SparkSession
 from pyspark.sql.functions import (
     col,
     explode,
-    count,
     current_date,
     row_number,
     lit,
@@ -17,7 +16,6 @@ from pyspark.sql.types import (
     DateType,
 )
 from pyspark.sql.window import Window
-import sys
 import logging
 
 logger = logging.getLogger(__name__)
@@ -70,21 +68,15 @@ top_labels_df = category_names_with_counts_df.withColumn(
     "rank", row_number().over(window_spec)
 ).filter(col("rank") <= 2)
 
-# 각 브랜드별로 상위 2개의 라벨 추출
-labels_split_df = top_labels_df.groupBy("brand_id").pivot("rank").agg(
-    col("name").alias("label_name")
-)
-
-# 컬럼 이름을 명확히 수정
-final_labels_df = labels_split_df.select(
-    col("brand_id"),
-    col("1").alias("labels_name_1"),  # 1위 라벨
-    col("2").alias("labels_name_2")   # 2위 라벨
+# labels_name_1과 labels_name_2 생성
+labels_with_columns_df = top_labels_df.groupBy("brand_id").agg(
+    when(col("rank") == 1, col("name")).alias("labels_name_1"),
+    when(col("rank") == 2, col("name")).alias("labels_name_2")
 )
 
 # 원본 데이터와 병합
 final_table = table_df.join(
-    final_labels_df, "brand_id", "left"
+    labels_with_columns_df, "brand_id", "left"
 ).select(
     "brand_id",
     "brand_name",
