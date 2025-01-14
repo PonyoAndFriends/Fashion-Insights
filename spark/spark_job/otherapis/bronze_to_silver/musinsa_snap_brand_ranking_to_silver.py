@@ -2,14 +2,12 @@ from pyspark.sql import SparkSession
 from pyspark.sql.functions import (
     col,
     explode,
-    collect_list,
+    count,
     current_date,
     row_number,
     lit,
     when,
-    desc,
-    to_json,
-    flatten
+    desc
 )
 from pyspark.sql.types import (
     StructType,
@@ -34,10 +32,10 @@ target_path = args[2]
 logger.info(f"source_path: {source_path}")
 logger.info(f"target_path: {target_path}")
 
-# S3에서 JSON 파일 읽기
+# S3에서 모든 JSON 파일 읽기
 raw_json_df = spark.read.json(source_path)
 
-# JSON 처리 - 필요한 컬럼 추출 및 변환
+# JSON 처리 - 필요한 컬럼 추출 및 테이블 스키마에 맞게 변환
 brands_df = (
     raw_json_df.selectExpr("data.list")
     .withColumn("list", explode(col("list")))
@@ -57,34 +55,36 @@ table_df = brands_df.select(
     col("snaps.labels").alias("labels"),
 ).withColumn("created_at", current_date())
 
-# 브랜드별로 모든 labels 추출
+# labels에서 name 필드 추출
 category_names_df = table_df.withColumn("label", explode("labels")).select(
     col("brand_id"), col("label.name").alias("name")
 )
 
-# 브랜드별 label 이름을 카운트
+# 브랜드별로 라벨 카운팅
 category_names_with_counts_df = category_names_df.groupBy("brand_id", "name").count()
 
-# 각 브랜드의 label을 빈도수 기준으로 정렬하고 상위 3개 추출
+# 브랜드별 상위 2개의 라벨 선택
 window_spec = Window.partitionBy("brand_id").orderBy(desc("count"))
 
-top_3_labels_df = category_names_with_counts_df.withColumn(
+top_labels_df = category_names_with_counts_df.withColumn(
     "rank", row_number().over(window_spec)
-).filter(col("rank") <= 3)
+).filter(col("rank") <= 2)
 
-# 상위 3개 label을 리스트로 그룹화
-top_3_labels_grouped_df = top_3_labels_df.groupBy("brand_id").agg(
-    flatten(collect_list("name")).alias("label_names")  # 중첩 리스트 제거
+# 각 브랜드별로 상위 2개의 라벨 추출
+labels_split_df = top_labels_df.groupBy("brand_id").pivot("rank").agg(
+    col("name").alias("label_name")
 )
 
-# JSON 형식으로 변환
-top_3_labels_grouped_df = top_3_labels_grouped_df.withColumn(
-    "label_names", to_json(col("label_names"))
+# 컬럼 이름을 명확히 수정
+final_labels_df = labels_split_df.select(
+    col("brand_id"),
+    col("1").alias("labels_name_1"),  # 1위 라벨
+    col("2").alias("labels_name_2")   # 2위 라벨
 )
 
-# 원래 테이블에 합치기
-table_with_top_labels = table_df.join(
-    top_3_labels_grouped_df, "brand_id", "left"
+# 원본 데이터와 병합
+final_table = table_df.join(
+    final_labels_df, "brand_id", "left"
 ).select(
     "brand_id",
     "brand_name",
@@ -92,27 +92,29 @@ table_with_top_labels = table_df.join(
     "rank",
     "previous_rank",
     "follower_count",
-    "label_names",
+    "labels_name_1",
+    "labels_name_2",
     "created_at",
 )
 
 # JSON 데이터 스키마 정의
 schema = StructType(
     [
-        StructField("brand_id", StringType(), False),
-        StructField("brand_name", StringType(), False),
+        StructField("brand_id", StringType(), True),
+        StructField("brand_name", StringType(), True),
         StructField("img_url", StringType(), True),
-        StructField("rank", IntegerType(), False),
+        StructField("rank", IntegerType(), True),
         StructField("previous_rank", IntegerType(), True),
         StructField("follower_count", IntegerType(), True),
-        StructField("label_names", StringType(), True),
-        StructField("created_at", DateType(), False),
+        StructField("labels_name_1", StringType(), True),
+        StructField("labels_name_2", StringType(), True),
+        StructField("created_at", DateType(), True),
     ]
 )
 
 # 스키마 적용
 final_table_with_schema = spark.createDataFrame(
-    table_with_top_labels.rdd, schema=schema
+    final_table.rdd, schema=schema
 ).repartition(1)
 
 # 결과를 S3 대상 경로로 저장

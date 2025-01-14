@@ -43,7 +43,8 @@ with DAG(
         rank INT,
         previous_rank INT,
         follower_count INT,
-        label_names SUPER,
+        lablels_name_1 varchar(100),
+        lablels_name_2 varchar(100),
         created_at DATE
     );
     """
