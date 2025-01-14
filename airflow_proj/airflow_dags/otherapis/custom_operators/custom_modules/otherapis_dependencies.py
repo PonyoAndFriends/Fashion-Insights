@@ -42,3 +42,9 @@ NAVER_HEADER = {
 }
 
 OTHERAPI_DEFAULT_PYTHON_SCRIPT_PATH = r"/app/python_scripts/otherapis"
+
+NAVER_HAEDER_2 = {
+    "X-Naver-Client-Id": Variable.get("naver_id_2"),
+    "X-Naver-Client-Secret": Variable.get("naver_secret_2"),
+    "Content-Type": "application/json",
+}

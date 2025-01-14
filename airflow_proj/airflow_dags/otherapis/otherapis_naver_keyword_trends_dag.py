@@ -9,6 +9,7 @@ from otherapis.custom_operators.custom_modules.otherapis_dependencies import (
     OTHERAPI_DEFAULT_ARGS,
     DEFAULT_S3_DICT,
     NAVER_HEADER,
+    NAVER_HAEDER_2,
     OTHERAPI_DEFAULT_PYTHON_SCRIPT_PATH,
 )
 from otherapis.custom_operators.k8s_custom_python_pod_operator import (
@@ -27,7 +28,6 @@ MAX_THREAD = 10
 
 # API 설정값
 url = "https://openapi.naver.com/v1/datalab/shopping/category/keywords"
-headers = NAVER_HEADER
 
 # 기본 DAG 설정
 default_args = OTHERAPI_DEFAULT_ARGS
@@ -48,8 +48,9 @@ with DAG(
             "gender": "여성",
             "category_list": FEMALE_CATEGORY_LIST,
             "task_gender": "female",
+            "header": NAVER_HAEDER_2,
         },
-        {"gender": "남성", "category_list": MALE_CATEGORY_LIST, "task_gender": "male"},
+        {"gender": "남성", "category_list": MALE_CATEGORY_LIST, "task_gender": "male", "header": NAVER_HEADER},
     ]
 
     fetch_keyword_data_tasks = []
@@ -62,7 +63,7 @@ with DAG(
             script_path=f"{OTHERAPI_DEFAULT_PYTHON_SCRIPT_PATH}/fetch_keyword_trend_data.py",
             required_args={
                 "url": url,
-                "headers": headers,
+                "headers": task['header'],
                 "gender": task["gender"],
                 "s3_dict": DEFAULT_S3_DICT,
             },
