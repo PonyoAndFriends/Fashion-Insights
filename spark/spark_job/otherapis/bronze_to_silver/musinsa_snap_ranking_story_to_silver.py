@@ -26,7 +26,7 @@ transformed_df = exploded_df.select(
     col("list_item.contentType").alias("content_type"),
     col("list_item.aggregations.likeCount").alias("aggregation_like_count"),
     expr("concat_ws(',', transform(list_item.tags, tag -> tag.name))").alias("tags"),
-    lit("남성").alias("gender"),
+    lit(gender).alias("gender"),
 ).withColumn("created_at", current_date())
 
 # tags 열을 JSON 문자열로 변환
