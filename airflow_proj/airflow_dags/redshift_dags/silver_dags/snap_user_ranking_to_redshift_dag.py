@@ -42,7 +42,7 @@ with DAG(
         content_type VARCHAR(64),
         aggregation_like_count INT,
         tags VARCHAR(256),
-        created_at DATE NOT NULL,
+        created_at DATE,
         gender VARCHAR(8)
     );
     """
