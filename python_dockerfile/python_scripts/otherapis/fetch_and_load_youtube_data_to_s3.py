@@ -16,14 +16,8 @@ import httplib2
 logger = logging.getLogger(__name__)
 
 
-# Custom SSLContext
-def get_ssl_http():
-    ssl_context = ssl.create_default_context()
-    return httplib2.Http(timeout=300, ssl_context=ssl_context)
-
-# YouTube API 클라이언트 생성
 def create_youtube_client(api_key):
-    http = get_ssl_http()  # 커스텀 SSLContext 적용
+    http = httplib2.Http(disable_ssl_certificate_validation=True)  # SSL 인증서 검증 비활성화
     return build("youtube", "v3", developerKey=api_key, http=http)
 
 
