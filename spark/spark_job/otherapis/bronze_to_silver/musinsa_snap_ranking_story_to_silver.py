@@ -1,12 +1,4 @@
 from pyspark.sql import SparkSession
-from pyspark.sql.types import (
-    StructType,
-    StructField,
-    StringType,
-    IntegerType,
-    ArrayType,
-    DateType,
-)
 from pyspark.sql.functions import col, lit, expr, current_date
 import logging
 import sys
@@ -40,7 +32,9 @@ transformed_df = exploded_df.select(
 # tags 열을 JSON 문자열로 변환
 transformed_df = transformed_df.withColumn("tags", col("tags").cast("string"))
 
-transformed_df = transformed_df.withColumn("aggregation_like_count", col("aggregation_like_count").cast("int"))
+transformed_df = transformed_df.withColumn(
+    "aggregation_like_count", col("aggregation_like_count").cast("int")
+)
 
 final_df = transformed_df.select(
     "story_id", "content_type", "aggregation_like_count", "tags", "created_at", "gender"
