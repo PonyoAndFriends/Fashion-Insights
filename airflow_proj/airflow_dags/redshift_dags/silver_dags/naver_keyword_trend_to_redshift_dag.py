@@ -42,7 +42,7 @@ with DAG(
         end_date DATE,
         time_unit VARCHAR(10),
         category_name VARCHAR(100),
-        category_code VARCHAR(50),
+        category_code INT,
         keyword_name VARCHAR(100),
         gender VARCHAR(8),
         period DATE,
