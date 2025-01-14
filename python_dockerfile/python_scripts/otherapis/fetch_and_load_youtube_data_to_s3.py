@@ -50,7 +50,7 @@ def get_videos_with_details(
 
     for category in categories:
         logger.info(f"Fetching videos for category: {category}")
-        time.sleep(1.5)
+        time.sleep(4)
         search_response = (
             youtube.search()
             .list(
