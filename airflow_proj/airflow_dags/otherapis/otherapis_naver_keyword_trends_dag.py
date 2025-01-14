@@ -50,7 +50,12 @@ with DAG(
             "task_gender": "female",
             "header": NAVER_HAEDER_2,
         },
-        {"gender": "남성", "category_list": MALE_CATEGORY_LIST, "task_gender": "male", "header": NAVER_HEADER},
+        {
+            "gender": "남성",
+            "category_list": MALE_CATEGORY_LIST,
+            "task_gender": "male",
+            "header": NAVER_HEADER,
+        },
     ]
 
     fetch_keyword_data_tasks = []
@@ -63,7 +68,7 @@ with DAG(
             script_path=f"{OTHERAPI_DEFAULT_PYTHON_SCRIPT_PATH}/fetch_keyword_trend_data.py",
             required_args={
                 "url": url,
-                "headers": task['header'],
+                "headers": task["header"],
                 "gender": task["gender"],
                 "s3_dict": DEFAULT_S3_DICT,
             },
@@ -96,7 +101,5 @@ with DAG(
         )
         spark_submit_tasks.append(spark_job_submit_task)
 
-    for fetch_task, spark_task in zip(
-        fetch_keyword_data_tasks, spark_submit_tasks
-    ):
+    for fetch_task, spark_task in zip(fetch_keyword_data_tasks, spark_submit_tasks):
         fetch_task >> spark_task
