@@ -50,7 +50,7 @@ with DAG(
         fetch_weather_data_task = FetchNonPagedDataOperator(
             task_id=f"fetch_weather_data_task_{i + 1}",
             url=url,
-            file_topic=(FILE_TOPIC + f"_{i}"),
+            file_topic=FILE_TOPIC,
             content_type="plain/text",
         )
         weather_fetch_task_list.append(fetch_weather_data_task)
