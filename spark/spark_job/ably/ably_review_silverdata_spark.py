@@ -19,21 +19,22 @@ def transform_to_product_review_detail(spark, input_path, output_path):
     df = spark.read.json(input_path)
 
     # 데이터 변환 및 매핑
-    transformed_df = (
+    # 스키마 변환 및 데이터 타입 캐스팅
+    df_transformed = (
         df.select(
-            col("goods_sno").alias("product_id"),
-            col("contents").alias("review_content"),
-            col("eval").alias("review_rating"),
-            to_date(col("created_at")).alias("review_date"),
-            col("height").cast("float").alias("reviewer_height"),
-            col("weight").cast("float").alias("reviewer_weight"),
-            array_join(col("goods_option"), ", ").alias("selected_options"),
+            col("product_id").cast("int").alias("product_id"),
+            col("review_content").cast("string").alias("review_content"),
+            col("review_rating").cast("int").alias("review_rating"),
+            to_date(col("review_date").cast("string"), "yyyy-MM-dd").alias("review_date"),
+            col("reviewer_height").cast("float").alias("reviewer_height"),
+            col("reviewer_weight").cast("float").alias("reviewer_weight"),
+            col("selected_options").cast("string").alias("selected_options"),
+            to_date(col("created_at").cast("string"), "yyyy-MM-dd").alias("created_at")
         )
-        .withColumn("created_at", to_date(lit(TODAY_DATE), "yyyy-MM-dd"))
     )
 
     # 컬럼 순서를 보장
-    final_df = transformed_df.select(
+    final_df = df_transformed.select(
         "product_id",
         "review_content",
         "review_rating",
