@@ -10,7 +10,9 @@ from pyspark.sql.types import (
     FloatType,
     DateType,
     StringType,
-    IntegerType
+    IntegerType,
+    StructType,
+    StructField
 )
 import sys
 import logging
@@ -24,20 +26,38 @@ spark = SparkSession.builder.getOrCreate()
 args = sys.argv
 source_path = args[1] + "/*.json"
 target_path = args[2]
-gender = args[3]  # gender 값을 명시적으로 전달받음
+gender = args[3]
 
-# JSON 파일 읽기
-raw_df = spark.read.json(source_path)
+# JSON 데이터 스키마 정의
+schema = StructType(
+    [
+        StructField("startDate", DateType(), True),
+        StructField("endDate", DateType(), True),
+        StructField("timeUnit", StringType(), True),
+        StructField("results", StructType([
+            StructField("keyword", StringType(), True),
+            StructField("data", ArrayType(
+                StructType([
+                    StructField("period", DateType(), True),
+                    StructField("ratio", FloatType(), True)
+                ])
+            ), True)
+        ]), True)
+    ]
+)
+
+# JSON 파일 읽기 (스키마 적용)
+raw_df = spark.read.schema(schema).json(source_path)
 
 # 기본 데이터 변환
 trend_df = raw_df.select(
     monotonically_increasing_id().alias("trend_id"),  # 고유 ID 생성
-    col("startDate").cast(DateType()).alias("start_date"),
-    col("endDate").cast(DateType()).alias("end_date"),
+    col("startDate").alias("start_date"),
+    col("endDate").alias("end_date"),
     col("timeUnit").alias("time_unit"),
     lit("패션의류").alias("category_name"),  # 고정 값 추가
     lit("50000000").alias("category_code"),  # 고정 값 추가
-    explode(col("results")).alias("result"),
+    explode(col("results")).alias("result"),  # explode 처리
     lit(gender).alias("gender"),  # gender 값 추가
 )
 
@@ -49,7 +69,7 @@ result_df = trend_df.select(
     col("time_unit"),
     col("category_name"),
     col("category_code"),
-    col("result.keyword").getItem(0).alias("keyword_name"),
+    col("result.keyword").alias("keyword_name"),
     col("gender"),
     explode(col("result.data")).alias("data"),  # data 리스트 explode
 )
