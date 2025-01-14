@@ -41,7 +41,7 @@ with DAG(
         story_id INT PRIMARY KEY,
         content_type VARCHAR(64),
         aggregation_like_count INT,
-        tags VARCHAR(256),
+        tags VARCHAR(500),
         created_at DATE,
         gender VARCHAR(8)
     );
