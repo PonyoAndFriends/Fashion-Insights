@@ -11,10 +11,23 @@ from redshift_dags.custom_sql_modules.query_dag_dependencies import (
     SILVER_LOAD_DEFAULT_ARGS,
     DEFAULT_SILVER_SHCEMA,
     NOW_STRING,
-    DEFULAT_SILVER_BUCKET_URL
+    DEFULAT_SILVER_BUCKET_URL,
 )
 
-mapping_list = ['기타', '니트', '셔츠', '스커트', '원피스', '재킷', '전체', '코트', '티셔츠', '패딩', '팬츠', '폴리스']
+mapping_list = [
+    "기타",
+    "니트",
+    "셔츠",
+    "스커트",
+    "원피스",
+    "재킷",
+    "전체",
+    "코트",
+    "티셔츠",
+    "패딩",
+    "팬츠",
+    "폴리스",
+]
 
 default_args = SILVER_LOAD_DEFAULT_ARGS
 
@@ -24,9 +37,9 @@ with DAG(
     schedule_interval=None,
     start_date=datetime(2023, 1, 1),
     catchup=False,
-    concurrency=1
+    concurrency=1,
 ) as dag:
-    
+
     # 기본적인 설정 정의
     now_string = NOW_STRING
     silver_bucket_url = DEFULAT_SILVER_BUCKET_URL
@@ -35,7 +48,7 @@ with DAG(
     platform = "musinsa"
 
     table = f"{platform}_product_review_detail_tb" if platform != "29cm" else "cm29"
-    
+
     drop_sql = f"""
     DROP TABLE IF EXISTS {DEFAULT_SILVER_SHCEMA}.{table};
     """
@@ -52,7 +65,7 @@ with DAG(
         created_at DATE NOT NULL
     );
     """
-    
+
     refresh_task = RefreshTableOperator(
         task_id=f"{platform}_review_detail_refresh_table_task",
         drop_sql=drop_sql,
@@ -67,7 +80,7 @@ with DAG(
         IAM_ROLE '{redshift_iam_role}'
         FORMAT AS PARQUET;
         """
-        
+
         copy_task = RedshiftQueryOperator(
             task_id=f"{platform}_{task_number}_review_detail_copy_task",
             sql=copy_query,

@@ -67,12 +67,31 @@ def etl_productdetail(spark, source_path, load_path):
     final_df = final_df.withColumn(
         "discount_ratio", col("discount_ratio").cast(IntegerType())
     )
-    final_df = final_df.withColumn("review_counting", col("review_count").cast(IntegerType()).alias("review_counting"))
+    final_df = final_df.withColumn(
+        "review_counting",
+        col("review_count").cast(IntegerType()).alias("review_counting"),
+    )
     final_df = final_df.withColumn(
         "review_avg_rating", col("review_avg_rating").cast(FloatType())
     )
     final_df = final_df.coalesce(1)
-    final_df = final_df.select("platform", "master_category_name", "small_category_name", "product_id", "img_url", "product_name", "brand_name_kr", "brand_name_en", "original_price", "final_price", "discount_ratio", "review_counting", "review_avg_rating", "like_counting", "created_at")
+    final_df = final_df.select(
+        "platform",
+        "master_category_name",
+        "small_category_name",
+        "product_id",
+        "img_url",
+        "product_name",
+        "brand_name_kr",
+        "brand_name_en",
+        "original_price",
+        "final_price",
+        "discount_ratio",
+        "review_counting",
+        "review_avg_rating",
+        "like_counting",
+        "created_at",
+    )
     final_df.write.mode("overwrite").parquet(load_path)
 
 

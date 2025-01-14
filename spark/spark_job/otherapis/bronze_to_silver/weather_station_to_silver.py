@@ -1,6 +1,6 @@
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import col, split, trim
-from pyspark.sql.types import StructType, StructField, StringType, IntegerType, FloatType
+from pyspark.sql.types import StructType, StructField, StringType, IntegerType
 from custom_modules import s3_spark_module
 import sys
 import logging
@@ -33,14 +33,14 @@ parsed_df = filtered_df.withColumn("columns", split(trim(col("value")), r"\s+"))
 schema = StructType(
     [
         StructField("STN_ID", IntegerType(), False),  # 지점번호 (PK, NULL 불가)
-        StructField("STN_KO", StringType(), True),   # 지점명(한글)
+        StructField("STN_KO", StringType(), True),  # 지점명(한글)
     ]
 )
 
 # 데이터를 스키마에 맞게 매핑
 data_df = parsed_df.select(
     col("columns")[0].cast(IntegerType()).alias("STN_ID"),  # STN_ID
-    col("columns")[10].alias("STN_KO"),                    # STN_KO
+    col("columns")[10].alias("STN_KO"),  # STN_KO
 )
 
 # 스키마 적용 (데이터 검증)

@@ -126,7 +126,8 @@
 #                     except Exception as e:
 #                         logger.error(f"Error in processing: {e}")
 
-import json, requests
+import json
+import requests
 import logging
 from ably_modules.ably_dependencies import ABLY_HEADER
 
@@ -135,4 +136,3 @@ url = "https://api.a-bly.com/webview/goods/33882115/reviews"
 
 res = requests.get(url, headers=ABLY_HEADER)
 logger.info(f"response: {print(json.dumps(res.json(), indent=4, ensure_ascii=False))}")
-

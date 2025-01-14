@@ -1,13 +1,5 @@
 from pyspark.sql import SparkSession
-from pyspark.sql.functions import (
-    col,
-    explode,
-    current_date,
-    lit,
-    when,
-    desc,
-    first
-)
+from pyspark.sql.functions import col, explode, current_date, lit, when, desc, first
 from pyspark.sql.types import (
     StructType,
     StructField,
@@ -68,13 +60,11 @@ ranked_labels_df = label_counts_df.orderBy("brand_id", desc("count"), "label_nam
 # 상위 1, 2개 라벨을 추출
 top_labels_df = ranked_labels_df.groupBy("brand_id").agg(
     first(col("label_name")).alias("labels_name_1"),  # 1위 라벨
-    first(col("label_name"), ignorenulls=True).alias("labels_name_2")  # 2위 라벨
+    first(col("label_name"), ignorenulls=True).alias("labels_name_2"),  # 2위 라벨
 )
 
 # 원본 데이터와 병합
-final_table = table_df.join(
-    top_labels_df, "brand_id", "left"
-).select(
+final_table = table_df.join(top_labels_df, "brand_id", "left").select(
     "brand_id",
     "brand_name",
     "img_url",

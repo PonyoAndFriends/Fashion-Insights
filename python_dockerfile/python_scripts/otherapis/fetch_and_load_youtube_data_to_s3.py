@@ -1,6 +1,6 @@
-import ssl
 import json
-import re, time
+import re
+import time
 import logging
 import argparse
 
@@ -17,7 +17,9 @@ logger = logging.getLogger(__name__)
 
 
 def create_youtube_client(api_key):
-    http = httplib2.Http(disable_ssl_certificate_validation=True)  # SSL 인증서 검증 비활성화
+    http = httplib2.Http(
+        disable_ssl_certificate_validation=True
+    )  # SSL 인증서 검증 비활성화
     return build("youtube", "v3", developerKey=api_key, http=http)
 
 
