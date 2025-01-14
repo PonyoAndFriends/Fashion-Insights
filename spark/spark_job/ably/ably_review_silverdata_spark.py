@@ -24,7 +24,7 @@ def transform_to_product_review_detail(spark, input_path, output_path):
         df.select(
             col("goods_sno").cast("int").alias("product_id"),
             col("contents").cast("string").alias("review_content"),
-            col("eval").cast("int").alias("eval"),
+            col("eval").cast("int").alias("review_rating"),
             to_date(col("created_at").cast("date"), "yyyy-MM-dd").alias("review_date"),
             col("height").cast("float").alias("reviewer_height"),
             col("weight").cast("float").alias("reviewer_weight"),
