@@ -22,7 +22,7 @@ def transform_to_product_review_detail(spark, input_path, output_path):
     # 스키마 변환 및 데이터 타입 캐스팅
     df_transformed = (
         df.select(
-            col("product_id").cast("int").alias("product_id"),
+            col("goods_sno").cast("int").alias("product_id"),
             col("review_content").cast("string").alias("review_content"),
             col("review_rating").cast("int").alias("review_rating"),
             to_date(col("review_date").cast("string"), "yyyy-MM-dd").alias("review_date"),

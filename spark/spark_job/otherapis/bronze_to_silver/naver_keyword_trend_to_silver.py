@@ -12,7 +12,8 @@ from pyspark.sql.types import (
     StringType,
     IntegerType,
     StructType,
-    StructField
+    StructField,
+    ArrayType
 )
 import sys
 import logging
