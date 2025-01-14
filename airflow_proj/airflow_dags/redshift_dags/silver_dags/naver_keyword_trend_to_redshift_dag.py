@@ -37,7 +37,7 @@ with DAG(
     """
     create_sql = f"""
     CREATE TABLE {DEFAULT_SILVER_SHCEMA}.{table} (
-        trend_id INT PRIMARY KEY,
+        trend_id INT,
         start_date DATE,
         end_date DATE,
         time_unit VARCHAR(10),
