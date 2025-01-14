@@ -40,7 +40,7 @@ with DAG(
     CREATE TABLE {DEFAULT_SILVER_SHCEMA}.{table} (
         story_id INT PRIMARY KEY,
         aggregation_like_count INT,
-        tags SUPER,
+        tags VARCHAR(256),
         created_at DATE NOT NULL,
         gender VARCHAR(8)
     );
