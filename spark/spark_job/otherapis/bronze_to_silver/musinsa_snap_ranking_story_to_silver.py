@@ -7,7 +7,7 @@ from pyspark.sql.types import (
     ArrayType,
     DateType,
 )
-from pyspark.sql.functions import col, lit, expr, to_date
+from pyspark.sql.functions import col, lit, expr, to_date, current_date
 import logging
 import sys
 
@@ -41,14 +41,23 @@ schema = StructType(
 exploded_df = raw_json_df.selectExpr("explode(data.list) as list_item")
 
 # 데이터 변환
+# 데이터 변환
 transformed_df = exploded_df.select(
     col("list_item.id").alias("story_id"),
     col("list_item.contentType").alias("content_type"),
     col("list_item.aggregations.likeCount").alias("aggregation_like_count"),
-    # tags 배열에서 각 태그의 name 필드 추출
     expr("transform(list_item.tags, tag -> tag.name)").alias("tags"),
-    to_date(col("list_item.displayedFrom"), "yyyy-MM-dd").alias("created_at"),  # 날짜 형식 변환
     lit("남성" if gender == "MEN" else "여성").alias("gender"),
+).withColumn("created_at", current_date())
+
+# 컬럼 순서 지정
+transformed_df = transformed_df.select(
+    "story_id",
+    "content_type",
+    "aggregation_like_count",
+    "tags",
+    "created_at",
+    "gender"
 )
 
 # 스키마 적용
