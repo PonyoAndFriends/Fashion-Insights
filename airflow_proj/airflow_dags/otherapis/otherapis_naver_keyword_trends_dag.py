@@ -34,7 +34,7 @@ default_args = OTHERAPI_DEFAULT_ARGS
 
 # DAG 정의
 with DAG(
-    dag_id="keyword_trends_for_categories_dag",
+    dag_id="hs_keyword_trends_for_categories_dag",
     default_args=default_args,
     description="Fetch and save keywords trend data from naver api",
     schedule_interval="@daily",
