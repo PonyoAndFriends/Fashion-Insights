@@ -26,7 +26,7 @@ OTHERAPI_DEFAULT_ARGS = {
     "email": ["gjstjd9509@gmail.com"],
     "email_on_failure": False,
     "email_on_retry": False,
-    "retries": 2,
+    "retries": 0,
 }
 
 FILE_EXT = {
