@@ -37,17 +37,17 @@ with DAG(
     """
     create_sql = f"""
     CREATE TABLE {DEFAULT_SILVER_SHCEMA}.{table} (
-        trend_id INT IDENTITY(1,1) PRIMARY KEY,
-        start_date DATE NOT NULL,
-        end_date DATE NOT NULL,
-        time_unit VARCHAR(10) NOT NULL,
-        category_name VARCHAR(100) NOT NULL,
-        category_code VARCHAR(20) NOT NULL,
-        keyword_name VARCHAR(100) NOT NULL,
+        trend_id INT PRIMARY KEY,
+        start_date DATE,
+        end_date DATE,
+        time_unit VARCHAR(10),
+        category_name VARCHAR(100),
+        category_code VARCHAR(50),
+        keyword_name VARCHAR(100),
         gender VARCHAR(8),
-        period DATE NOT NULL,
-        ratio FLOAT NOT NULL,
-        created_at DATE NOT NULL
+        period DATE,
+        ratio FLOAT,
+        created_at DATE
     );
     """
     refresh_task = RefreshTableOperator(

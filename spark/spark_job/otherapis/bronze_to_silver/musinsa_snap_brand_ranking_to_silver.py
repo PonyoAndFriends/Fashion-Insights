@@ -3,10 +3,10 @@ from pyspark.sql.functions import (
     col,
     explode,
     current_date,
-    row_number,
     lit,
     when,
-    desc
+    desc,
+    first
 )
 from pyspark.sql.types import (
     StructType,
@@ -15,7 +15,6 @@ from pyspark.sql.types import (
     IntegerType,
     DateType,
 )
-from pyspark.sql.window import Window
 import logging
 
 logger = logging.getLogger(__name__)
@@ -45,7 +44,7 @@ table_df = brands_df.select(
     col("nickname").alias("brand_name"),
     col("profileImageUrl").alias("img_url"),
     col("ranking.rank").alias("rank"),
-    when(col("ranking.previousRank").isNull(), lit(0))  # NULL을 0으로 대체
+    when(col("ranking.previousRank").isNull(), lit(0))
     .otherwise(col("ranking.previousRank"))
     .cast("int")
     .alias("previous_rank"),
@@ -59,24 +58,20 @@ category_names_df = table_df.withColumn("label", explode("labels")).select(
 )
 
 # 브랜드별로 라벨 카운팅
-category_names_with_counts_df = category_names_df.groupBy("brand_id", "name").count()
+label_counts_df = category_names_df.groupBy("brand_id", "name").count()
 
 # 브랜드별 상위 2개의 라벨 선택
-window_spec = Window.partitionBy("brand_id").orderBy(desc("count"))
+ranked_labels_df = label_counts_df.orderBy("brand_id", desc("count"), "name")
 
-top_labels_df = category_names_with_counts_df.withColumn(
-    "rank", row_number().over(window_spec)
-).filter(col("rank") <= 2)
-
-# labels_name_1과 labels_name_2 생성
-labels_with_columns_df = top_labels_df.groupBy("brand_id").agg(
-    when(col("rank") == 1, col("name")).alias("labels_name_1"),
-    when(col("rank") == 2, col("name")).alias("labels_name_2")
+# 상위 2개 라벨 추출
+top_labels_df = ranked_labels_df.groupBy("brand_id").agg(
+    first(col("name")).alias("labels_name_1"),
+    first(col("name"), ignorenulls=True).alias("labels_name_2")
 )
 
 # 원본 데이터와 병합
 final_table = table_df.join(
-    labels_with_columns_df, "brand_id", "left"
+    top_labels_df, "brand_id", "left"
 ).select(
     "brand_id",
     "brand_name",
