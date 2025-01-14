@@ -58,6 +58,10 @@ with DAG(
     )
 
     copy_tasks = []
+    gender_dict = {
+        "남성": "MEN",
+        "여성": "WOMAN"
+    }
     for gender in ["남성", "여성"]:
         copy_query = f"""
         COPY {DEFAULT_SILVER_SHCEMA}.{table}
@@ -67,7 +71,7 @@ with DAG(
         """
 
         copy_task = RedshiftQueryOperator(
-            task_id=f"{gender}_copy_naver_keyword_trend_task",
+            task_id=f"{gender_dict[gender]}_copy_naver_keyword_trend_task",
             sql=copy_query,
         )
         copy_tasks.append(copy_task)

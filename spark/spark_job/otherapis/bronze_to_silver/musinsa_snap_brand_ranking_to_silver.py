@@ -56,33 +56,36 @@ table_df = brands_df.select(
     col("snaps.labels").alias("labels"),
 ).withColumn("created_at", current_date())
 
-# Extracting categoryName from labels
+# labels에서 name 필드 추출
+# 각 브랜드의 모든 snap에 대해 labels를 펼쳐서 처리
 category_names_df = table_df.withColumn("label", explode("labels")).select(
     col("brand_id"), col("label.name").alias("name")
 )
 
-# Grouping category names into a single list per brand_id and counting the occurrences
+# 브랜드별로 라벨 카운팅
+# 각 brand_id에 대해 label name의 빈도를 계산
 category_names_with_counts_df = category_names_df.groupBy("brand_id", "name").count()
 
-# Rank the labels by count for each brand_id and select top 3
+# 브랜드별 상위 3개의 라벨 선택
+# 라벨 빈도를 기준으로 내림차순 정렬 후 상위 3개 추출
 window_spec = Window.partitionBy("brand_id").orderBy(desc("count"))
 
 top_3_labels_df = category_names_with_counts_df.withColumn(
     "rank", row_number().over(window_spec)
 ).filter(col("rank") <= 3)
 
-# Grouping the top 3 labels into a list
+# 상위 3개의 라벨을 리스트로 그룹화
+# 그룹화된 라벨 리스트를 JSON 형식으로 변환
+
 top_3_labels_grouped_df = top_3_labels_df.groupBy("brand_id").agg(
     collect_list("name").alias("top_labels")
-)
-
-# Convert the list of top labels into JSON format
-top_3_labels_grouped_df = top_3_labels_grouped_df.withColumn(
+).withColumn(
     "label_names", to_json(col("top_labels"))
 )
 
-# Join with the original table to include the top 3 labels in the final dataset
-table_with_top_labels = table_df.join(
+# 최종 데이터 생성
+# 원본 데이터와 상위 3개의 라벨 데이터를 병합
+final_table = table_df.join(
     top_3_labels_grouped_df, "brand_id", "left"
 ).select(
     "brand_id",
@@ -111,7 +114,7 @@ schema = StructType(
 
 # 스키마 적용
 final_table_with_schema = spark.createDataFrame(
-    table_with_top_labels.rdd, schema=schema
+    final_table.rdd, schema=schema
 ).repartition(1)
 
 # 결과를 S3 대상 경로로 저장
