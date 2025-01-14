@@ -13,7 +13,9 @@ from ably_modules.ably_mapping_table import CATEGORY_PARAMS
 from datetime import datetime, timedelta
 
 # 로깅 설정
-logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
+)
 
 # Spark 세션 생성
 spark = SparkSession.builder.appName("Ably Mapping Transformation").getOrCreate()
@@ -47,22 +49,27 @@ raw_data = raw_data.withColumn(
 raw_data = raw_data.withColumn("master_category_name", lit("Unknown"))
 raw_data = raw_data.withColumn("small_category_name", lit("Unknown"))
 
+
 # 매핑 적용 함수
 def apply_mapping(df, key, value):
-    return (
-        df.withColumn(
-            "master_category_name",
-            when(col("category_code") == key, lit(value[0])).otherwise(col("master_category_name")),
-        )
-        .withColumn(
-            "small_category_name",
-            when(col("category_code") == key, lit(value[1])).otherwise(col("small_category_name")),
-        )
+    return df.withColumn(
+        "master_category_name",
+        when(col("category_code") == key, lit(value[0])).otherwise(
+            col("master_category_name")
+        ),
+    ).withColumn(
+        "small_category_name",
+        when(col("category_code") == key, lit(value[1])).otherwise(
+            col("small_category_name")
+        ),
     )
+
 
 # 매핑 테이블 적용
 raw_data = reduce(
-    lambda df, key_value: apply_mapping(df, *key_value), CATEGORY_PARAMS.items(), raw_data
+    lambda df, key_value: apply_mapping(df, *key_value),
+    CATEGORY_PARAMS.items(),
+    raw_data,
 )
 
 # 결과 데이터 구성
@@ -75,7 +82,9 @@ transformed_data = raw_data.select(
     col("logging.analytics.GOODS_NAME").alias("product_name").cast(StringType()),
     col("logging.analytics.MARKET_NAME").alias("brand_name_kr").cast(StringType()),
     lit("").alias("brand_name_en").cast(StringType()),
-    col("item.first_page_rendering.original_price").alias("original_price").cast(IntegerType()),
+    col("item.first_page_rendering.original_price")
+    .alias("original_price")
+    .cast(IntegerType()),
     col("logging.analytics.SALES_PRICE").alias("final_price").cast(IntegerType()),
     col("logging.analytics.DISCOUNT_RATE").alias("discount_ratio").cast(IntegerType()),
     col("logging.analytics.REVIEW_COUNT").alias("review_counting").cast(IntegerType()),
@@ -83,6 +92,7 @@ transformed_data = raw_data.select(
     col("logging.analytics.LIKES_COUNT").alias("like_counting").cast(IntegerType()),
     lit(today).alias("created_at").cast(DateType()),
 )
+
 
 # ranking_tb 생성
 def create_ranking_tb(raw_data):
@@ -97,6 +107,7 @@ def create_ranking_tb(raw_data):
     )
 
     return ranking_tb
+
 
 ranking_tb = create_ranking_tb(raw_data)
 

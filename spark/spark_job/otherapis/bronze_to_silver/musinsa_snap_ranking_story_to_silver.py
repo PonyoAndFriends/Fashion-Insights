@@ -7,7 +7,7 @@ from pyspark.sql.types import (
     ArrayType,
     DateType,
 )
-from pyspark.sql.functions import col, lit, expr, to_date, current_date, to_json
+from pyspark.sql.functions import col, lit, expr, current_date, to_json
 import logging
 import sys
 
@@ -53,12 +53,7 @@ transformed_df = exploded_df.select(
 transformed_df = transformed_df.withColumn("tags", to_json(col("tags")))
 
 final_df = transformed_df.select(
-    "story_id",
-    "content_type",
-    "aggregation_like_count",
-    "tags",
-    "created_at",
-    "gender"
+    "story_id", "content_type", "aggregation_like_count", "tags", "created_at", "gender"
 )
 
 # 데이터 저장 (Parquet 파일로 저장)

@@ -1,12 +1,14 @@
 from pyspark.sql import SparkSession
-from pyspark.sql.functions import col, lit, current_date, explode, monotonically_increasing_id
+from pyspark.sql.functions import (
+    col,
+    lit,
+    current_date,
+    explode,
+    monotonically_increasing_id,
+)
 from pyspark.sql.types import (
     FloatType,
     DateType,
-    IntegerType,
-    StringType,
-    StructType,
-    StructField,
 )
 import sys
 import logging
@@ -34,7 +36,7 @@ trend_df = raw_df.select(
     lit("패션의류").alias("category_name"),  # 고정 값 추가
     lit("50000000").alias("category_code"),  # 고정 값 추가
     explode(col("results")).alias("result"),
-    lit(gender).alias("gender")  # gender 값 추가
+    lit(gender).alias("gender"),  # gender 값 추가
 )
 
 # 데이터 폭발 (explode) 및 변환
@@ -47,7 +49,7 @@ result_df = trend_df.select(
     col("category_code"),
     col("result.keyword").getItem(0).alias("keyword_name"),
     col("gender"),
-    explode(col("result.data")).alias("data")  # data 리스트 explode
+    explode(col("result.data")).alias("data"),  # data 리스트 explode
 )
 
 # 최종 DataFrame 생성
@@ -62,7 +64,7 @@ final_df = result_df.select(
     col("gender"),
     col("data.period").cast(DateType()).alias("period"),  # 날짜 변환
     col("data.ratio").cast(FloatType()).alias("ratio"),  # 비율 변환
-    current_date().alias("created_at")  # 데이터 수집 날짜
+    current_date().alias("created_at"),  # 데이터 수집 날짜
 )
 
 # Parquet 파일 저장

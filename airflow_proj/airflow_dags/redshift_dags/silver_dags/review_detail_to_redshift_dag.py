@@ -12,7 +12,6 @@ from redshift_dags.custom_sql_modules.query_dag_dependencies import (
     DEFAULT_SILVER_SHCEMA,
     NOW_STRING,
     DEFULAT_SILVER_BUCKET_URL,
-    PLATFORMS,
 )
 
 # DAG 기본 설정
