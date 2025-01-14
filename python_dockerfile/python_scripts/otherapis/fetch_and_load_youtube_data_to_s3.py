@@ -50,14 +50,14 @@ def get_videos_with_details(
 
     for category in categories:
         logger.info(f"Fetching videos for category: {category}")
-        time.sleep(4)
+        time.sleep(10)
         search_response = (
             youtube.search()
             .list(
                 q=category,
                 part="snippet",
                 type="video",
-                maxResults=30,
+                maxResults=20,
                 order="relevance",
             )
             .execute()
@@ -80,7 +80,7 @@ def get_videos_with_details(
             try:
                 duration = parse_duration(video_info["contentDetails"]["duration"])
                 # 영상 길이 필터 (3분 ~ 20분 사이)
-                if 180 <= duration <= 1800:
+                if 120 <= duration <= 1800:
                     videos.append(
                         {
                             "search_category": f"{category}",

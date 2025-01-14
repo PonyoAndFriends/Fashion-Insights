@@ -22,7 +22,7 @@ from otherapis.custom_operators.custom_modules.s3_upload import (
 )
 
 # Pod내에서 실행할 스레드의 최대 개수
-MAX_THREAD = 10
+MAX_THREAD = 5
 
 # API 설정값
 youtube_api_key = Variable.get("youtube_api_key")
