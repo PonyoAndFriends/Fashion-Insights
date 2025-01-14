@@ -30,7 +30,7 @@ transformed_df = exploded_df.select(
 ).withColumn("created_at", current_date())
 
 # tags 열을 JSON 문자열로 변환
-transformed_df = transformed_df.withColumn("story_id", col("story_id").cast("int"))
+transformed_df = transformed_df.withColumn("story_id", col("story_id").cast("long"))
 transformed_df = transformed_df.withColumn("tags", col("tags").cast("string"))
 transformed_df = transformed_df.withColumn(
     "aggregation_like_count", col("aggregation_like_count").cast("int")
