@@ -73,4 +73,4 @@ with DAG(
         )
         copy_tasks.append(copy_task)
 
-    refresh_task >> copy_tasks[0] >> copy_task[1]
+    refresh_task >> copy_tasks[0] >> copy_tasks[1]
