@@ -32,7 +32,7 @@ default_args = OTHERAPI_DEFAULT_ARGS
 
 # DAG 정의
 with DAG(
-    dag_id="fetch_fashion_categories_yotubue_video_dag",
+    dag_id="hs_fetch_fashion_categories_yotubue_video_dag",
     default_args=default_args,
     description="Fetch and save Youtube videos and data from youtube api",
     schedule_interval="@daily",
