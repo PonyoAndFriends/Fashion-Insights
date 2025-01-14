@@ -1,5 +1,6 @@
 from airflow import DAG
 from airflow.models import Variable
+from airflow.utils.trigger_rule import TriggerRule
 from datetime import datetime, timedelta
 from otherapis.custom_operators.custom_modules.otherapis_categories import (
     MALE_CATEGORY_LIST,
@@ -92,7 +93,7 @@ with DAG(
         spark_job_submit_task = PythonOperator(
             task_id=f"naver_keywords_trend_{task['task_gender']}_submit_spark_job_task",
             python_callable=submit_spark_application,
-            trigger_rule="all_done",
+            trigger_rule=TriggerRule.ALL_DONE,
             op_args=[
                 f"naveer-keywords-trend-{task['task_gender']}-from-bronze-to-silver-data",
                 r"otherapis/bronze_to_silver/naver_keyword_trend_to_silver.py",

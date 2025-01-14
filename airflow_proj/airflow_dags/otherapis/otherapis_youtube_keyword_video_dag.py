@@ -1,5 +1,6 @@
 from airflow import DAG
 from airflow.models import Variable
+from airflow.utils.trigger_rule import TriggerRule
 from datetime import datetime, timedelta
 from airflow.operators.python import PythonOperator
 from otherapis.custom_operators.custom_modules.otherapis_categories import (
@@ -92,7 +93,7 @@ with DAG(
         spark_job_submit_task = PythonOperator(
             task_id=f"youtube_{task['task_gender']}_spark_job_task",
             python_callable=submit_spark_application,
-            trigger_rule="all_done",
+            trigger_rule=TriggerRule.ALL_DONE,
             op_args=[
                 f"youtube-{task['task_gender']}-spark-application",
                 r"otherapis/bronze_to_silver/youtube_data_to_silver.py",
