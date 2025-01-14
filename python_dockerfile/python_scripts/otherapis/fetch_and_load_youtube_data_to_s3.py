@@ -1,4 +1,6 @@
+import ssl
 import json
+import requests
 import googleapiclient.discovery
 import re, time
 import logging
@@ -11,23 +13,21 @@ from datetime import datetime
 from zoneinfo import ZoneInfo
 from collections import defaultdict
 from script_modules.gender_category_list import FEMALE_CATEGORY_LIST, MALE_CATEGORY_LIST
-
 from googleapiclient.discovery import build
 from googleapiclient.http import HttpRequest
-import google.auth.transport.requests
-import requests
-
-
+from requests.adapters import HTTPAdapter
 
 logger = logging.getLogger(__name__)
 
-
 # Custom HTTPS adapter for SSL configuration
-class SSLAdapter(requests.adapters.HTTPAdapter):
-    def init_poolmanager(self, *args, **kwargs):
-        kwargs["ssl_context"] = requests.create_default_context()
-        return super(SSLAdapter, self).init_poolmanager(*args, **kwargs)
+class SSLAdapter(HTTPAdapter):
+    def __init__(self, *args, **kwargs):
+        self.ssl_context = ssl.create_default_context()
+        super().__init__(*args, **kwargs)
 
+    def init_poolmanager(self, *args, **kwargs):
+        kwargs['ssl_context'] = self.ssl_context
+        return super(SSLAdapter, self).init_poolmanager(*args, **kwargs)
 
 # Custom HTTPS session
 def get_https_session():
@@ -35,9 +35,13 @@ def get_https_session():
     session.mount("https://", SSLAdapter())
     return session
 
+# YouTube API 클라이언트 생성
 def create_youtube_client(api_key):
     session = get_https_session()
-    return build("youtube", "v3", developerKey=api_key, requestBuilder=HttpRequest, http=session)
+    return googleapiclient.discovery.build(
+        "youtube", "v3", developerKey=api_key, requestBuilder=HttpRequest, http=session
+    )
+
 
 
 def group_categories_by_key(category_list):
