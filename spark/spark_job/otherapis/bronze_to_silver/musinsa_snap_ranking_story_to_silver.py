@@ -32,8 +32,8 @@ schema = StructType(
         StructField("content_type", StringType(), False),
         StructField("aggregation_like_count", IntegerType(), False),
         StructField("tags", ArrayType(StringType()), False),
-        StructField("gender", StringType(), True),
         StructField("created_at", DateType(), True),
+        StructField("gender", StringType(), True),
     ]
 )
 

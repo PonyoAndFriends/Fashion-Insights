@@ -3,6 +3,7 @@ import googleapiclient.discovery
 import re, time
 import logging
 import argparse
+import requests
 
 from script_modules import s3_upload
 from script_modules import run_func_multi_thread
@@ -11,8 +12,32 @@ from zoneinfo import ZoneInfo
 from collections import defaultdict
 from script_modules.gender_category_list import FEMALE_CATEGORY_LIST, MALE_CATEGORY_LIST
 
+from googleapiclient.discovery import build
+from googleapiclient.http import HttpRequest
+import google.auth.transport.requests
+import requests
+
+
 
 logger = logging.getLogger(__name__)
+
+
+# Custom HTTPS adapter for SSL configuration
+class SSLAdapter(requests.adapters.HTTPAdapter):
+    def init_poolmanager(self, *args, **kwargs):
+        kwargs["ssl_context"] = requests.create_default_context()
+        return super(SSLAdapter, self).init_poolmanager(*args, **kwargs)
+
+
+# Custom HTTPS session
+def get_https_session():
+    session = requests.Session()
+    session.mount("https://", SSLAdapter())
+    return session
+
+def create_youtube_client(api_key):
+    session = get_https_session()
+    return build("youtube", "v3", developerKey=api_key, requestBuilder=HttpRequest, http=session)
 
 
 def group_categories_by_key(category_list):
@@ -161,7 +186,7 @@ if __name__ == "__main__":
         logger.debug(f"S3 configuration: {s3_dict}")
 
         # YouTube Data API 설정
-        youtube = googleapiclient.discovery.build("youtube", "v3", developerKey=api_key)
+        youtube = create_youtube_client(api_key)
         youtube._http.timeout = 300  # 타임아웃 5분 설정
         logger.info("YouTube API client initialized.")
 
