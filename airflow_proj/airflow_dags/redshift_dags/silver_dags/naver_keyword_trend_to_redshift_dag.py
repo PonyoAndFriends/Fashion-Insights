@@ -58,10 +58,7 @@ with DAG(
     )
 
     copy_tasks = []
-    gender_dict = {
-        "남성": "MEN",
-        "여성": "WOMAN"
-    }
+    gender_dict = {"남성": "MEN", "여성": "WOMAN"}
     for gender in ["남성", "여성"]:
         copy_query = f"""
         COPY {DEFAULT_SILVER_SHCEMA}.{table}

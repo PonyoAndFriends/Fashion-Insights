@@ -38,10 +38,11 @@ with DAG(
     """
     create_sql = f"""
     CREATE TABLE {DEFAULT_SILVER_SHCEMA}.{table} (
-        story_id INT PRIMARY KEY,
+        story_id BIGINT PRIMARY KEY,
+        content_type VARCHAR(64),
         aggregation_like_count INT,
-        tags SUPER,
-        created_at DATE NOT NULL,
+        tags VARCHAR(500),
+        created_at DATE,
         gender VARCHAR(8)
     );
     """
@@ -52,16 +53,28 @@ with DAG(
         redshift_conn_id="redshift_default",
     )
 
-    copy_query = f"""
+    MEN_copy_query = f"""
     COPY {DEFAULT_SILVER_SHCEMA}.{table}
-    FROM '{silver_bucket_url}/{now_string}/otherapis/musinsa_snap_story_ranking/'
+    FROM '{silver_bucket_url}/{now_string}/otherapis/musinsa_WOMEN_ranking_story_group_raw_data/'
     IAM_ROLE '{redshift_iam_role}'
     FORMAT AS PARQUET;
     """
 
-    copy_task = RedshiftQueryOperator(
-        task_id="snap_user_story_ranking_copy_task",
-        sql=copy_query,
+    copy_task_MEN = RedshiftQueryOperator(
+        task_id="snap_user_MEN_story_ranking_copy_task",
+        sql=MEN_copy_query,
     )
 
-    refresh_task >> copy_task
+    WOMEN_copy_query = f"""
+    COPY {DEFAULT_SILVER_SHCEMA}.{table}
+    FROM '{silver_bucket_url}/{now_string}/otherapis/musinsa_MEN_ranking_story_group_raw_data/'
+    IAM_ROLE '{redshift_iam_role}'
+    FORMAT AS PARQUET;
+    """
+
+    copy_task_WOMEN = RedshiftQueryOperator(
+        task_id="snap_user_WOMEN_story_ranking_copy_task",
+        sql=WOMEN_copy_query,
+    )
+
+    refresh_task >> copy_task_MEN >> copy_task_WOMEN

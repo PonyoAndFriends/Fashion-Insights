@@ -1,5 +1,5 @@
 from pyspark.sql import SparkSession
-from pyspark.sql.functions import col, explode, lit, to_timestamp
+from pyspark.sql.functions import col, lit, to_timestamp
 from pyspark.sql.types import (
     StructType,
     StructField,
@@ -39,10 +39,12 @@ transformed_df = raw_df.select(
     col("title").alias("title"),  # 영상 제목
     col("thumbnailUrl").alias("img_url"),  # 썸네일 이미지 URL
     col("duration").cast("int").alias("duration_seconds"),  # 영상 길이 (초 단위)
-    to_timestamp(col("publishedAt"), "yyyy-MM-dd'T'HH:mm:ss'Z'").alias("published_at"),  # 게시 날짜와 시간
+    to_timestamp(col("publishedAt"), "yyyy-MM-dd'T'HH:mm:ss'Z'").alias(
+        "published_at"
+    ),  # 게시 날짜와 시간
     col("viewCount").cast("int").alias("view_count"),  # 조회수
     col("likeCount").cast("int").alias("like_count"),  # 좋아요 수
-    lit(today_date).cast("date").alias("created_at")  # 데이터 수집 날짜
+    lit(today_date).cast("date").alias("created_at"),  # 데이터 수집 날짜
 )
 
 # 스키마 정의

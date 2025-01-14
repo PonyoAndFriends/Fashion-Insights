@@ -1,7 +1,6 @@
 import os
 from datetime import datetime, timedelta
 from airflow import DAG
-from airflow.models import Variable
 from airflow.operators.python import PythonOperator
 from airflow.utils.task_group import TaskGroup
 from airflow.utils.dates import days_ago
@@ -77,5 +76,5 @@ with DAG(
         else:
             past_task >> task_group
             past_task = task_group
-    
+
     past_task >> spark_application_task

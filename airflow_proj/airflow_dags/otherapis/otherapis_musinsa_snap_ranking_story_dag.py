@@ -35,12 +35,8 @@ PAGE_SIZE = math.ceil(TOTAL_DATA_COUNT / (PARALLEL_POD_NUM * PARALLEL_THREAD_NUM
 
 # 파일 경로 설정
 FILE_TOPIC = "musinsa_snap_story_ranking"
-BRONZE_FILE_PATH = (
-    f"bronze/{(datetime.now() + timedelta(hours=9)).strftime('%Y-%m-%d')}/otherapis/{FILE_TOPIC}_raw_data/"
-)
-SILVER_FILE_PATH = (
-    f"silver/{(datetime.now() + timedelta(hours=9)).strftime('%Y-%m-%d')}/otherapis/{FILE_TOPIC}_raw_data/"
-)
+BRONZE_FILE_PATH = f"bronze/{(datetime.now() + timedelta(hours=9)).strftime('%Y-%m-%d')}/otherapis/{FILE_TOPIC}_raw_data/"
+SILVER_FILE_PATH = f"silver/{(datetime.now() + timedelta(hours=9)).strftime('%Y-%m-%d')}/otherapis/{FILE_TOPIC}_raw_data/"
 
 # other api 대그들
 default_args = OTHERAPI_DEFAULT_ARGS
@@ -112,12 +108,11 @@ with DAG(
     for gender in ["남성", "여성"]:
         file_topic = f"musinsa_{gender_dict[gender]}_ranking_story_group"
         file_path = f"{(datetime.now() + timedelta(hours=9)).strftime('%Y-%m-%d')}/otherapis/{file_topic}_raw_data/"
-        spark_args = \
-            [
-                make_s3_url(Variable.get("s3_bucket"), 'bronze/' + file_path),
-                make_s3_url(Variable.get("s3_bucket"), 'silver/' + file_path),
-                gender,
-            ]
+        spark_args = [
+            make_s3_url(Variable.get("s3_bucket"), "bronze/" + file_path),
+            make_s3_url(Variable.get("s3_bucket"), "silver/" + file_path),
+            gender,
+        ]
 
         spark_job_submit_task = PythonOperator(
             task_id=f"musinsa_snap_ranking_story_{gender_dict[gender]}_submit_spark_job_task",

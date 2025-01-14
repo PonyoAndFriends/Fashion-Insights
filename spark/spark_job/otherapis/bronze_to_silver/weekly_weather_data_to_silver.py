@@ -1,5 +1,5 @@
 from pyspark.sql import SparkSession
-from pyspark.sql.functions import col, when
+from pyspark.sql.functions import col
 from pyspark.sql.types import (
     StructType,
     StructField,
@@ -23,14 +23,14 @@ source_path = args[1]
 target_path = args[2]
 
 # 데이터 읽기
-raw_rdd = (
-    spark.read.text(source_path)
-    .rdd.map(lambda row: row[0].strip())  # 공백 제거
-)
+raw_rdd = spark.read.text(source_path).rdd.map(lambda row: row[0].strip())  # 공백 제거
 
 # START7777, END7777, 주석 제거
 filtered_rdd = raw_rdd.filter(
-    lambda line: line and not line.startswith("#") and "START7777" not in line and "END7777" not in line
+    lambda line: line
+    and not line.startswith("#")
+    and "START7777" not in line
+    and "END7777" not in line
 )
 
 # 데이터 공백 기준으로 분리
@@ -60,7 +60,9 @@ schema = StructType(
 # 필요한 컬럼만 추출 및 변환
 data_rdd = split_rdd.map(
     lambda row: (
-        datetime.strptime(row[0], "%Y%m%d").strftime("%Y-%m-%d") if row[0] else None,  # TM
+        (
+            datetime.strptime(row[0], "%Y%m%d").strftime("%Y-%m-%d") if row[0] else None
+        ),  # TM
         int(row[1]),  # STN
         float(row[2]),  # WS_AVG
         float(row[5]),  # WS_MAX
@@ -82,17 +84,25 @@ data_rdd = split_rdd.map(
 data_df = spark.createDataFrame(data_rdd, schema=schema)
 
 # 데이터 검증 및 결측값 처리
-processed_df = (
-    data_df
-    .fillna({
-        "WS_AVG": 0.0, "WS_MAX": 0.0, "TA_AVG": 0.0,
-        "TA_MAX": 0.0, "TA_MIN": 0.0, "HM_AVG": 0.0,
-        "HM_MIN": 0.0, "FG_DUR": 0.0, "CA_TOT": 0.0,
-        "RN_DAY": 0.0, "RN_DUR": 0.0, "RN_60M_MAX": 0.0,
+processed_df = data_df.fillna(
+    {
+        "WS_AVG": 0.0,
+        "WS_MAX": 0.0,
+        "TA_AVG": 0.0,
+        "TA_MAX": 0.0,
+        "TA_MIN": 0.0,
+        "HM_AVG": 0.0,
+        "HM_MIN": 0.0,
+        "FG_DUR": 0.0,
+        "CA_TOT": 0.0,
+        "RN_DAY": 0.0,
+        "RN_DUR": 0.0,
+        "RN_60M_MAX": 0.0,
         "RN_POW_MAX": 0.0,
-    })
-    .withColumn("TM", col("TM").cast(DateType()))  # TM을 날짜 타입으로 변환
-)
+    }
+).withColumn(
+    "TM", col("TM").cast(DateType())
+)  # TM을 날짜 타입으로 변환
 
 # 결과 저장
 processed_df.write.mode("overwrite").parquet(target_path)

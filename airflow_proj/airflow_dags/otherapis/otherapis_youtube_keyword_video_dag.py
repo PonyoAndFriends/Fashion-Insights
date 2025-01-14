@@ -46,9 +46,14 @@ with DAG(
             "gender": "여성",
             "category_list": FEMALE_CATEGORY_LIST,
             "task_gender": "female",
-            "api_key": Variable.get("youtube_api_key_2")
+            "api_key": Variable.get("youtube_api_key_2"),
         },
-        {"gender": "남성", "category_list": MALE_CATEGORY_LIST, "task_gender": "male", "api_key": Variable.get("youtube_api_key_3")},
+        {
+            "gender": "남성",
+            "category_list": MALE_CATEGORY_LIST,
+            "task_gender": "male",
+            "api_key": Variable.get("youtube_api_key_3"),
+        },
     ]
 
     fetch_keyword_data_tasks = []
@@ -73,8 +78,12 @@ with DAG(
 
         file_topic = "youtoube_videos_by_categories"
         now_string = (datetime.now() + timedelta(hours=9)).strftime("%Y-%m-%d")
-        bronze_file_path = f"bronze/{now_string}/otherapis/{task['gender']}_{file_topic}_raw_data/"
-        silver_file_path = f"silver/{now_string}/otherapis/{task['gender']}_{file_topic}_raw_data/"
+        bronze_file_path = (
+            f"bronze/{now_string}/otherapis/{task['gender']}_{file_topic}_raw_data/"
+        )
+        silver_file_path = (
+            f"silver/{now_string}/otherapis/{task['gender']}_{file_topic}_raw_data/"
+        )
         spark_args = [
             make_s3_url(Variable.get("s3_bucket"), bronze_file_path),
             make_s3_url(Variable.get("s3_bucket"), silver_file_path),
