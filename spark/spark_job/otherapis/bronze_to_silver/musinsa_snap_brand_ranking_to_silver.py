@@ -16,6 +16,7 @@ from pyspark.sql.types import (
     DateType,
 )
 import logging
+import sys
 
 logger = logging.getLogger(__name__)
 
@@ -53,20 +54,21 @@ table_df = brands_df.select(
 ).withColumn("created_at", current_date())
 
 # labels에서 name 필드 추출
-category_names_df = table_df.withColumn("label", explode("labels")).select(
-    col("brand_id"), col("label.name").alias("name")
+# 모든 snap에 대해 labels를 펼쳐서 처리
+labels_df = table_df.withColumn("label", explode("labels")).select(
+    col("brand_id"), col("label.name").alias("label_name")
 )
 
-# 브랜드별로 라벨 카운팅
-label_counts_df = category_names_df.groupBy("brand_id", "name").count()
+# 브랜드별 라벨 빈도수 계산
+label_counts_df = labels_df.groupBy("brand_id", "label_name").count()
 
-# 브랜드별 상위 2개의 라벨 선택
-ranked_labels_df = label_counts_df.orderBy("brand_id", desc("count"), "name")
+# 브랜드별 상위 2개 라벨 계산
+ranked_labels_df = label_counts_df.orderBy("brand_id", desc("count"), "label_name")
 
-# 상위 2개 라벨 추출
+# 상위 1, 2개 라벨을 추출
 top_labels_df = ranked_labels_df.groupBy("brand_id").agg(
-    first(col("name")).alias("labels_name_1"),
-    first(col("name"), ignorenulls=True).alias("labels_name_2")
+    first(col("label_name")).alias("labels_name_1"),  # 1위 라벨
+    first(col("label_name"), ignorenulls=True).alias("labels_name_2")  # 2위 라벨
 )
 
 # 원본 데이터와 병합
