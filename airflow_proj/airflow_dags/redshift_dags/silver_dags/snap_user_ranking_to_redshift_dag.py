@@ -39,6 +39,7 @@ with DAG(
     create_sql = f"""
     CREATE TABLE {DEFAULT_SILVER_SHCEMA}.{table} (
         story_id INT PRIMARY KEY,
+        content_type VARCHAR(64),
         aggregation_like_count INT,
         tags VARCHAR(256),
         created_at DATE NOT NULL,
