@@ -63,20 +63,20 @@ with DAG(
     spark_submit_tasks = []
 
     for task in tasks_config:
-        gender_fetch_keyword_data_task = CustomKubernetesPodOperator(
-            task_id=f"fetch_{task['task_gender']}_keyword_data_task",
-            name=f"{task['task_gender']}_keyword_data_task",
-            script_path=f"{OTHERAPI_DEFAULT_PYTHON_SCRIPT_PATH}/fetch_keyword_trend_data.py",
-            required_args={
-                "url": url,
-                "headers": task["header"],
-                "gender": task["gender"],
-                "s3_dict": DEFAULT_S3_DICT,
-            },
-            cpu_limit="1000m",
-            memory_limit="1Gi",
-        )
-        fetch_keyword_data_tasks.append(gender_fetch_keyword_data_task)
+#         gender_fetch_keyword_data_task = CustomKubernetesPodOperator(
+#             task_id=f"fetch_{task['task_gender']}_keyword_data_task",
+#             name=f"{task['task_gender']}_keyword_data_task",
+#             script_path=f"{OTHERAPI_DEFAULT_PYTHON_SCRIPT_PATH}/fetch_keyword_trend_data.py",
+#             required_args={
+#                 "url": url,
+#                 "headers": task["header"],
+#                 "gender": task["gender"],
+#                 "s3_dict": DEFAULT_S3_DICT,
+#             },
+#             cpu_limit="1000m",
+#             memory_limit="1Gi",
+#         )
+#         fetch_keyword_data_tasks.append(gender_fetch_keyword_data_task)
 
         now_string = (datetime.now() + timedelta(hours=9)).strftime("%Y-%m-%d")
         bronze_file_path = (
@@ -102,5 +102,6 @@ with DAG(
         )
         spark_submit_tasks.append(spark_job_submit_task)
 
-    for fetch_task, spark_task in zip(fetch_keyword_data_tasks, spark_submit_tasks):
-        fetch_task >> spark_task
+    # for fetch_task, spark_task in zip(fetch_keyword_data_tasks, spark_submit_tasks):
+    #     fetch_task >> spark_task
+    spark_submit_tasks
