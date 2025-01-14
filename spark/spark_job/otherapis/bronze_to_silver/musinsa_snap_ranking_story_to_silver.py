@@ -7,7 +7,7 @@ from pyspark.sql.types import (
     ArrayType,
     DateType,
 )
-from pyspark.sql.functions import col, lit, expr, current_date, to_json
+from pyspark.sql.functions import col, lit, expr, current_date
 import logging
 import sys
 
