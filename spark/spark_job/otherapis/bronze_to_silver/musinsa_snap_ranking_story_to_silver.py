@@ -25,18 +25,6 @@ gender = args[3]
 # JSON 데이터 로드
 raw_json_df = spark.read.json(source_path)
 
-# JSON 데이터 스키마 정의
-schema = StructType(
-    [
-        StructField("story_id", StringType(), False),
-        StructField("content_type", StringType(), False),
-        StructField("aggregation_like_count", IntegerType(), False),
-        StructField("tags", ArrayType(StringType()), False),
-        StructField("created_at", DateType(), True),
-        StructField("gender", StringType(), True),
-    ]
-)
-
 # JSON 배열을 explode로 변환
 exploded_df = raw_json_df.selectExpr("explode(data.list) as list_item")
 
@@ -51,6 +39,8 @@ transformed_df = exploded_df.select(
 
 # tags 열을 JSON 문자열로 변환
 transformed_df = transformed_df.withColumn("tags", col("tags").cast("string"))
+
+transformed_df = transformed_df.withColumn("aggregation_like_count", col("aggregation_like_count").cast("int"))
 
 final_df = transformed_df.select(
     "story_id", "content_type", "aggregation_like_count", "tags", "created_at", "gender"
