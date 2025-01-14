@@ -71,7 +71,8 @@ def main():
     spark = create_spark_session()
 
     # 입력 JSON 경로 패턴
-    input_path_pattern = f"s3a://team3-2-s3/bronze/{TODAY_DATE}/ably/review_data/*/*.json"
+    input_path_pattern = f"s3a://team3-2-s3/bronze/{TODAY_DATE}/ably/review_data/*/reviews_*.json"
+    print(input_path_pattern)
 
     # 제외할 파일 이름
     exclude_file = "goods_sno_list.json"
