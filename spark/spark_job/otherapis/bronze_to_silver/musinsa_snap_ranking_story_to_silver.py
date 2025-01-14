@@ -45,12 +45,12 @@ transformed_df = exploded_df.select(
     col("list_item.id").alias("story_id"),
     col("list_item.contentType").alias("content_type"),
     col("list_item.aggregations.likeCount").alias("aggregation_like_count"),
-    expr("transform(list_item.tags, tag -> tag.name)").alias("tags"),  # ARRAY로 변환
+    expr("concat_ws(',', transform(list_item.tags, tag -> tag.name))").alias("tags"),
     lit("남성").alias("gender"),
 ).withColumn("created_at", current_date())
 
 # tags 열을 JSON 문자열로 변환
-transformed_df = transformed_df.withColumn("tags", to_json(col("tags")).cast("string"))
+transformed_df = transformed_df.withColumn("tags", col("tags").cast("string"))
 
 final_df = transformed_df.select(
     "story_id", "content_type", "aggregation_like_count", "tags", "created_at", "gender"
