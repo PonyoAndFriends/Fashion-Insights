@@ -23,13 +23,13 @@ def transform_to_product_review_detail(spark, input_path, output_path):
     df_transformed = (
         df.select(
             col("goods_sno").cast("int").alias("product_id"),
-            col("review_content").cast("string").alias("review_content"),
-            col("review_rating").cast("int").alias("review_rating"),
-            to_date(col("review_date").cast("string"), "yyyy-MM-dd").alias("review_date"),
-            col("reviewer_height").cast("float").alias("reviewer_height"),
-            col("reviewer_weight").cast("float").alias("reviewer_weight"),
-            col("selected_options").cast("string").alias("selected_options"),
-            to_date(col("created_at").cast("string"), "yyyy-MM-dd").alias("created_at")
+            col("contents").cast("string").alias("review_content"),
+            col("eval").cast("int").alias("eval"),
+            to_date(col("created_at").cast("date"), "yyyy-MM-dd").alias("review_date"),
+            col("height").cast("float").alias("reviewer_height"),
+            col("weight").cast("float").alias("reviewer_weight"),
+            array_join(col("goods_option"), ", ").alias("selected_options"),  # 리스트를 문자열로 변환
+            to_date(lit(TODAY_DATE), "yyyy-MM-dd").alias("created_at")
         )
     )
 
