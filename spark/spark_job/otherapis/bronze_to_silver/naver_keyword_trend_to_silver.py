@@ -9,6 +9,8 @@ from pyspark.sql.functions import (
 from pyspark.sql.types import (
     FloatType,
     DateType,
+    StringType,
+    IntegerType
 )
 import sys
 import logging
@@ -54,17 +56,17 @@ result_df = trend_df.select(
 
 # 최종 DataFrame 생성
 final_df = result_df.select(
-    col("trend_id"),
-    col("start_date"),
-    col("end_date"),
-    col("time_unit"),
-    col("category_name"),
-    col("category_code"),
-    col("keyword_name"),
-    col("gender"),
+    col("trend_id").cast(IntegerType()),
+    col("start_date").cast(DateType()),
+    col("end_date").cast(DateType()),
+    col("time_unit").cast(StringType()),
+    col("category_name").cast(StringType()),
+    col("category_code").cast(IntegerType()),
+    col("keyword_name").cast(StringType()),
+    col("gender").cast(StringType()),
     col("data.period").cast(DateType()).alias("period"),  # 날짜 변환
     col("data.ratio").cast(FloatType()).alias("ratio"),  # 비율 변환
-    current_date().alias("created_at"),  # 데이터 수집 날짜
+    current_date().cast(DateType()).alias("created_at"),  # 데이터 수집 날짜
 )
 
 # Parquet 파일 저장
