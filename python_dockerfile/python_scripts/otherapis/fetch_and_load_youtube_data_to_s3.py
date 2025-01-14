@@ -162,6 +162,7 @@ if __name__ == "__main__":
 
         # YouTube Data API 설정
         youtube = googleapiclient.discovery.build("youtube", "v3", developerKey=api_key)
+        youtube._http.timeout = 300  # 타임아웃 5분 설정
         logger.info("YouTube API client initialized.")
 
         # 카테고리 그룹화
