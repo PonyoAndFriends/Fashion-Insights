@@ -82,11 +82,11 @@ def et_product1_detail(product_id):
             try:
                 # review_count, review_avg_ratin
                 json_data = json.loads(
-                    soup.find("script", {"type": "application/ld+json"}).string
+                    soup.find('script', {'id': '__NEXT_DATA__', 'type': 'application/json'}).string
                 )
                 # ratingValue와 reviewCount 값 추출
-                review_count = json_data["aggregateRating"]["reviewCount"]
-                review_avg_rating = json_data["aggregateRating"]["ratingValue"]
+                review_count = json_data['props']['pageProps']['meta']['data']['goodsReview']['totalCount']
+                review_avg_rating = json_data['props']['pageProps']['meta']['data']['goodsReview']['satisfactionScore']
             except:
                 review_count = None
                 review_avg_rating = None
