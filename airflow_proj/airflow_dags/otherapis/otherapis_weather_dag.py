@@ -52,7 +52,7 @@ with DAG(
             url=url,
             file_topic=FILE_TOPIC,
             content_type="plain/text",
-            flag=(True, i)
+            flag=(True, i),
         )
         weather_fetch_task_list.append(fetch_weather_data_task)
         now -= one_day

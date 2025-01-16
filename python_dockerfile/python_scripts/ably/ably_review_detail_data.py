@@ -9,29 +9,32 @@ from ably_modules.ably_dependencies import ABLY_HEADER, DEFAULT_S3_DICT
 from ably_modules.aws_info import AWS_S3_CONFIG
 
 # 로깅 설정
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
+)
 logger = logging.getLogger(__name__)
+
 
 class S3Handler:
     def __init__(self, bucket_name):
         self.s3_client = boto3.client(
             "s3",
             aws_access_key_id=AWS_S3_CONFIG.get("aws_access_key_id"),
-            aws_secret_access_key=AWS_S3_CONFIG.get("aws_secret_access_key")
+            aws_secret_access_key=AWS_S3_CONFIG.get("aws_secret_access_key"),
         )
         self.bucket_name = bucket_name
-        self.date_prefix = 'bronze/' + (datetime.now() + timedelta(hours=9)).strftime('%Y-%m-%d')
+        self.date_prefix = "bronze/" + (datetime.now() + timedelta(hours=9)).strftime(
+            "%Y-%m-%d"
+        )
         self.base_path = f"{self.date_prefix}/ably/review_data/"
         logger.info(f"base_path: {self.base_path}")
 
     def list_folders(self):
         try:
             response = self.s3_client.list_objects_v2(
-                Bucket=self.bucket_name,
-                Prefix=self.base_path,
-                Delimiter='/'
+                Bucket=self.bucket_name, Prefix=self.base_path, Delimiter="/"
             )
-            return [content['Prefix'] for content in response.get('CommonPrefixes', [])]
+            return [content["Prefix"] for content in response.get("CommonPrefixes", [])]
         except Exception as e:
             logger.error(f"Error listing folders: {e}")
             return []
@@ -40,14 +43,17 @@ class S3Handler:
         try:
             key = f"{folder}goods_sno_list.json"
             response = self.s3_client.get_object(Bucket=self.bucket_name, Key=key)
-            data = json.loads(response['Body'].read().decode('utf-8'))
+            data = json.loads(response["Body"].read().decode("utf-8"))
             return next(iter(data.items()))
         except Exception as e:
             logger.error(f"Error reading goods_sno_list.json: {e}")
             return None, []
 
+
 class ReviewProcessor:
-    def __init__(self, api_url, headers, s3_client, bucket_name, max_reviews=20, retries=3):
+    def __init__(
+        self, api_url, headers, s3_client, bucket_name, max_reviews=20, retries=3
+    ):
         self.api_url = api_url
         self.headers = headers
         self.s3_client = s3_client
@@ -69,16 +75,18 @@ class ReviewProcessor:
                     data = response.json().get("reviews", [])
                     reviews.extend(data)
                     if len(reviews) >= self.max_reviews:
-                        return reviews[:self.max_reviews]
+                        return reviews[: self.max_reviews]
                     break
                 elif response.status_code == 403:
                     logger.warning(f"403 Forbidden for {product_id}, retrying...")
-                    time.sleep(2 ** attempt + 0.1)
+                    time.sleep(2**attempt + 0.1)
                 else:
-                    logger.warning(f"Unexpected status code {response.status_code} for {product_id}")
+                    logger.warning(
+                        f"Unexpected status code {response.status_code} for {product_id}"
+                    )
             except Exception as e:
                 logger.error(f"Error fetching reviews for {product_id}: {e}")
-        return reviews[:self.max_reviews]
+        return reviews[: self.max_reviews]
 
     def save_reviews(self, product_id, reviews, category_key, folder):
         file_name = f"reviews_{category_key}_{product_id}.json"
@@ -88,7 +96,7 @@ class ReviewProcessor:
                 Bucket=self.bucket_name,
                 Key=key,
                 Body=json.dumps(reviews, ensure_ascii=False, indent=4),
-                ContentType="application/json"
+                ContentType="application/json",
             )
             logger.info(f"Saved reviews: {key}")
         except Exception as e:
@@ -100,6 +108,7 @@ class ReviewProcessor:
             self.save_reviews(product_id, reviews, category_key, folder)
         else:
             logger.warning(f"No reviews for {product_id}")
+
 
 if __name__ == "__main__":
     bucket_name = DEFAULT_S3_DICT["bucket_name"]

@@ -22,7 +22,15 @@ class FetchNonPagedDataOperator(BaseOperator):
     """
 
     def __init__(
-        self, url, file_topic, content_type, params=None, headers=None, flag=(False, 0), *args, **kwargs
+        self,
+        url,
+        file_topic,
+        content_type,
+        params=None,
+        headers=None,
+        flag=(False, 0),
+        *args,
+        **kwargs,
     ):
         super().__init__(*args, **kwargs)
         self.url = url

@@ -13,7 +13,7 @@ from pyspark.sql.types import (
     IntegerType,
     StructType,
     StructField,
-    ArrayType
+    ArrayType,
 )
 import sys
 import logging
@@ -35,15 +35,27 @@ schema = StructType(
         StructField("startDate", DateType(), True),
         StructField("endDate", DateType(), True),
         StructField("timeUnit", StringType(), True),
-        StructField("results", StructType([
-            StructField("keyword", StringType(), True),
-            StructField("data", ArrayType(
-                StructType([
-                    StructField("period", DateType(), True),
-                    StructField("ratio", FloatType(), True)
-                ])
-            ), True)
-        ]), True)
+        StructField(
+            "results",
+            StructType(
+                [
+                    StructField("keyword", StringType(), True),
+                    StructField(
+                        "data",
+                        ArrayType(
+                            StructType(
+                                [
+                                    StructField("period", DateType(), True),
+                                    StructField("ratio", FloatType(), True),
+                                ]
+                            )
+                        ),
+                        True,
+                    ),
+                ]
+            ),
+            True,
+        ),
     ]
 )
 

@@ -63,7 +63,7 @@ def submit_spark_application(spark_app_name, pyspark_py_path, spark_args=None):
                 "spark.kubernetes.driver.deleteOnTermination": "true",
                 "spark.kubernetes.executor.deleteOnTermination": "true",
                 "spark.hadoop.fs.s3a.impl": "org.apache.hadoop.fs.s3a.S3AFileSystem",
-                "spark.hadoop.fs.s3a.path.style.access": "true"
+                "spark.hadoop.fs.s3a.path.style.access": "true",
             },
         },
     }
