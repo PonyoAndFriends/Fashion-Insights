@@ -22,7 +22,7 @@ dag = DAG(
 )
 
 review_detail_data_task = CustomKubernetesPodOperator(
-    task_id=f"ably_reviews_detail_data_task",
+    task_id="ably_reviews_detail_data_task",
     dag=dag,
     namespace="airflow",
     script_path="/python_scripts/ably/ably_review_detail_data.py",
