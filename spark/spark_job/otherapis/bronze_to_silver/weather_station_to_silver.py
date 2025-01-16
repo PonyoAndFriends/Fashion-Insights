@@ -18,7 +18,6 @@ target_path = args[2]
 # 텍스트 파일 읽기
 raw_df = s3_spark_module.read_and_partition_s3_data(spark, source_path, "txt")
 
-# START7777와 END7777 사이 데이터 필터링
 filtered_df = raw_df.filter(
     (col("value").strip() != "")  # 빈 줄 제거
     & (~col("value").startswith("#"))  # 주석 제거

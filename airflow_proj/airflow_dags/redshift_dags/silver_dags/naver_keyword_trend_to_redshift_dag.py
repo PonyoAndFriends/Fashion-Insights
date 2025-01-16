@@ -57,8 +57,8 @@ with DAG(
         redshift_conn_id="redshift_default",
     )
 
-    copy_tasks = []
     gender_dict = {"남성": "MEN", "여성": "WOMAN"}
+    past_task = refresh_task
     for gender in ["남성", "여성"]:
         copy_query = f"""
         COPY {DEFAULT_SILVER_SHCEMA}.{table}
@@ -71,6 +71,5 @@ with DAG(
             task_id=f"{gender_dict[gender]}_copy_naver_keyword_trend_task",
             sql=copy_query,
         )
-        copy_tasks.append(copy_task)
-
-    refresh_task >> copy_tasks[0] >> copy_tasks[1]
+        past_task >> copy_task
+        past_task = copy_task

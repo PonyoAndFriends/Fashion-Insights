@@ -61,7 +61,6 @@ with DAG(
     spark_submit_tasks = []
 
     for task in tasks_config:
-        """
         gender_fetch_youtube_data_task = CustomKubernetesPodOperator(
             task_id=f"fetch_{task['task_gender']}_yotubue_data_task",
             name=f"pod_for_{task['task_gender']}_category_yotubue_data_task",
@@ -77,7 +76,6 @@ with DAG(
             memory_limit="1Gi",
         )
         fetch_keyword_data_tasks.append(gender_fetch_youtube_data_task)
-        """
 
         file_topic = "youtoube_videos_by_categories"
         now_string = (datetime.now() + timedelta(hours=9)).strftime("%Y-%m-%d")
