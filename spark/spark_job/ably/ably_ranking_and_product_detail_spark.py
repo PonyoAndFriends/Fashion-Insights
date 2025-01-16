@@ -23,7 +23,7 @@ spark = SparkSession.builder.appName("Ably Mapping Transformation").getOrCreate(
 # 오늘 날짜
 today = (datetime.now() + timedelta(hours=9)).strftime("%Y-%m-%d")
 
-# S3 경로
+# S3 경로 - 추후 변경 가능
 bronze_path = f"s3a://team3-2-s3/bronze/{today}/ably/ranking_data/*/*.json"
 silver_product_path = f"s3a://team3-2-s3/silver/{today}/ably/product_detail_tb/"
 silver_ranking_path = f"s3a://team3-2-s3/silver/{today}/ably/ranking_tb/"
@@ -40,7 +40,7 @@ except Exception as e:
     logging.error(f"데이터 로드 실패: {e}")
     exit(1)
 
-# 파일 경로에서 카테고리 코드 추출
+# 파일 경로에서 카테고리 코드 추출, 정규식 사용
 raw_data = raw_data.withColumn(
     "category_code", regexp_extract(col("input_file_name"), r"/([^/]+)\.json$", 1)
 )
@@ -96,7 +96,6 @@ transformed_data = raw_data.select(
 
 # ranking_tb 생성
 def create_ranking_tb(raw_data):
-
     # ranking_tb 생성
     ranking_tb = raw_data.select(
         lit("ably").alias("platform").cast(StringType()),
