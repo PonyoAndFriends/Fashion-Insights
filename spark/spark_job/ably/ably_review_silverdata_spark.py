@@ -1,6 +1,6 @@
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import col, lit, to_date, array_join
-from datetime import datetime, timedelta
+from datetime import datetime
 
 TODAY_DATE = datetime.now().strftime("%Y-%m-%d")
 
